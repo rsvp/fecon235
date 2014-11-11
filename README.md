@@ -39,6 +39,18 @@ Department of Economics and the Haas School of Business.
   Quantitative Economics site by Thomas [Sargent]. 
 
 
+### Useful modules in directory mod ###
+
+These are standalone Python modules which are also frequently imported 
+into our IPython notebooks.
+
+* yi_1tools.py : essential utility functions.
+* yi_plot.py : essential plot functions.
+* yi_timeseries : essential time series functions.
+* yi_fred.py : Access FRED with pandas for plots and analysis.
+
+
+
 ### Development guidelines ###
 
 * How to run tests
