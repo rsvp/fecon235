@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+#              bash 4.2.24(1)     Linux Ubuntu 12.04          Date : 2014-09-29
+#
+# _______________|  ipnbrun : run ipynb non-interactively and produce html.
+#
+#           Usage:  ipnbrun  [IPython notebook file(s)]
+#
+#        Examples:  ipnbrun foo*.ipynb
+#
+#    Dependencies:  runipy, $ pip install runipy
+#                           see https://github.com/paulgb/runipy
+#                           but it is included in the Anaconda distribution.
+#                  (pandoc is used as fallback for "ipython nbconvert")
+
+
+#  CHANGE LOG  
+#  2014-09-29  Amend to Preamble_v3. Change status numbering.
+#  2014-09-26  First version also produces HTML output.
+
+
+#           _____ PREAMBLE_v3: settings, variables, and error handling.
+#
+LC_ALL=POSIX
+#      locale means "ASCII, US English, no special rules, 
+#      output per ISO and RFC standards." 
+#      Esp. use ASCII encoding for glob and sorting characters. 
+shopt -s   extglob
+#     ^set extended glob for pattern matching.
+shopt -s   failglob
+#         ^failed pattern matching signals error.
+set -e
+#   ^errors checked: immediate exit if a command has non-zero status. 
+set -u
+#   ^unassigned variables shall be errors.
+#    Example of default VARIABLE ASSIGNMENT:  arg1=${1:-'foo'}
+
+
+program=${0##*/}   #  similar to using basename
+memf=$( mktemp /dev/shm/88_${program}_tmp.XXXXXXXXXX )
+#    ^used to collect interim results and errors.
+
+
+cleanup () {
+     #  Delete temporary files, then optionally exit given status.
+     local status=${1:-'0'}
+     rm -f $memf
+     [ $status = '-1' ] ||  exit $status      #  thus -1 prevents exit.
+} #--------------------------------------------------------------------
+warn () {
+     #  Message with basename to stderr.          Usage: warn "message"
+     echo -e "\n !!  ${program}: $1 "  >&2
+} #--------------------------------------------------------------------
+die () {
+     #  Exit with status of most recent command or custom status, after
+     #  cleanup and warn.      Usage: command || die "message" [status]
+     local status=${2:-"$?"}
+     cat $memf >&2
+     cleanup -1  &&   warn "$1"  &&  exit $status
+} #--------------------------------------------------------------------
+trap "die 'SIG disruption, but cleanup finished.' 114" 1 2 3 15
+#    Cleanup after INTERRUPT: 1=SIGHUP, 2=SIGINT, 3=SIGQUIT, 15=SIGTERM
+trap "die 'unhandled ERR via trap, but cleanup finished.' 116" ERR
+#    Cleanup after command failure unless it's part of a test clause.
+#
+# _______________     ::  BEGIN  Script ::::::::::::::::::::::::::::::::::::::::
+
+
+fileprefix='tmp'
+
+for file in "$@" ; do
+     if [ -f "$file" ] ; then
+          runf="${fileprefix}-$file"
+          #     ^alternative output name.
+          
+          #  Keep the original notebook intact,
+          #  save the non-interactive execution as runf: 
+          echo " ::  Executing notebook $file, output as $runf ..."
+          #          To overwrite instead: runipy -o "$file"
+          runipy "$file" "$runf" 2> $memf    \
+               ||  die "FATAL error in $file" 115
+
+          echo " ::  ... starting HTML conversion..."
+          ipython nbconvert --to html --template full  "$runf" 2>> $memf \
+               ||  die "failed HTML conversion: $runf" 117
+          #                                  or: basic
+          #  then produce runf HTML output as well.
+          #       runipy also can convert to html,
+          #       but not advisable since it will hang on error 
+          #       (runipy relies on nbconvert anyways).
+          echo " ::  FINISHED conversion of $runf to HTML."
+          echo " ::  :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+
+          #  DEBUG: show runipy cell-by-cell interim results, 
+          #              nbconvert warnings about latest pandoc.
+          #         Note that "die" function will "cat $memf".
+          #  cat $memf >&2
+
+     else
+          die "file does not exist:  $file" 113
+     fi
+done
+
+
+
+cleanup
+# _______________ EOS ::  END of Script ::::::::::::::::::::::::::::::::::::::::
+
+#  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=sh :
