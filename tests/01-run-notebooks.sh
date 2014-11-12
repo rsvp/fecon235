@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#              bash 4.3.11(1)     Linux Ubuntu 14.04.1        Date : 2014-11-11
+#              bash 4.3.11(1)     Linux Ubuntu 14.04.1        Date : 2014-11-12
 #
 # _______________|  01-run-notebooks.sh : run all notebooks in nbdir.
 #
@@ -9,11 +9,13 @@
 #                   #
 #                   #  - ASSUMES execution from the tests directory.
 #                   #  - nbdir can only be a top-level directory.
+#                   #  - Look for tmp-* output files in nbdir.
 #
 #    Dependencies:  bin/ipnbrun (which uses runipy package)
 
 
 #  CHANGE LOG  
+#  2014-11-12  Exclude tmp*.ipynb from tests.
 #  2014-11-11  First version.
 
 
@@ -80,7 +82,8 @@ instruct () {
 
 if [ "$dir" = 'tests' ] ; then
      cd ../$nbdir
-     ../bin/ipnbrun  *.ipynb
+     ../bin/ipnbrun  !(tmp*).ipynb
+     #         Exclude tmp*.ipynb files -- thanks extglob.
      echo " ::       At: $(pwd) "
      echo " ::  SUCCESS! Notebooks passed integration tests."
 else
