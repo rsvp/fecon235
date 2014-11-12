@@ -1,1 +1,1 @@
-../mod/yi_fred.py
+../package/yi_fred.py

@@ -1,1 +1,1 @@
-../mod/yi_timeseries.py
+../package/yi_timeseries.py
