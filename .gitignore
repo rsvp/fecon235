@@ -1,4 +1,4 @@
-# .gitignore template                               Date : 2014-11-08
+# .gitignore template                               Date : 2014-12-06
 
 tmp-*
 *-bak.*
@@ -6,6 +6,10 @@ tmp-*
 
 *.png
 #  charts generally produced from notebooks.
+
+#  Interim IPython notebooks:
+.ipynb_checkpoints/
+*-checkpoint.ipynb
 
 
 # ================================================= PYTHON begin =============== 
