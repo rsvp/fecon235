@@ -11,6 +11,9 @@ tmp-*
 .ipynb_checkpoints/
 *-checkpoint.ipynb
 
+00-tpl.ipynb
+#  template for notebooks with preamble and examples.
+
 
 # ================================================= PYTHON begin =============== 
 

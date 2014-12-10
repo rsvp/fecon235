@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2014-10-05
+#  Python Module for import                           Date : 2014-12-09
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -11,6 +11,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2014-12-09  Clarify comments, esp. regressformula.
 2014-10-05  Note that paste for pandas < 0.14 will fail
                if column names are not unique 
                (newer pandas append _x to non-unique names).
@@ -152,13 +153,18 @@ def cormatrix( dataframe, type='pearson' ):
 
 def regressformula( df, formula ):
      '''Helper function for statsmodel linear regression using formula.'''
-     #  Formula is a string like "Y ~ X + Z"
      #
-     #  Usage given that: result = regressformula( ... )
-     #        - result.summary()
+     #  FORMULA is a string like "Y ~ 0 + X + Z"
+     #          where column names of the df dataframe are used.
+     #          Omit the 0 if you want an intercept fitted.
+     #
+     #  USAGE given that: result = regressformula( ... )
+     #        - print result.summary()
      #        - result.params
+     #        - coeff = result.params.tolist()
+     #
+     #  ATTN:   ols is different from default OLS in pandas! see regress.
      return smf.ols(formula=formula, data=df).fit()
-     #          ^different from default OLS in pandas, see regress.
 
 
 def regressTIME( dfy, col='Y' ):
@@ -274,13 +280,15 @@ def stats( dataframe ):
      return
 
 
-#  TIP:  After operating between dataframes, use todr for clarity:
+#  TIP:  After operating between dataframes, USE todf FOR CLARITY:
 
 def todf( data, col='Y' ):
-     '''Convert (list, Series, or DataFrame) TO DataFrame, naming single column.'''
-     #  Operating among dataframes often produces a series.
-     #  We need conversion for possible "paste" later, 
+     '''CONVERT (list, Series, or DataFrame) TO DataFrame, NAMING single column.'''
+     #
+     #  Operating among dataframes often produces a SERIES.
+     #  We need CONVERSION for possible "paste" later, 
      #     without the hassle of type() testing beforehand.
+     #
      if isinstance( data, pd.DataFrame ):
           #  Oooops, easy to mistaken a dataframe for a series. 
           #  Move on, and just name that single column:
@@ -292,8 +300,8 @@ def todf( data, col='Y' ):
           #                               ^fails if col pre-exists in data.
           target = pd.DataFrame( data )
           target.columns = [ col ]
+     #             ________ Explicitly drop NA values. Very helpful routinely!
      return target.dropna() 
-     #             ^explicitly drop NA values.
 
 
 def paste( df_list ):
