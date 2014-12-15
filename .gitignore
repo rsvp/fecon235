@@ -1,7 +1,8 @@
-# .gitignore template                               Date : 2014-12-06
+# .gitignore template                               Date : 2014-12-13
 
-tmp-*
 *-bak.*
+*tmp*
+#  ANY filename containing tmp is temporary!
 
 
 *.png
