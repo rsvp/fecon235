@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2014-10-17
+#  Python Module for import                           Date : 2015-02-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-02-05  Add m4unempfr for France unemployment.
 2014-10-17  Remedy wild import of functions from our modules.
 2014-10-15  Add d4gas via weekly DoE gasoline survey, $/gal w/tax NSA.
 2014-10-08  Add synthetic d4oil by averaging d4wti and d4brent.
@@ -221,10 +222,12 @@ qlist     = ql_econ + ql_long
 #      __________ EUROZONE fredcode:
 q4gdpeu   = 'EUNGDP'           # EU GDP in million euros, Eurostat SA quarterly
 m4gdpeur  = 'm4gdpeur'         # EU GDP in real billions, synthetic SA monthly
-m4unempeu = 'LRHUTTTTEZM156S'  # EU Unemployment rate, OECD SA monthly
 m4infleu  = 'm4infleu'         # EU Consumer Prices, synthetic Eurostat monthly
 m4defleu  = 'm4defleu'         # EU deflator, synthetic monthly
 
+m4unempeu = 'LRHUTTTTEZM156S'  # EU Unemployment rate, OECD SA monthly
+m4unempfr = 'LRHUTTTTFRM156S'  # FR Unemployment rate, OECD SA monthly 
+#      France data is updated frequently, whereas for EU there is a severe lag.
 
 
 #  ======================================== End of fredcode ===============
