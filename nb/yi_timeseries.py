@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2014-09-21
+#  Python Module for import                           Date : 2015-02-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_timeseries : essential time series functions.
@@ -23,6 +23,8 @@ See holt_winters_growth() vs. holt().
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-02-21  Add holtgrow and holtpc functions.
+               Fix holtlevel to truly include alpha and beta.
 2014-09-21  Improve holt() by eliminating paste operation, 
                and using todf from yi_1tools.
 2014-09-15  Change HW alpha and beta defaults based on Gelper 2007.
@@ -86,7 +88,27 @@ def holtlevel( data, alpha=hw_alpha, beta=hw_beta ):
      '''Just smoothed Level dataframe from Holt-Winters growth model.'''
      #  Useful to filter out seasonals, e.g. see X-11 method:
      #     http://www.sa-elearning.eu/basic-algorithm-x-11
-     return todf( holt( data )['Level'] )
+     return todf( holt( data, alpha, beta )['Level'] )
+
+
+def holtgrow( data, alpha=hw_alpha, beta=hw_beta ):
+     '''Just the Growth dataframe from Holt-Winters growth model.'''
+     #  In terms of units expressed in data.
+     return todf( holt( data, alpha, beta )['Growth'] )
+
+
+def holtpc( data, yearly=256, alpha=hw_alpha, beta=hw_beta ):
+     '''Annualized percentage growth dataframe from H-W growth model.'''
+     #  yearly is the multiplier to annualize Growth.
+     #
+     #       MOST VALUABLE H-W function              <= !!
+     #       It contains the HISTORY of FORECASTED RATES!
+     #
+     holtdf = holt( data, alpha, beta )
+     level  = todf( holtdf['Level'] )
+     grow   = todf( holtdf['Growth'] )
+     growan = todf( grow * yearly )
+     return todf( 100 * ( growan / level ) )
 
 
 def holtforecast( holtdf, h=12 ):
