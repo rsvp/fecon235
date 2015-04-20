@@ -21,7 +21,6 @@ this project. Your help is essential for keeping it great.
 Here are a few things you can do that will increase the likelihood of your
 pull request being accepted:
 
-- Follow the [style guide][style] where possible.
 - Write tests.
 - Update documentation as necessary.  
 - Keep your change as focused as possible. If there are multiple changes you
@@ -38,7 +37,6 @@ to reviewing your code.
 - [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
 - [GitHub Help](https://help.github.com)
 
-[style]: https://github.com/golang/go/wiki/CodeReviewComments
 [fork]: https://github.com/rsvp/fecon235/fork
 [pr]: https://github.com/rsvp/fecon235/compare
 
