@@ -23,7 +23,11 @@ Selected topics are treated for in-depth studies.
 
 * Database: currently our main source is [FRED], the U.S. Federal Reserve 
   Economic Data bank which is accessed directly online using our programs. 
-  Where necessary, data is made persistent by simple NoSQL techniques. 
+
+* Models: we emphasize original research where the baseline comparison 
+  is to *Ferbus*, the model used internally by the Federal Reserve Bank.
+  Accuracy of out-of-sample forecasts takes precedence over traditional 
+  measures of model fit.
 
 ### How do I get set up? ###
 
@@ -39,29 +43,36 @@ Selected topics are treated for in-depth studies.
 * Configuration: we strongly recommend [Anaconda], a completely free Python
   distribution which includes about 200 of the most useful Python packages for
   science, math, engineering, data analysis. It will resolve your headaches 
-  from dependency hell.
+  due to dependency hell.
 
-* Dependencies: pandas > 0.13 is mandatory. 
+* Dependencies: pandas > 0.15 is suggested. 
   Python 2.7 is still preferred over the 3 series.
 
 ### Examples of code ###
 
 The best way to see the code in action is to run the 
 primary notebooks in the `nb` directory.
+Some of them are described at the end of this page. 
+(Note that GitHub can render IPython notebooks directly in the browser, 
+however, they will not be executable.)
 
 Our [intro page] illustrates some basic commands; 
 e.g. getfred() and plotfred() will do a lot of the heavy lifting 
 to get you started immediately.
 
-### Useful modules in directory mod ###
+### Useful modules ###
 
-These are standalone Python modules which are also frequently imported 
-into our IPython notebooks.
+These standalone Python modules are frequently imported 
+into our IPython notebooks:
 
 * yi_1tools.py : essential utility functions.
 * yi_plot.py : essential plot functions.
 * yi_timeseries : essential time series functions.
 * yi_fred.py : Access FRED with pandas for plots and analysis.
+
+The commands are very easy to learn and customize, 
+producing relatively sophisticated results quickly 
+without detailed knowledge of the underlying numerical packages. 
 
 ### Development ###
 
@@ -76,17 +87,112 @@ into our IPython notebooks.
 * Guidelines: we welcome your [pull request] to improve our code. 
   Please be sure to pull origin/master and rebase beforehand. 
 
-* Documents and data from seminars: contact us if you need 
-  help integrating your material.
+* Documents and data for fecon235 seminars: contact us if you need 
+  help incorporating your material into this repository.
 
 
 ### Contact info ###
 
 Repo [admin]
 
+
+### Partial contents of nb directory ###
+
+#### fred-debt-pop.ipynb : Growth of Federal debt, its burden on the US population  
+
+We examine government debt in real terms, and the current debt per capita.  
+
+#### fred-eur-fx.ipynb : Euro currency qua Foreign Exchange  
+
+We examine euro FX data from the Fed Reserve FRED database. Our synthetic
+time-series, which takes us far back as 1971, give additional perspective to
+observe the cross-rates against U.S. dollar and Japanese yen.  
+
+#### fred-eurozone.ipynb : Eurozone economics  
+
+We examine the usual suspects: unemployment, inflation, real interest rate,
+foreign exchange rate, comparative GDP. Appendix 1 concisely explains the
+*euro crisis* in a video.  
+
+#### fred-gdp-spx.ipynb : US real GDP vs. SPX: Holt-Winters time series forecasting  
+
+We examine the US gross domestic product's relationship to the US equity
+market, in real terms. Forecasts for both are demonstrated using Holt-Winters
+technique. We derive the most likely range for real GDP growth, and identify
+excessive equity valuations aside from inflationary pressures.   
+
+#### fred-gdp-wage.ipynb : U.S. GDP vs. Wage Income 
+
+For every wage dollar paid, what is GDP output?  In answering this question,
+we derive a model for GDP growth based on observations from wage growth.  
+
+#### fred-georeturns.ipynb : Geometric mean returns on FRED series  
+
+We examine economic and financial time series where Holt-Winters is used to
+forecast one-year ahead. Daily data for bonds, equity, and gold is then
+analyzed. The focus is on geometric mean returns because they optimally
+express mean-variance under logarithmic utility.  
+
+#### fred-housing.ipynb : Housing starts, home prices and affordibility  
+
+Greenspan in 2014 pointed out that there was never a recovery from recession
+without improvements in housing construction. Here we examine some relevant
+data, including the Case-Shiller series, and derive an insightful measure of
+the housing economy which takes affordibility into account.  
+
+#### fred-inflation.ipynb : Inflation data from FRED using pandas  
+
+We examine inflation data: CPI and PCE, including the core versions, along
+with the 10-year BEI rate (break-even inflation). We also examine gold returns
+and its correlations to inflation. A combined inflation statistic *m4infl* is
+defined, and we make some forecasts.
+
+#### fred-infl-velocity.ipynb : Inflation, money velocity, and interest rates  
+
+We examine and attempt to replicate the results of two interesting articles by
+Yi Wen and Maria Arias -- along the way, we take a detour and explore the
+connection between money velocity and bond rates. This will tie together their
+relationship with GDP and the money supply in a fitted equation.  
+
+#### fred-oil-brent-wti.ipynb : Oil: Brent vs. West Texas Intermediate (WTI)
+
+We examine the history of oil prices, and their spreads. Real prices give
+additional insight, along with some of the statistical characteristics used in
+financial economics.
+
+#### fred-usd-RTB-xau.ipynb : Real trade-weighted indexes for USD, gold, and SPX  
+
+We examine the value of USD against a basket of 26 foreign currencies using
+real trade numbers. Trade statistics are released annually, however, the Fed
+uses international inflation data to adjust the weights monthly.  
+
+#### fred-wage-capital.ipynb : Real capital equivalence to wage-income 
+
+We determine how much real capital has been necessary for risk-free interest
+to match annual wage.  
+
+#### fred-xau-spx.ipynb : Gold vs. SP500 returns, XAU vs. SPX  
+
+Long-term comparison of two asset classes: we boxplot their return
+distribution and also compute geometric mean returns. Correlation between the
+two is shown to be nil. We then look at the history of projected returns using
+Holt-Winters method, which also gives the latest forecasts. To conclude, we
+closely examine the relative value of the two assets in terms of gold troy
+ounces per equity share. Analytically short equities vs. long gold is
+favorable for an investor with log utility, but hardly profitable over the
+long haul.   
+
+#### fred-xau-tips.ipynb : Gold and Treasury TIPS, their daily relationship  
+
+Using monthly data we previously found that there is a strong correlation
+between gold and real rates, so we investigate this on a finer time scale. We
+then use this correlation to help make forecasts using the univariate
+Holt-Winters method.  
+
+
 - - - -
 
-Revision date : 2014-11-17
+Revision date : 2015-07-30 
 
 
 [admin]:      http://rsvp.github.com          "Adriano rsvp.github.com"
