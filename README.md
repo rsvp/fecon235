@@ -1,5 +1,7 @@
 ## fecon235 :: Computational and data tools for financial economics ##
 
+[![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is a free open source project for software tools 
 useful in financial economics. We develop research notebooks 
 which are executable scripts capable of statistical 
