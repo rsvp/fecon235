@@ -58,9 +58,12 @@ Some of them are described at the end of this page.
 (Note that GitHub can render IPython notebooks directly in the browser, 
 however, they will not be executable.)
 
-Our [intro page] illustrates some basic commands; 
-e.g. getfred() and plotfred() will do a lot of the heavy lifting 
-to get you started immediately.
+Some basic commands, 
+e.g. getfred() and plotfred(), will do a lot of the heavy lifting 
+to get you started immediately. 
+Our [wiki] should be gradually adding tutorials and FAQs 
+for any clarifications. 
+Ask your questions on Twitter by adding the hashtag #fecon235.
 
 ### Useful modules ###
 
@@ -194,10 +197,11 @@ Holt-Winters method.
 
 - - - -
 
-Revision date : 2015-07-30 
+Revision date : 2015-08-01
 
 
-[admin]:      http://rsvp.github.com          "Adriano rsvp.github.com"
+[admin]:      https://rsvp.github.com          "Adriano rsvp.github.com"
+[wiki]:       https://github.com/rsvp/fecon235/wiki  "Wiki for fecon235"
 [Anaconda]:   http://continuum.io/downloads   "Anaconda Python distribution"
 [FRED]: http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
 [Github flow]:  http://scottchacon.com/2011/08/31/github-flow.html "Github Flow"
