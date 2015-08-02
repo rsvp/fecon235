@@ -1,4 +1,4 @@
-## fecon235 :: Computational and data tools for financial economics ##
+## fecon235 :: Computational data tools for financial economics ##
 
 [![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -56,14 +56,21 @@ The best way to see the code in action is to run the
 primary notebooks in the `nb` directory.
 Some of them are described at the end of this page. 
 (Note that GitHub can render IPython notebooks directly in the browser, 
-however, they will not be executable.)
+however, they will not be executable.) 
+Here is a rendering of a notebook at GitHub for 
+[Housing starts, home prices and affordibility](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb). 
+If you locally executed that notebook, it would 
+also seek out the latest available data to bring 
+the research up-to-date.   
 
 Some basic commands, 
 e.g. getfred() and plotfred(), will do a lot of the heavy lifting 
 to get you started immediately. 
+They are designed for scripts (not necessarily within IPython notebooks) 
+and any Python IDE interactive development environment. 
 Our [wiki] should be gradually adding tutorials and FAQs 
 for any clarifications. 
-Ask your questions on Twitter by adding the hashtag #fecon235.
+Ask your questions on Twitter by adding the hashtag *#fecon235*.
 
 ### Useful modules ###
 
@@ -103,80 +110,80 @@ Repo [admin]
 
 ### Partial contents of nb directory ###
 
-#### fred-debt-pop.ipynb : Growth of Federal debt, its burden on the US population  
+##### fred-debt-pop.ipynb : Growth of Federal debt, its burden on the US population  
 
 We examine government debt in real terms, and the current debt per capita.  
 
-#### fred-eur-fx.ipynb : Euro currency qua Foreign Exchange  
+##### fred-eur-fx.ipynb : Euro currency qua Foreign Exchange  
 
 We examine euro FX data from the Fed Reserve FRED database. Our synthetic
 time-series, which takes us far back as 1971, give additional perspective to
 observe the cross-rates against U.S. dollar and Japanese yen.  
 
-#### fred-eurozone.ipynb : Eurozone economics  
+##### fred-eurozone.ipynb : Eurozone economics  
 
 We examine the usual suspects: unemployment, inflation, real interest rate,
 foreign exchange rate, comparative GDP. Appendix 1 concisely explains the
 *euro crisis* in a video.  
 
-#### fred-gdp-spx.ipynb : US real GDP vs. SPX: Holt-Winters time series forecasting  
+##### fred-gdp-spx.ipynb : US real GDP vs. SPX: Holt-Winters time series forecasting  
 
 We examine the US gross domestic product's relationship to the US equity
 market, in real terms. Forecasts for both are demonstrated using Holt-Winters
 technique. We derive the most likely range for real GDP growth, and identify
 excessive equity valuations aside from inflationary pressures.   
 
-#### fred-gdp-wage.ipynb : U.S. GDP vs. Wage Income 
+##### fred-gdp-wage.ipynb : U.S. GDP vs. Wage Income 
 
 For every wage dollar paid, what is GDP output?  In answering this question,
 we derive a model for GDP growth based on observations from wage growth.  
 
-#### fred-georeturns.ipynb : Geometric mean returns on FRED series  
+##### fred-georeturns.ipynb : Geometric mean returns on FRED series  
 
 We examine economic and financial time series where Holt-Winters is used to
 forecast one-year ahead. Daily data for bonds, equity, and gold is then
 analyzed. The focus is on geometric mean returns because they optimally
 express mean-variance under logarithmic utility.  
 
-#### fred-housing.ipynb : Housing starts, home prices and affordibility  
+##### fred-housing.ipynb : Housing starts, home prices and affordibility  
 
 Greenspan in 2014 pointed out that there was never a recovery from recession
 without improvements in housing construction. Here we examine some relevant
 data, including the Case-Shiller series, and derive an insightful measure of
 the housing economy which takes affordibility into account.  
 
-#### fred-inflation.ipynb : Inflation data from FRED using pandas  
+##### fred-inflation.ipynb : Inflation data from FRED using pandas  
 
 We examine inflation data: CPI and PCE, including the core versions, along
 with the 10-year BEI rate (break-even inflation). We also examine gold returns
 and its correlations to inflation. A combined inflation statistic *m4infl* is
 defined, and we make some forecasts.
 
-#### fred-infl-velocity.ipynb : Inflation, money velocity, and interest rates  
+##### fred-infl-velocity.ipynb : Inflation, money velocity, and interest rates  
 
 We examine and attempt to replicate the results of two interesting articles by
 Yi Wen and Maria Arias -- along the way, we take a detour and explore the
 connection between money velocity and bond rates. This will tie together their
 relationship with GDP and the money supply in a fitted equation.  
 
-#### fred-oil-brent-wti.ipynb : Oil: Brent vs. West Texas Intermediate (WTI)
+##### fred-oil-brent-wti.ipynb : Oil: Brent vs. West Texas Intermediate (WTI)
 
 We examine the history of oil prices, and their spreads. Real prices give
 additional insight, along with some of the statistical characteristics used in
 financial economics.
 
-#### fred-usd-RTB-xau.ipynb : Real trade-weighted indexes for USD, gold, and SPX  
+##### fred-usd-RTB-xau.ipynb : Real trade-weighted indexes for USD, gold, and SPX  
 
 We examine the value of USD against a basket of 26 foreign currencies using
 real trade numbers. Trade statistics are released annually, however, the Fed
 uses international inflation data to adjust the weights monthly.  
 
-#### fred-wage-capital.ipynb : Real capital equivalence to wage-income 
+##### fred-wage-capital.ipynb : Real capital equivalence to wage-income 
 
 We determine how much real capital has been necessary for risk-free interest
 to match annual wage.  
 
-#### fred-xau-spx.ipynb : Gold vs. SP500 returns, XAU vs. SPX  
+##### fred-xau-spx.ipynb : Gold vs. SP500 returns, XAU vs. SPX  
 
 Long-term comparison of two asset classes: we boxplot their return
 distribution and also compute geometric mean returns. Correlation between the
@@ -187,7 +194,7 @@ ounces per equity share. Analytically short equities vs. long gold is
 favorable for an investor with log utility, but hardly profitable over the
 long haul.   
 
-#### fred-xau-tips.ipynb : Gold and Treasury TIPS, their daily relationship  
+##### fred-xau-tips.ipynb : Gold and Treasury TIPS, their daily relationship  
 
 Using monthly data we previously found that there is a strong correlation
 between gold and real rates, so we investigate this on a finer time scale. We
