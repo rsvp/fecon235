@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+#              bash 4.3.11(1)     Linux Ubuntu 14.04.1        Date : 2015-08-03
+#
+# _______________|  update-yi_quandl_api : get Quandl.com API data module.
+#
+#           Usage:  $ ./update-yi_quandl_api
+#                   # ^MUST execute from bin due to relative dir target.
+#
+#    Dependencies:  curl [ Used to download the following Python script: ]
+#                   Quandl.py ( https://github.com/quandl/quandl-python )
+#
+#             man:  see yi_quandl.py for implementation details.
+#                   #
+#                   #  Note: use of API key will generate a token file
+#                   #  called authtoken.p which git should ignore.
+#                   #  See setQuandlToken function in yi_quandl module.
+
+#  CHANGE LOG  ORIGIN: https://git.io/fecon235
+#  2015-08-03  This script retrieves the latest dependent code.
+
+
+#           _____ PREAMBLE_v3: settings, variables, and error handling.
+#
+LC_ALL=POSIX
+#      locale means "ASCII, US English, no special rules, 
+#      output per ISO and RFC standards." 
+#      Esp. use ASCII encoding for glob and sorting characters. 
+shopt -s   extglob
+#     ^set extended glob for pattern matching.
+shopt -s   failglob
+#         ^failed pattern matching signals error.
+set -e
+#   ^errors checked: immediate exit if a command has non-zero status. 
+set -o pipefail
+#   ^exit status on fail within pipe, not (default) last command.
+set -u
+#   ^unassigned variables shall be errors.
+#    Example of default VARIABLE ASSIGNMENT:  arg1=${1:-'foo'}
+
+topdir=${1:-'nb'}
+fname=${2:-'yi_quandl_api.py'}
+
+
+program=${0##*/}   #  similar to using basename
+memf=$( mktemp /dev/shm/88_${program}_tmp.XXXXXXXXXX )
+errf=$( mktemp /dev/shm/88_${program}_tmp.XXXXXXXXXX )
+
+
+cleanup () {
+     #  Delete temporary files, then optionally exit given status.
+     local status=${1:-'0'}
+     rm -f  $memf $errf
+     [ $status = '-1' ] ||  exit $status      #  thus -1 prevents exit.
+} #--------------------------------------------------------------------
+warn () {
+     #  Message with basename to stderr.          Usage: warn "message"
+     echo -e "\n !!  ${program}: $1 "  >&2
+} #--------------------------------------------------------------------
+die () {
+     #  Exit with status of most recent command or custom status, after
+     #  cleanup and warn.      Usage: command || die "message" [status]
+     local status=${2:-"$?"}
+     cat $errf >&2
+     cleanup -1  &&   warn "$1"  &&  exit $status
+} #--------------------------------------------------------------------
+trap "die 'SIG disruption: but finish needs about one minute.' 114" 1 2 3 15
+#    Cleanup after INTERRUPT: 1=SIGHUP, 2=SIGINT, 3=SIGQUIT, 15=SIGTERM
+trap "die 'unhandled ERR via trap, but cleanup finished.' 116" ERR
+#    Cleanup after command failure unless it's part of a test clause.
+#
+# _______________     ::  BEGIN  Script ::::::::::::::::::::::::::::::::::::::::
+
+
+cd ../$topdir  ||  die "cannot find $topdir directory" 113
+
+
+#  DOWNLOAD LATEST API VERSION:
+source='https://raw.githubusercontent.com/quandl/quandl-python/master/Quandl/Quandl.py'
+curl -L --silent $source  >  $fname  \
+     ||  die "curl unable to retrieve $program source code."  115
+chmod 755 $fname
+
+
+echo " ::  Successfully installed Quandl.py API as $fname in $topdir directory."
+
+
+cleanup    #  Instead of: trap arg EXIT
+# _______________ EOS ::  END of Script ::::::::::::::::::::::::::::::::::::::::
+
+#  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=sh :
