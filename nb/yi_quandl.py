@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-02-05
+#  Python Module for import                           Date : 2015-08-26
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,6 +190,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-08-26  Add silver futures symbol and w4cotr_metals.
 2015-08-03  First version patterned after yi_fred.py
 '''
 
@@ -234,12 +235,14 @@ f4gbp         = 'BP'             #  CME
 f4jpy         = 'JY'             #  CME
 f4cad         = 'CD'             #  CME
 f4xau         = 'GC'             #  COMEX
+f4xag         = 'SI'             #  COMEX
 f4oilwti      = 'CL'             #  NYMEX
 
 
 
 #      __________ WEEKLY quandlcode:
 w4cotr_xau      = 'w4cotr_xau'      #  CFTC COTR Manager position: Gold
+w4cotr_metals   = 'w4cotr_metals'   #  CFTC COTR Manager position: Gold, Silver
 w4cotr_usd      = 'w4cotr_usd'      #  CFTC COTR Manager position: US Dollar
 w4cotr_bonds    = 'w4cotr_bonds'    #  CFTC COTR Manager position: Bonds
 w4cotr_equities = 'w4cotr_equities' #  CFTC COTR Manager position: Equities
@@ -311,6 +314,17 @@ def cotr_position_usd():
      return tools.todf( 1 - ((pos1 + pos2) / 2.0) )
 
 
+def cotr_position_metals():
+     '''Market position for precious metals from COTR of GC and SI.'''
+     pos1 = cotr_position( 'GC' )
+     #                      Gold Comex
+     pos2 = cotr_position( 'SI' )
+     #                      Silver Comex
+     #
+     #                  _Average reading between two contracts.
+     return tools.todf( (pos1 + pos2) / 2.0 )
+
+
 def cotr_position_bonds():
      '''Market position for bonds from COTR of TY and ED.'''
      pos1 = cotr_position( 'TY' )
@@ -344,6 +358,8 @@ def getqdl( quandlcode, maxi=87654321 ):
      #    We can SYNTHESIZE a quandlcode by use of string equivalent arg:
      if   quandlcode == w4cotr_xau:
           df = cotr_position( f4xau )
+     elif quandlcode == w4cotr_metals:
+          df = cotr_position_metals()
      elif quandlcode == w4cotr_usd:
           df = cotr_position_usd()
      elif quandlcode == w4cotr_bonds:
