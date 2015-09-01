@@ -16,20 +16,27 @@ Selected topics are treated for in-depth studies.
 
 ### What is this repository for? ###
 
-    - Source data, both historical and the most current. 
-    - Easy data munging, e.g. resampling and alignment of time series.
-    - Exploration of data using graphical packages. 
-    - Analysis using techniques from econometrics and machine learning.
-    - Presentation of mathematical results (in LaTex).
-    - Reproducible research which is collaborative and publicly accessible.
+- Source data, both historical and the most current. 
 
-* Database: currently our main source is [FRED], the U.S. Federal Reserve 
-  Economic Data bank which is accessed directly online using our programs. 
+- Easy data munging, e.g. resampling and alignment of time series.
 
-* Models: we emphasize original research where the baseline comparison 
-  is to *Ferbus*, the model used internally by the Federal Reserve Bank.
-  Accuracy of out-of-sample forecasts takes precedence over traditional 
-  measures of model fit.
+- Exploration of data using graphical packages. 
+
+- Analysis using techniques from econometrics and machine learning.
+
+- Presentation of mathematical results (in LaTex) and models.
+
+- Reproducible research which is collaborative and publicly accessible.
+
+**Database:** currently our main source is [FRED], the U.S. Federal Reserve
+Economic Data bank which is accessed directly online using our programs. 
+Some specialized data can be directly retrieved using our [Quandl] API 
+module. 
+
+**Models:** we emphasize original research where the baseline comparison is to
+*Ferbus*, the model used internally by the Federal Reserve Bank.  Accuracy of
+out-of-sample forecasts takes precedence over traditional measures of model
+fit.
 
 ### How do I get set up? ###
 
@@ -64,7 +71,7 @@ also seek out the latest available data to bring
 the research up-to-date.   
 
 Some basic commands, 
-e.g. getfred() and plotfred(), will do a lot of the heavy lifting 
+e.g. get() and plot(), will do a lot of the heavy lifting 
 to get you started immediately. 
 They are designed for scripts (not necessarily within IPython notebooks) 
 and any Python IDE interactive development environment. 
@@ -75,13 +82,17 @@ Ask your questions on Twitter by adding the hashtag *#fecon235*.
 ### Useful modules ###
 
 These standalone Python modules are frequently imported 
-into our IPython notebooks:
+into our Python scripts:
 
 * yi_1tools.py : essential utility functions.
 * yi_plot.py : essential plot functions.
 * yi_timeseries : essential time series functions.
+* yi_simulation : useful functions for simulation studies.
 * yi_fred.py : Access FRED with pandas for plots and analysis.
+* yi_quandl.py : Access Quandl with pandas for plots and analysis.
 
+For IPython notebooks and interactive sesssions, 
+only one generalized module **fecon** needs to be imported. 
 The commands are very easy to learn and customize, 
 producing relatively sophisticated results quickly 
 without detailed knowledge of the underlying numerical packages. 
@@ -109,6 +120,21 @@ Repo [admin]
 
 
 ### Partial contents of nb directory ###
+
+##### qdl-COTR-positions.ipynb : Use pandas to read CFTC COTR
+
+Commitment of Traders Report (COTR) is useful to extract market 
+positions in precious metals, US dollar, interest rates, and 
+equities markets. We develop our own scale-free measures to 
+gauge market sentiment across time which can 
+diverge from price directionality at interesting points.
+
+##### SEC-13F-parse.ipynb : Use pandas to read 13F filings from SEC
+
+Sort percentage allocation to long equities. 
+Caveats should be noted for portfolio management. 
+Module yi_secform.py, derived from this notebook, 
+easily sums up 13F filings in one function.
 
 ##### fred-debt-pop.ipynb : Growth of Federal debt, its burden on the US population  
 
@@ -204,13 +230,14 @@ Holt-Winters method.
 
 - - - -
 
-Revision date : 2015-08-01
+Revision date : 2015-08-31
 
 
 [admin]:      https://rsvp.github.com          "Adriano rsvp.github.com"
 [wiki]:       https://github.com/rsvp/fecon235/wiki  "Wiki for fecon235"
 [Anaconda]:   http://continuum.io/downloads   "Anaconda Python distribution"
 [FRED]: http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
+[Quandl]:       https://www.quandl.com  "Quandl, financial and economic data"
 [Github flow]:  http://scottchacon.com/2011/08/31/github-flow.html "Github Flow"
 [intro page]:   http://rsvp.github.com/pg/fecon235-intro.html "fecon235 Introduction"
 [pull request]: https://help.github.com/articles/using-pull-requests/ "Pull request"
