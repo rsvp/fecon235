@@ -1,11 +1,35 @@
-## CHANGE LOG
+## CHANGE LOG 
 
 *Each file in this project generally has a detailed change log contained 
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
 
-###  2014-11-08 Version 1.0.0
+### 2015-08-31 v2.15.0831 
 
-Included modules have passed tests. Imperative that pandas > 0.13 with recommended dependencies on numpy.
+All fred- notebooks are stable. 
+Henceforth, they will be automatically converted 
+from IPython notebook format v3 to v4.
+
+Add module yi_secform.py, derived from nb/SEC-13F-parse.ipynb, 
+so that pandas can read 13F filings from SEC and easily 
+sort portfolio allocations.
+
+MAJOR change: During August 2015 we added Quandl API and module to get data.
+Module yi_quandl.py is our wrapper over the API yi_quandl_api.py 
+for creating easily accessible synthetic series. 
+
+Add qdl-COTR-positions.ipynb to demonstrate reading CFTC 
+Commitment of Traders Reports, retrieved using our yi_quandl module.
+
+MAJOR change: new module **fecon** conveniently unifies necessary 
+yi modules to especially simplify interactive commands.
+
+Recommend pandas > 0.15 
+
+
+### 2014-11-08 v1.0.0
+
+Included modules have passed tests. Imperative that pandas > 0.13 
+with recommended dependencies on numpy.
  
