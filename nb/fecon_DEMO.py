@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-09-02
+#  Python Module for import                           Date : 2015-09-04
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon_DEMO : Test, while demonstrating, the fecon module.
@@ -22,7 +22,8 @@ Reference:
 NOSETESTS: http://nose.readthedocs.org/en/latest/usage.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
-2015-09-02  First version.
+2015-09-04  Add demo for forecast().
+2015-09-02  First version for get().
 '''
 
 
@@ -61,6 +62,27 @@ def demo_GET_w4cotr_metals_from_QUANDL():
     Date                
     2015-07-21  0.458814
     2015-07-28  0.461077
+    '''
+    pass
+
+
+
+def demo_FORECAST_m4xau_from_FRED():
+    '''Test forecast() in fecon which uses Holt-Winters method.
+       We use monthly gold data, and type forecast as integers 
+       to avoid doctest with floats (almost equal problem).
+
+    >>> xau = get( m4xau )
+    >>> xaufc = forecast( xau['2005-07-28':'2015-07-28'], h=6 )
+    >>> xaufc.astype('int')
+       Forecast
+    0      1144
+    1      1161
+    2      1154
+    3      1146
+    4      1138
+    5      1130
+    6      1122
     '''
     pass
 
