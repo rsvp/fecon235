@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+#              bash 4.3.11(1)     Linux Ubuntu 14.04.1        Date : 2015-09-04
+#
+# _______________|  smell : run nosetests for fecon235.
+#
+#           Usage:  $ ./smell  [optional: file with path from project top]
+#                   #  ^ ASSUMES execution from the tests directory.
+#
+#    Dependencies:  nosetests (Python nose)
+#
+#       Reference: http://nose.readthedocs.org/en/latest/usage.html
+#
+#  CHANGE LOG  
+#  2015-09-04  Fix bug when nosetests generates exit 1.
+#                 Generate our own exit code 114 when tests fail.
+#  2015-09-03  First version.
+
+
+#           _____ PREAMBLE_v3: settings, variables, and error handling.
+#
+LC_ALL=POSIX
+#      locale means "ASCII, US English, no special rules, 
+#      output per ISO and RFC standards." 
+#      Esp. use ASCII encoding for glob and sorting characters. 
+shopt -s   extglob
+#     ^set extended glob for pattern matching.
+shopt -s   failglob
+#         ^failed pattern matching signals error.
+set -e
+#   ^errors checked: immediate exit if a command has non-zero status. 
+set -o pipefail
+#   ^exit status on fail within pipe, not (default) last command.
+set -u
+#   ^unassigned variables shall be errors.
+#    Example of default VARIABLE ASSIGNMENT:  arg1=${1:-'foo'}
+
+arg1=${1:-''}
+
+
+program=${0##*/}   #  similar to using basename
+memf=$( mktemp /dev/shm/88_${program}_tmp.XXXXXXXXXX )
+errf=$( mktemp /dev/shm/88_${program}_tmp.XXXXXXXXXX )
+
+
+cleanup () {
+     #  Delete temporary files, then optionally exit given status.
+     local status=${1:-'0'}
+     rm -f $memf $errf
+     [ $status = '-1' ] ||  exit $status      #  thus -1 prevents exit.
+} #--------------------------------------------------------------------
+warn () {
+     #  Message with basename to stderr.          Usage: warn "message"
+     echo -e "\n !!  ${program}: $1 "  >&2
+} #--------------------------------------------------------------------
+die () {
+     #  Exit with status of most recent command or custom status, after
+     #  cleanup and warn.      Usage: command || die "message" [status]
+     local status=${2:-"$?"}
+     cat $errf >&2
+     cleanup -1  &&   warn "$1"  &&  exit $status
+} #--------------------------------------------------------------------
+trap "die 'SIG disruption, but cleanup finished.' 114" 1 2 3 15
+#    Cleanup after INTERRUPT: 1=SIGHUP, 2=SIGINT, 3=SIGQUIT, 15=SIGTERM
+trap "die 'unhandled ERR via trap, but cleanup finished.' 116" ERR
+#    Cleanup after command failure unless it's part of a test clause.
+#
+# _______________     ::  BEGIN  Script ::::::::::::::::::::::::::::::::::::::::
+
+
+logf='tests/smell-tmp.log'
+SECONDS=0
+path="$(pwd)"
+dir="${path##*/}"
+
+
+instruct () {
+     echo " !!  Please go to the tests directory, "
+     echo " !!  and then execute this program,  ./$program "
+}
+
+
+
+if [ "$dir" = 'tests' ] ; then
+     cd ..
+     #  ^^ Now at PROJECT TOP DIRECTORY.
+     warn "STAND-BY, testing may take some time..."
+     #
+     nosetests --with-doctest --doctest-tests $arg1 > $memf  2>&1 \
+          ||   true
+     #         Use options, per below, instead of config file.
+     #         nosetests outputs to stderr!
+     #         nosetests generate exit 1 if a test fails, 
+     #            so || will ignore that for now, but exit 114 later.
+     timed=$SECONDS
+     less  $memf
+     #     ^page log, else possibly too many error messages.
+     echo " ::  $program took $timed SECONDS."     >> $memf
+     cp    $memf  $logf
+     echo
+     echo " ::  $program took $timed SECONDS, results at:  $logf "
+else
+     instruct > $errf
+     die "Current directory $dir yields incorrect relative path." 113
+fi
+
+
+#  FINALLY, generate our own exit code if some test failed:
+grep '^FAILED' $memf > /dev/null  &&  die "Found FAILED test(s)." 114
+
+
+cleanup    #  Instead of: trap arg EXIT
+# _______________ EOS ::  END of Script ::::::::::::::::::::::::::::::::::::::::
+
+
+#      __________ NOTES on nose with doctest  [ARCHIVE]
+#
+#  nose outputs to stderr, so e.g. to page:
+#  
+#      $ nosetests --with-doctest --doctest-tests  2>&1  |  more
+#  
+#  $ nosetests --plugins
+#   
+#  Plugin doctest
+#     score: 100
+#     Activate doctest plugin to find and run doctests in non-test
+#     modules.
+#   
+#     Options:
+#     --with-doctest
+#       Enable plugin Doctest:  Activate doctest plugin to find and run
+#       doctests in non-test modules.  [NOSE_WITH_DOCTEST]
+#     --doctest-tests
+#       Also look for doctests in test modules. Note that classes, methods
+#       and functions should have either doctests or non-doctest tests,
+#       not both. [NOSE_DOCTEST_TESTS]
+#     --doctest-extension
+#       Also look for doctests in files with this extension
+#       [NOSE_DOCTEST_EXTENSION]
+#     --doctest-result-variable
+#       Change the variable name set to the result of the last interpreter
+#       command from the default '_'. Can be used to avoid conflicts with
+#       the _() function used for text translation.
+#       [NOSE_DOCTEST_RESULT_VAR]
+#     --doctest-fixtures
+#       Find fixtures for a doctest file in module with this name appended
+#       to the base name of the doctest file
+#     --doctest-options
+#       Specify options to pass to doctest. Eg.
+#       '+ELLIPSIS,+NORMALIZE_WHITESPACE'
+
+
+#  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=sh :
