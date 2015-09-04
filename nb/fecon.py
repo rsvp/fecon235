@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-08-31
+#  Python Module for import                           Date : 2015-09-03
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon : gathers yi_* modules for fecon235 project.
@@ -9,6 +9,7 @@ _______________|  fecon : gathers yi_* modules for fecon235 project.
 - Detailed code development does not belong here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-09-03  Exception handling.
 2015-08-31  First version unifies some commands.
 '''
 
@@ -26,33 +27,42 @@ from yi_quandl import *
 
 
 def get( code ):
-     '''Unifies getfred and getqdl for data retrieval.'''
-     try:
-          df = getfred( code )
-     except:
-          df = getqdl(  code )
-     return df
+    '''Unifies getfred and getqdl for data retrieval.'''
+    try:
+        df = getfred( code )
+    except:
+        try:
+            df = getqdl(  code )
+        except:
+            raise ValueError('INVALID symbol string or code for fecon.get()')
+    return df
 
 
 def plot( data, title='tmp', maxi=87654321 ):
-     '''Unifies plotfred and plotqdl for plotting data.'''
-     #  data could also be fredcode or quandlcode.
-     try:
-          plotfred( data, title, maxi )
-     except:
-          plotqdl(  data, title, maxi )
-     return
+    '''Unifies plotfred and plotqdl for plotting data.'''
+    #  data could also be fredcode or quandlcode.
+    try:
+        plotfred( data, title, maxi )
+    except:
+        try:
+            plotqdl(  data, title, maxi )
+        except:
+            raise ValueError('INVALID argument or data for fecon.plot()')
+    return
 
 
 def forecast( data, h=12 ):
-     '''Unifies holtfred and holtqdl for forecasting.'''
-     #  Using the defaults: alpha=ts.hw_alpha and beta=ts.hw_beta
-     #  data could also be fredcode or quandlcode.
-     try:
-          df = holtfred( data, h )
-     except:
-          df = holtqdl(  data, h )
-     return df
+    '''Unifies holtfred and holtqdl for forecasting.'''
+    #  Using the defaults: alpha=ts.hw_alpha and beta=ts.hw_beta
+    #  data could also be fredcode or quandlcode.
+    try:
+        df = holtfred( data, h )
+    except:
+        try:
+            df = holtqdl(  data, h )
+        except:
+            raise ValueError('INVALID argument or data for fecon.forecast()')
+    return df
 
 
 
