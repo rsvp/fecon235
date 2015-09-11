@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-08-26
+#  Python Module for import                           Date : 2015-09-11
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,6 +190,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-09-11  Add getfut to quickly retrieve futures price data.
 2015-08-26  Add silver futures symbol and w4cotr_metals.
 2015-08-03  First version patterned after yi_fred.py
 '''
@@ -224,19 +225,21 @@ y      = 'Y'                     #  GENERIC FIRST COLUMN name herein.
 
 
 #      __________ FUTURES quandlcode:
-f4treasury10  = 'TY'             #  CBOT
-f4fedfunds    = 'FF'             #  CBOT
-f4eurodollars = 'ED'             #  CME
-f4spx         = 'SP'             #  CME
-f4spmini      = 'ES'             #  CME
-f4eur         = 'EC'             #  CME
-f4chf         = 'SF'             #  CME
-f4gbp         = 'BP'             #  CME
-f4jpy         = 'JY'             #  CME
-f4cad         = 'CD'             #  CME
-f4xau         = 'GC'             #  COMEX
-f4xag         = 'SI'             #  COMEX
-f4oilwti      = 'CL'             #  NYMEX
+#                 Related to fut_dict and fut_decode() for code slang.
+#
+f4fed         = 'FF'      #  CME/CBOT Fed Funds
+f4libor       = 'ED'      #  CME Eurodollars
+f4bond10      = 'TY'      #  CME/CBOT 10-y Treasury
+f4spx         = 'SP'      #  CME S&P 500
+f4spes        = 'ES'      #  CME E-minis
+f4cad         = 'CD'      #  CME
+f4gbp         = 'BP'      #  CME
+f4eur         = 'EC'      #  CME
+f4chf         = 'SF'      #  CME
+f4jpy         = 'JY'      #  CME
+f4xau         = 'GC'      #  CME/COMEX Gold
+f4xag         = 'SI'      #  CME/COMEX Silver
+f4wti         = 'CL'      #  CME/NYMEX Oil
 
 
 
@@ -252,7 +255,7 @@ w4cotr_equities = 'w4cotr_equities' #  CFTC COTR Manager position: Equities
 #       __________ ALIASES
 
 quandl = qdlapi.get
-#              ^MAIN workhorse to RETREIVE data using QUANDL API.
+#              ^MAIN workhorse to RETREIVE data using QUANDL API.  <= !!
 #                    Note: getqdl is our convenience wrapper.
 
 
@@ -348,14 +351,116 @@ def cotr_position_equities():
 
 
 
+#   DICTIONARY to translate our futures slang to vendor code:
+fut_dict = {
+    'f4fed':      'CME/FF',
+    'f4libor':    'CME/ED',
+    'f4bond10':   'CME/TY',
+    'f4spx':      'CME/SP',
+    'f4spes':     'CME/ES',
+    'f4cad':      'CME/CD',
+    'f4gbp':      'CME/BP',
+    'f4chf':      'CME/SF',
+    'f4eur':      'CME/EC',
+    'f4jpy':      'CME/JY',
+    'f4xau':      'CME/GC',
+    'f4xag':      'CME/SI',
+    'f4wti':      'CME/CL'}
+
+#  Gotcha: dataframe columns are not consistent across exchanges.
+#
+#          Chicago Mercantile Exchange     CME    [for NYMEX and COMEX]
+#          Intercontinental Exchange       ICE
+#          Eurex                           EUREX
+#          London                          LIFFE
+#          Singapore Exchange              SGX
+#          Shanghai Futures Exchange       SHFE
+#          Tokyo Futures Exchange          TFX
+
+
+def fut_decode( slang ):
+    '''Validate and translate slang string into vendor futures code.
+
+    Quandl uses format: {EXCHANGE}/{CODE}{MONTH}{YEAR}
+         {EXCHANGE} is the acronym for the futures exchange
+         {CODE} is the futures ticker code
+         {MONTH} is the single-letter month code
+         {YEAR} is a 4-digit year
+    So for COMEX Gold Dec 2015: 'CME/GCZ2015' [note: CAPITALIZATION]
+
+    !!  Our short slang must be in all lower case, e.g. 
+
+    >>> print fut_decode( 'f4xau15z' )
+    CME/GCZ2015
+    '''
+    if slang.isupper():
+        #  So if given argument is in all CAPS...
+        raise ValueError('Futures slang argument is invalid.')
+        #  The official code should yield all dataframe columns, 
+        #  whereas slang is intended for selecting just one column.
+        #  Thus NOT:  symbol = slang
+    else:
+        try:
+            #  Parse slang, lookup in dict, translate into symbol:
+            asset = slang[:-3].lower()
+            #                 ^if f4* variables are possibly involved.
+            year  = '20' + slang[-3:-1]
+            month = slang[-1].upper()
+            symbol = fut_dict[ asset ] + month + year
+        except:
+            raise ValueError('Futures slang argument is invalid.')
+    return symbol
+
+
+def getfut( slang, maxi=512, col='Settle' ):
+     '''slang string retrieves single column for one futures contract.
+
+     The string consists of a key from fut_dict concatenated with 
+     'yym' where yy is shorthand for year and m is the month symbol 
+     all in lower case, e.g. 'f4xau15z' for December 2015 Comex Gold.
+
+     Available col are: Open, High, Low, Last, Change, Settle,
+                        Volume, 'Open Interest'
+     '''
+     #  Other than Eurodollars, we should not need more than 512 days 
+     #  of data due to finite life of a futures contract.
+     #  2015-09-11  quandl default seems to be maxi around 380.
+     #
+     fut = quandl( fut_decode( slang ), rows=maxi )
+     #      return just a single column dataframe:
+     return tools.todf( fut[[ col ]] )
+
+
+#  CONTINUOUS FUTURES CONTRACTS are also available:
+#  
+#  Quandl proides continuous (aka concatenated or chained) futures contracts from
+#  two sources: a free inhouse source CHRIS and a paid premium source Stevens SCF. 
+#  Quality of SCF is substantially higher than that of CHRIS; the latter has
+#  spikes, nulls, missing rows, jumps in the data, and inconsistent OHLC values;
+#  the former is audited to be accurate, consistent and error-free.
+#  
+#  The format for continuous contracts from source CHRIS is
+#       CHRIS/{EXCHANGE}_{CODE}{NUMBER}
+#  where {NUMBER} is the "depth" associated with the chained contract. For
+#  instance, the front month contract has depth 1, the second month contract has
+#  depth 2, and so on.
+#  
+#  The format for continuous contracts from source Stevens SCF is
+#       SCF/{EXCHANGE}_{CODE}{NUMBER}_{RULE}
+#  where {NUMBER} is the "depth" associated with the chained contract, and {RULE}
+#  specifies the roll-date rule and price adjustment if any. SCF offers 14
+#  different combinations of roll date and price adjustment.
+
+
 
 def getqdl( quandlcode, maxi=87654321 ):
-     '''Retrieve from Quandl in dataframe format, INCL. SPECIAL CASES.'''
-     #    maxi is just arbitrarily large as default, 
-     #         useful to limit data to last maxi rows, 
-     #         e.g. maxi=1 for most recent row only,
-     #         but NOT used in all cases below.
-     #    We can SYNTHESIZE a quandlcode by use of string equivalent arg:
+     '''Retrieve from Quandl in dataframe format, INCL. SPECIAL CASES.
+            maxi is just arbitrarily large as default, 
+                 useful to limit data to last maxi rows, 
+                 e.g. maxi=1 for most recent row only,
+                 but NOT used in all cases below.
+     We can SYNTHESIZE a quandlcode by use of string equivalent arg.
+     '''
      if   quandlcode == w4cotr_xau:
           df = cotr_position( f4xau )
      elif quandlcode == w4cotr_metals:
@@ -366,6 +471,9 @@ def getqdl( quandlcode, maxi=87654321 ):
           df = cotr_position_bonds()
      elif quandlcode == w4cotr_equities:
           df = cotr_position_equities()
+
+     elif quandlcode[:2] == 'f4':
+          df = getfut( quandlcode )
 
      else:
           df = quandl( quandlcode, rows=maxi )
