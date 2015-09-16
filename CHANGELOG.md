@@ -4,6 +4,15 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
+### 2015-09-15 
+
+Futures prices can be retrieved using our yi_quandl module. 
+Data for stocks, ETFs, and mutual funds comes directly from Yahoo Finance, 
+and falls back on Google Finance: see yi_stocks module.
+All data is easily retrieved using fecon.get() and our internal slang.
+
+As our own API stabilizes, `tests` will cover more units. 
+Currently we rely on Python nose and doctest.
 
 ### 2015-08-31 v2.15.0831 
 

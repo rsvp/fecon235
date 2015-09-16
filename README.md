@@ -31,7 +31,8 @@ Selected topics are treated for in-depth studies.
 **Database:** currently our main source is [FRED], the U.S. Federal Reserve
 Economic Data bank which is accessed directly online using our programs. 
 Some specialized data can be directly retrieved using our [Quandl] API 
-module. 
+module, for example, futures prices. Data for stocks, ETFs, and mutual 
+funds comes directly from Yahoo Finance, and falls back on Google Finance.
 
 **Models:** we emphasize original research where the baseline comparison is to
 *Ferbus*, the model used internally by the Federal Reserve Bank.  Accuracy of
@@ -71,7 +72,7 @@ also seek out the latest available data to bring
 the research up-to-date.   
 
 Some basic commands, 
-e.g. get() and plot(), will do a lot of the heavy lifting 
+e.g. get() and plot() in the fecon module, will do a lot of the heavy lifting 
 to get you started immediately. 
 They are designed for scripts (not necessarily within IPython notebooks) 
 and any Python IDE interactive development environment. 
