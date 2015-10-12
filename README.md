@@ -87,10 +87,11 @@ into our Python scripts:
 
 * yi_1tools.py : essential utility functions.
 * yi_plot.py : essential plot functions.
-* yi_timeseries : essential time series functions.
+* yi_timeseries : useful time series functions.
 * yi_simulation : useful functions for simulation studies.
 * yi_fred.py : Access FRED with pandas for plots and analysis.
 * yi_quandl.py : Access Quandl with pandas for plots and analysis.
+* yi_stocks.py : Access stocks and funds with pandas for plots and analysis.
 
 For IPython notebooks and interactive sesssions, 
 only one generalized module **fecon** needs to be imported. 
@@ -121,6 +122,14 @@ Repo [admin]
 
 
 ### Partial contents of nb directory ###
+
+##### qdl-xau-contango.ipynb : Use pandas to analyze gold contango
+
+The *London Bullion Market Association* ceased publishing daily data 
+on their *Gold Forward Offered Rate* (**GOFO**), as of 30 January 2015 -- 
+so we develop an observable proxy called *tango* using gold futures 
+and LIBOR. This supply/demand indicator is then compared against 
+spot prices. 
 
 ##### qdl-COTR-positions.ipynb : Use pandas to read CFTC COTR
 
