@@ -123,6 +123,16 @@ Repo [admin]
 
 ### Partial contents of nb directory ###
 
+##### qdl-libor-fed-funds.ipynb : Use pandas to analyze short-term rates
+
+We examine the spread between two interest rates: LIBOR and Fed Funds. 
+The former has a much greater depth in the futures market in terms of 
+volume and maturity horizon, implying richer information content. 
+Modeling their relationship, we construct a synthetic forward Fed Funds 
+rate, useful in gauging market sentiment regarding Fed policy. 
+Estimate is given for the change in Fed Funds rate over the 
+next 12 months.
+
 ##### qdl-xau-contango.ipynb : Use pandas to analyze gold contango
 
 The *London Bullion Market Association* ceased publishing daily data 
