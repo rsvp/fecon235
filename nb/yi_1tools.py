@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2014-12-09
+#  Python Module for import                           Date : 2015-11-12
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -11,6 +11,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-11-12  Add dif for lagged difference.
 2014-12-09  Clarify comments, esp. regressformula.
 2014-10-05  Note that paste for pandas < 0.14 will fail
                if column names are not unique 
@@ -70,6 +71,12 @@ def tailvalue( df, pos=0, row=1 ):
      return df.tail(row).values.tolist()[0][pos]
      #      values to array to list within list, then the element.
      #  Note how the name of a column is not required.
+
+
+def dif( dfx, freq=1 ):
+     '''Lagged difference for pandas series.'''
+     #  Thus freq=1 gives so-called "first difference."
+     return dfx.diff( periods=freq )
 
 
 def pcent( dfx, freq=1 ):
