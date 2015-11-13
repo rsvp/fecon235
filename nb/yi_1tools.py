@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-11-12
+#  Python Module for import                           Date : 2015-11-13
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -11,6 +11,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-11-13  Add stat for quick summary statistics with percentile arg.
 2015-11-12  Add dif for lagged difference.
 2014-12-09  Clarify comments, esp. regressformula.
 2014-10-05  Note that paste for pandas < 0.14 will fail
@@ -266,8 +267,18 @@ def stat2( dfy, dfx ):
      return
 
 
+def stat( dataframe, pctiles=[0.25, 0.50, 0.75] ):
+     '''QUICK summary statistics on given dataframe.'''
+     print dataframe.describe( percentiles=pctiles )
+     #  excludes NaN values. Percentiles can be customized, 
+     #  but 50% (median) cannot be suppressed even with [] as arg.
+     #  Also handles object dtypes like strings, see
+     #  http://pandas.pydata.org/pandas-docs/version/0.17.0/generated/pandas.DataFrame.describe.html
+     return
+
+
 def stats( dataframe ):
-     '''Statistics on given dataframe; correlations without regression.'''
+     '''VERBOSE statistics on given dataframe; CORRELATIONS without regression.'''
      print dataframe.describe()
      print
      print " ::  Index on min:"
