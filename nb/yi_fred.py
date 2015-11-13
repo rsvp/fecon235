@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-02-05
+#  Python Module for import                           Date : 2015-11-12
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-11-12  Add m4nfp for US Nonfarm Payroll workers.
 2015-02-05  Add m4unempfr for France unemployment.
 2014-10-17  Remedy wild import of functions from our modules.
 2014-10-15  Add d4gas via weekly DoE gasoline survey, $/gal w/tax NSA.
@@ -162,6 +163,7 @@ m4unemp   = 'UNRATE'     # Unemployment rate, SA monthly
 m4emppop  = 'EMRATIO'    # Civilian employment/population, percent SA monthly
 m4pop     = 'POP'        # Total US population in thousands, NSA monthly
 m4workers = 'm4workers'  # Total US working population in thousands, NSA monthly
+m4nfp     = 'PAYEMS'     # US Nonfarm Payroll workers  in thousands,  SA monthly
 m4debt    = 'm4debt'     # U.S. Federal debt in millions, NSA monthly synthetic
 
 m4defl    = 'm4defl'     # synthetic deflator, see getdeflator().
