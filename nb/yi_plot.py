@@ -1,13 +1,16 @@
-#  Python Module for import                           Date : 2014-12-13
+#  Python Module for import                           Date : 2015-11-19
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_plot.py : essential plot functions.
 
 References:
+- http://matplotlib.org/api/pyplot_api.html
+
 - Computational tools for pandas
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-11-19  Add scatter, scats, and scat for rainbow scatter plots.
 2014-12-13  Add plotn where index are not dates (cf. plotdf and plotfred).
 2014-08-08  Add dpi for saving image files.
 2014-08-06  For boxplot, remove y_time.yymmdd_t() as fid, 
@@ -16,9 +19,11 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 '''
 
 import matplotlib.pyplot as plt
+import matplotlib.cm as colormap
 import pandas as pd
+import yi_1tools
 
-dotsperinch = 140                 #  Resolution for plot.
+dotsperinch = 140                 #  DPI resolution for plot.
 
 
 def plotn( dataframe, title='tmp' ):
@@ -99,6 +104,78 @@ def boxplot( data, title='tmp', labels=[] ):
      fig.savefig( imgf, dpi=dotsperinch )
      print " ::  Finished: " + imgf
      return
+
+
+
+def scatter( dataframe, title='tmp', col=[0, 1] ):
+    '''Scatter plot for dataframe by zero-based column positions.'''
+    #  First in col is x-axis, second is y-axis.
+    #  Index itself is excluded from position numbering.
+    dataframe = dataframe.dropna()
+    #           ^esp. if it resulted from synthetic operations, 
+    #                 else timestamp of last point plotted may be wrong.
+    count  = len( dataframe )
+    countf = float( count )
+    colorseq = [ i / countf for i in range(count) ]
+    #  Default colorseq uses rainbow, same as MATLAB.
+    #  So sequentially: blue, green, yellow, red.
+    #  We could change colormap by cmap below.
+    fig, ax = plt.subplots()
+    plt.xticks( rotation='vertical' )
+    #       Show x labels vertically.
+    ax.scatter( dataframe.iloc[:, col[0]], dataframe.iloc[:, col[1]], 
+                c=colorseq )
+    #         First arg for x-axis, second for y-axis, then
+    #         c is for color sequence. For another type of
+    #         sequential color shading, we could append argument:
+    #             cmap=colormap.coolwarm
+    #             cmap=colormap.Spectral
+    #             cmap=colormap.viridis  [perceptual uniform]
+    #         but we leave cmap arg out since viridis will be the 
+    #         default soon: http://matplotlib.org/users/colormaps.html
+    colstr = '_' + str(col[0]) + '-' + str(col[1]) 
+    ax.set_title(title + colstr + ' / last ' + str(dataframe.index[-1]))  
+    #                                          ^index on last data point
+    plt.grid(True)
+    plt.show()
+
+    #  Now prepare the image FILE to save, 
+    #  but ONLY if the title is not the default
+    #  (since this operation can be very slow):
+    if title != 'tmp':
+         title = title.replace( ' ', '_' ) + colstr
+         imgf = 'scat-' + title + '.png' 
+         fig.set_size_inches(11.5, 8.5)
+         fig.savefig( imgf, dpi=dotsperinch )
+         print " ::  Finished: " + imgf
+    return
+
+
+
+def scats( dataframe, title='tmp' ):
+    '''All pair-wise scatter plots for dataframe.'''
+    #  Renaming title will result in file output.
+    ncol  = dataframe.shape[1]
+    #                ^number of columns
+    pairs = [ [i, j] for i in range(ncol) for j in range(ncol) if i < j ]
+    npairs = (ncol**2 - ncol) / 2
+    #  e.g. ncol==5  implies npairs==10
+    #       ncol==10 implies npairs==45
+    #       ncol==20 implies npairs==190
+    print " ::  Number of pair-wise plots: " + str(npairs)
+    for pair in pairs:
+        print " ::  Show column pair: " + str(pair)
+        scatter( dataframe, title, pair )
+        print "----------------------"
+    return
+
+
+
+def scat( dfx, dfy, title='tmp', col=[0, 1] ):
+    '''Scatter plot between two pasted dataframes.'''
+    #  Renaming title will result in file output.
+    scatter( yi_1tools.paste([ dfx, dfy ]), title, col ) 
+    return
 
 
 
