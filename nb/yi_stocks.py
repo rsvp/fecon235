@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-09-13
+#  Python Module for import                           Date : 2015-11-22
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_stocks.py : Access stock quotes.
@@ -15,6 +15,11 @@ premium pro vendors, we shall use the convenient pandas API.)
                   #               code is SYMBOL in lower case.
 
 
+   Dependencies:  pandas-datareader (Another package for pandas >= 0.17)
+                  #  Our code still works for older pandas 
+                  #  by importing deprecated pandas.io
+                  #  instead of pandas_datareader.
+
 REFERENCES:
 
 - pandas Remote Data Access (also for World Bank data)
@@ -27,6 +32,10 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-11-22  Test on python 2.7.10, IPython 4.0.0, pandas_datareader 0.2.0
+                As of pandas v0.17, pandas.io is deprecated and 
+                moved to a new package "pandas-datareader", 
+                       but imported as "pandas_datareader".
 2015-09-13  First version based on yi_quandl module.
 '''
 
