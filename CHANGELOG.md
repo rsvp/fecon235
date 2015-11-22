@@ -4,6 +4,28 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
+### 2015-11-22 Major v3.15.1122
+
+The major change to v3 marks our adoption of **Jupyter** 
+which has now become fully independent of IPython, 
+although it is still known as IPython v4.0 
+("*conda update ipython-notebook*" still works 
+as expected for existing Anaconda distributions). 
+Creating **R** notebooks is now very easy.
+
+pandas 0.17 now requires a new package 
+called *pandas-datareader* which was refactored from 
+deprecated pandas.io -- so please install that package 
+if you intend to use the yi_stocks module.
+
+The yi_plot module now includes sequential heatmap 
+scatter plotting. This is great for visualizing the 
+points in a scatter plot over time. Currently 
+the color sequence will go from blue to green to 
+red, like the MATLAB rainbow. Soon that we shall 
+switch that color map to viridis, which is perceptually uniform, 
+as it becomes the default in matplotlib.
+
 ### 2015-11-02 v2.15.1102
 
 Introduce two new notebooks:
