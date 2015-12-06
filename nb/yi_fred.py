@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-04
+#  Python Module for import                           Date : 2015-12-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,8 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-05  python3 compatible: use yi_0sys module and fix print.
+               Modify import style for urlopen.
 2015-12-04  Remedy deprecated convert_objects for pd > 0.16.
 2015-11-12  Add m4nfp for US Nonfarm Payroll workers.
 2015-02-05  Add m4unempfr for France unemployment.
@@ -72,8 +74,16 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2014-07-24  First version converted from fred-plot.ipynb
 '''
 
+from __future__ import print_function
+import yi_0sys as system
 
-import urllib2                    #  for downloading data.
+try:
+    from urllib.request import urlopen
+    #    ^for python3 
+except ImportError:
+    from urllib2 import urlopen
+    #    ^for python2 
+
 import matplotlib.pyplot as plt   #  for standard plots.
 import pandas as pd               #  for data munging.
 
@@ -288,9 +298,10 @@ def makeURL( fredcode ):
 def getdata_fred( fredcode ):
     '''Download CSV file from FRED and read it as pandas DATAFRAME.'''
     #  2014-08-11 former name "getdataframe".
-    fredcsv = urllib2.urlopen( makeURL(fredcode) )
+    #  2015-12-05 fredcsv = urllib2.urlopen( makeURL(fredcode) )
+    #                Change import style for python3 compatibility.
+    fredcsv = urlopen( makeURL(fredcode) )
     return readfile( fredcsv )
-
 
 
 #  The function to plot data looks routine, but in actuality specifying the
@@ -323,7 +334,7 @@ def plotdf( dataframe, title='tmp' ):
          imgf = 'plotdf-' + title + '.png' 
          fig.set_size_inches(11.5, 8.5)
          fig.savefig( imgf, dpi=dotsperinch )
-         print " ::  Finished: " + imgf
+         print(" ::  Finished: " + imgf)
     return
 
 
@@ -391,10 +402,10 @@ def getm4eurusd( fredcode=d4eurusd ):
           eurold = readfile( 'FRED-EURUSD_1971-2002-ARC.csv.gz', compress='gzip' )
           eurall = eurold.combine_first( eurnow )
           #               ^appends dataframe
-          print ' ::  EURUSD synthetically goes back monthly to 1971.'
+          print(' ::  EURUSD synthetically goes back monthly to 1971.')
      except:
           eurall = eurnow
-          print ' ::  EURUSD monthly without synthetic 1971-2002 archive.'
+          print(' ::  EURUSD monthly without synthetic 1971-2002 archive.')
      return eurall
 
 
@@ -408,10 +419,10 @@ def getspx( fredcode=d4spx ):
           spold = readfile( 'FRED-SP500_1957-2014-ARC.csv.gz', compress='gzip' )
           spall = spold.combine_first( spnow )
           #             ^appends dataframe
-          print ' ::  S&P 500 prepend successfully goes back to 1957.'
+          print(' ::  S&P 500 prepend successfully goes back to 1957.')
      except:
           spall = spnow
-          print ' ::  S&P 500 for last 10 years (1957-archive not found).'
+          print(' ::  S&P 500 for last 10 years (1957-archive not found).')
      return spall
 
 
@@ -429,10 +440,10 @@ def gethomepx( fredcode=m4homepx ):
           #                  Thus the mashup is justified.
           hpall = hpold.combine_first( hpnow )
           #             ^appends dataframe
-          print ' ::  Case-Shiller prepend successfully goes back to 1987.'
+          print(' ::  Case-Shiller prepend successfully goes back to 1987.')
      except:
           hpall = hpnow
-          print ' ::  Case-Shiller since 2000 (1987-archive not found).'
+          print(' ::  Case-Shiller since 2000 (1987-archive not found).')
      #  Case-Shiller is not dollar based, so we use:
      #  Median Sales Price of Existing Homes
      #  from the National Association of Realtors, fredcode: HOSMEDUSM052N
@@ -663,5 +674,4 @@ def holtfred( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
 
 
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
