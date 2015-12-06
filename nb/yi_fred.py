@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-11-12
+#  Python Module for import                           Date : 2015-12-04
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-04  Remedy deprecated convert_objects for pd > 0.16.
 2015-11-12  Add m4nfp for US Nonfarm Payroll workers.
 2015-02-05  Add m4unempfr for France unemployment.
 2014-10-17  Remedy wild import of functions from our modules.
@@ -256,8 +257,13 @@ def readfile( filename, separator=',', compress=None ):
     #        when data is missing or mistyped, e.g.
     #             dataframe['Y'] = dataframe['Y'].astype(float)
     #        will fail if the data is not in perfect condition.
-    dataframe['Y'] = dataframe['Y'].convert_objects(convert_numeric=True)
-    #                              ^non-convertibles become NaN
+    try:
+        dataframe['Y'] = pd.to_numeric(dataframe['Y'], errors='coerce')
+        #  'coerce' gives NaN if particular parsing is invalid.
+    except:
+        #  convert_objects deprecated, but courtesy for pd < 0.17:
+        dataframe['Y'] = dataframe['Y'].convert_objects(convert_numeric=True)
+        #                              ^non-convertibles become NaN
 
     #  FRED uses "." to indicate missing value.
     dataframe['Y'] = dataframe['Y'].fillna(method='pad')
