@@ -4,7 +4,22 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
-### 2015-11-22 Major v3.15.1122
+### 2015-12-16 v3.15.1216
+
+Module yi_0sys encourages cross-platform execution.
+This should help eliminate dependence on Linux 
+for most casual users.
+
+That module is also useful for python3 compatibility.
+Jupyter project is now calling python2 a "legacy."
+Code base is now clarified in README.md 
+
+Score for the Federal Reserve is computed 
+in fred-infl-unem-fed.ipynb
+leading to a discussion of the Phillips curve,
+i.e. the inflation vs unemployment relationship.
+
+### 2015-11-22 MAJOR v3.15.1122
 
 The major change to v3 marks our adoption of **Jupyter** 
 which has now become fully independent of IPython, 
