@@ -56,7 +56,10 @@ fit.
   due to dependency hell.
 
 * Dependencies: pandas > 0.15 is suggested. 
-  Python 2.7 is still preferred over the 3 series.
+  Python 2.7 is our base (but recent code should be python3 compatible,
+  though there are still some outstanding external issues upstream).
+  Our tests under the *Jupyter* fork of the IPython notebook 
+  has not encountered any problems thus far.
 
 ### Examples of code ###
 
@@ -71,6 +74,11 @@ If you locally executed that notebook, it would
 also seek out the latest available data to bring 
 the research up-to-date.   
 
+To see how we score the Federal Reserve's performance under its dual
+mandate for inflation and unemployment, see https://git.io/fed
+where the Phillips curve is discredited by constructing
+heat map scatter plots.
+
 Some basic commands, 
 e.g. get() and plot() in the fecon module, will do a lot of the heavy lifting 
 to get you started immediately. 
@@ -78,7 +86,6 @@ They are designed for scripts (not necessarily within IPython notebooks)
 and any Python IDE interactive development environment. 
 Our [wiki] should be gradually adding tutorials and FAQs 
 for any clarifications. 
-Ask your questions on Twitter by adding the hashtag *#fecon235*.
 
 ### Useful modules ###
 
@@ -93,7 +100,7 @@ into our Python scripts:
 * yi_quandl.py : Access Quandl with pandas for plots and analysis.
 * yi_stocks.py : Access stocks and funds with pandas for plots and analysis.
 
-For IPython notebooks and interactive sesssions, 
+However, for IPython notebooks and interactive sesssions, 
 only one generalized module **fecon** needs to be imported. 
 The commands are very easy to learn and customize, 
 producing relatively sophisticated results quickly 
@@ -205,6 +212,15 @@ with the 10-year BEI rate (break-even inflation). We also examine gold returns
 and its correlations to inflation. A combined inflation statistic *m4infl* is
 defined, and we make some forecasts.
 
+##### [fred-infl-unem-fed.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-infl-unem-fed.ipynb) : Score for the Fed's dual mandate
+
+We examine unemployment and inflation data to construct a time-series which
+gives a numerical score to the Fed's performance on its dual mandate. 
+The key is to find comparable units to measure performance and a suitable
+scalar measure to show deviation from the dual mandate. The visualization
+includes sequential scatter plots using color heat map, which can be 
+extended to studies of the Phillips curve.
+
 ##### fred-infl-velocity.ipynb : Inflation, money velocity, and interest rates  
 
 We examine and attempt to replicate the results of two interesting articles by
@@ -250,7 +266,7 @@ Holt-Winters method.
 
 - - - -
 
-Revision date : 2015-08-31
+Revision date : 2015-12-16
 
 
 [admin]:      https://rsvp.github.com          "Adriano rsvp.github.com"
