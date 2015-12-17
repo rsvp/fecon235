@@ -130,7 +130,7 @@ Repo [admin]
 
 ### Partial contents of nb directory ###
 
-##### qdl-libor-fed-funds.ipynb : Use pandas to analyze short-term rates
+##### [qdl-libor-fed-funds.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-libor-fed-funds.ipynb) : Use pandas to analyze short-term rates
 
 We examine the spread between two interest rates: LIBOR and Fed Funds. 
 The former has a much greater depth in the futures market in terms of 
@@ -138,9 +138,9 @@ volume and maturity horizon, implying richer information content.
 Modeling their relationship, we construct a synthetic forward Fed Funds 
 rate, useful in gauging market sentiment regarding Fed policy. 
 Estimate is given for the change in Fed Funds rate over the 
-next 12 months.
+next 12 months. Shortcut: https://git.io/fedfunds
 
-##### qdl-xau-contango.ipynb : Use pandas to analyze gold contango
+##### [qdl-xau-contango.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-xau-contango.ipynb) : Use pandas to analyze gold contango
 
 The *London Bullion Market Association* ceased publishing daily data 
 on their *Gold Forward Offered Rate* (**GOFO**), as of 30 January 2015 -- 
@@ -148,69 +148,70 @@ so we develop an observable proxy called *tango* using gold futures
 and LIBOR. This supply/demand indicator is then compared against 
 spot prices. 
 
-##### qdl-COTR-positions.ipynb : Use pandas to read CFTC COTR
+##### [qdl-COTR-positions.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-COTR-positions.ipynb) : Use pandas to read CFTC COTR
 
 Commitment of Traders Report (COTR) is useful to extract market 
 positions in precious metals, US dollar, interest rates, and 
 equities markets. We develop our own scale-free measures to 
 gauge market sentiment across time which can 
 diverge from price directionality at interesting points.
+Shortcut: https://git.io/cotr
 
-##### SEC-13F-parse.ipynb : Use pandas to read 13F filings from SEC
+##### [SEC-13F-parse.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/SEC-13F-parse.ipynb) : Use pandas to read 13F filings from SEC
 
 Sort percentage allocation to long equities. 
 Caveats should be noted for portfolio management. 
 Module yi_secform.py, derived from this notebook, 
 easily sums up 13F filings in one function.
 
-##### fred-debt-pop.ipynb : Growth of Federal debt, its burden on the US population  
+##### [fred-debt-pop.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-debt-pop.ipynb) : Growth of Federal debt, its burden on the US population  
 
 We examine government debt in real terms, and the current debt per capita.  
 
-##### fred-eur-fx.ipynb : Euro currency qua Foreign Exchange  
+##### [fred-eur-fx.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-eur-fx.ipynb) : Euro currency qua Foreign Exchange  
 
 We examine euro FX data from the Fed Reserve FRED database. Our synthetic
 time-series, which takes us far back as 1971, give additional perspective to
 observe the cross-rates against U.S. dollar and Japanese yen.  
 
-##### fred-eurozone.ipynb : Eurozone economics  
+##### [fred-eurozone.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-eurozone.ipynb) : Eurozone economics  
 
 We examine the usual suspects: unemployment, inflation, real interest rate,
 foreign exchange rate, comparative GDP. Appendix 1 concisely explains the
 *euro crisis* in a video.  
 
-##### fred-gdp-spx.ipynb : US real GDP vs. SPX: Holt-Winters time series forecasting  
+##### [fred-gdp-spx.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-gdp-spx.ipynb) : US real GDP vs. SPX: Holt-Winters time series forecasting  
 
 We examine the US gross domestic product's relationship to the US equity
 market, in real terms. Forecasts for both are demonstrated using Holt-Winters
 technique. We derive the most likely range for real GDP growth, and identify
 excessive equity valuations aside from inflationary pressures.   
 
-##### fred-gdp-wage.ipynb : U.S. GDP vs. Wage Income 
+##### [fred-gdp-wage.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-gdp-wage.ipynb) : U.S. GDP vs. Wage Income 
 
 For every wage dollar paid, what is GDP output?  In answering this question,
 we derive a model for GDP growth based on observations from wage growth.  
 
-##### fred-georeturns.ipynb : Geometric mean returns on FRED series  
+##### [fred-georeturns.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-georeturns.ipynb) : Geometric mean returns on FRED series
 
 We examine economic and financial time series where Holt-Winters is used to
 forecast one-year ahead. Daily data for bonds, equity, and gold is then
 analyzed. The focus is on geometric mean returns because they optimally
-express mean-variance under logarithmic utility.  
+express mean-variance under logarithmic utility. Shortcut: https://git.io/georet
 
-##### fred-housing.ipynb : Housing starts, home prices and affordibility  
+##### [fred-housing.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb) : Housing starts, home prices and affordibility  
 
 Greenspan in 2014 pointed out that there was never a recovery from recession
 without improvements in housing construction. Here we examine some relevant
 data, including the Case-Shiller series, and derive an insightful measure of
 the housing economy which takes affordibility into account.  
 
-##### fred-inflation.ipynb : Inflation data from FRED using pandas  
+##### [fred-inflation.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-inflation.ipynb) : Inflation data from FRED using pandas
 
 We examine inflation data: CPI and PCE, including the core versions, along
 with the 10-year BEI rate (break-even inflation). We also examine gold returns
 and its correlations to inflation. A combined inflation statistic *m4infl* is
-defined, and we make some forecasts.
+defined, and we make some forecasts. Shortcut: https://git.io/infl
 
 ##### [fred-infl-unem-fed.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-infl-unem-fed.ipynb) : Score for the Fed's dual mandate
 
@@ -221,31 +222,31 @@ scalar measure to show deviation from the dual mandate. The visualization
 includes sequential scatter plots using color heat map, which can be 
 extended to studies of the Phillips curve.
 
-##### fred-infl-velocity.ipynb : Inflation, money velocity, and interest rates  
+##### [fred-infl-velocity.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-infl-velocity.ipynb) : Inflation, money velocity, and interest rates  
 
 We examine and attempt to replicate the results of two interesting articles by
 Yi Wen and Maria Arias -- along the way, we take a detour and explore the
 connection between money velocity and bond rates. This will tie together their
 relationship with GDP and the money supply in a fitted equation.  
 
-##### fred-oil-brent-wti.ipynb : Oil: Brent vs. West Texas Intermediate (WTI)
+##### [fred-oil-brent-wti.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-oil-brent-wti.ipynb) : Oil: Brent vs. West Texas Intermediate (WTI)
 
 We examine the history of oil prices, and their spreads. Real prices give
 additional insight, along with some of the statistical characteristics used in
 financial economics.
 
-##### fred-usd-RTB-xau.ipynb : Real trade-weighted indexes for USD, gold, and SPX  
+##### [fred-usd-RTB-xau.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-usd-RTB-xau.ipynb) : Real trade-weighted indexes for USD, gold, and SPX  
 
 We examine the value of USD against a basket of 26 foreign currencies using
 real trade numbers. Trade statistics are released annually, however, the Fed
 uses international inflation data to adjust the weights monthly.  
 
-##### fred-wage-capital.ipynb : Real capital equivalence to wage-income 
+##### [fred-wage-capital.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-wage-capital.ipynb) : Real capital equivalence to wage-income 
 
 We determine how much real capital has been necessary for risk-free interest
 to match annual wage.  
 
-##### fred-xau-spx.ipynb : Gold vs. SP500 returns, XAU vs. SPX  
+##### [fred-xau-spx.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-xau-spx.ipynb) : Gold vs. SP500 returns, XAU vs. SPX  
 
 Long-term comparison of two asset classes: we boxplot their return
 distribution and also compute geometric mean returns. Correlation between the
@@ -256,7 +257,7 @@ ounces per equity share. Analytically short equities vs. long gold is
 favorable for an investor with log utility, but hardly profitable over the
 long haul.   
 
-##### fred-xau-tips.ipynb : Gold and Treasury TIPS, their daily relationship  
+##### [fred-xau-tips.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-xau-tips.ipynb) : Gold and Treasury TIPS, their daily relationship  
 
 Using monthly data we previously found that there is a strong correlation
 between gold and real rates, so we investigate this on a finer time scale. We
