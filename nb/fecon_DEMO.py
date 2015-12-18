@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-09-04
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon_DEMO : Test, while demonstrating, the fecon module.
@@ -9,7 +9,7 @@ Also, demonstration for the casual user is needed. Thus this module.
 
 This module has code snippets to be read, and then employed as follows:
 
-    $ nosetests --with-doctest   # Better from tests directory: ./nose
+    $ nosetests --with-doctest   # Better from our tests directory: ./smell
 
 We prefer doctest over the use of assert (with ==) in nose test functions 
 due to its ease and readability of ascertaining dataframe output.
@@ -22,11 +22,14 @@ Reference:
 NOSETESTS: http://nose.readthedocs.org/en/latest/usage.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-04  Add demo for forecast().
 2015-09-02  First version for get().
 '''
 
+from __future__ import absolute_import, print_function
 
+import yi_0sys as system
 from fecon import *
 #    ^in one line we get essential functions from the yi_* modules.
 
@@ -89,5 +92,4 @@ def demo_FORECAST_m4xau_from_FRED():
 
 
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
