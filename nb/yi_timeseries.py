@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-02-21
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_timeseries : essential time series functions.
@@ -23,6 +23,7 @@ See holt_winters_growth() vs. holt().
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2015-02-21  Add holtgrow and holtpc functions.
                Fix holtlevel to truly include alpha and beta.
 2014-09-21  Improve holt() by eliminating paste operation, 
@@ -32,15 +33,19 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2014-08-08  First version covers Holt-Winters linear model.
 '''
 
+from __future__ import absolute_import, print_function
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+
+import yi_0sys as system 
 from yi_1tools import todf
+
 
 #  Holt-Winters default parameters
 hw_alpha = 0.26      #  Based on robust optimization in Gelper 2007,
 hw_beta  = 0.19      #  for Gaussian, fat tail, and outlier data.
-
 
 
 def holt_winters_growth( y, alpha=hw_alpha, beta=hw_beta ):
@@ -64,8 +69,6 @@ def holt_winters_growth( y, alpha=hw_alpha, beta=hw_beta ):
           #              ^not ydelta !!
      return [ l, b ]
      #        ^^^^ these are arrays.
-
-
 
 
 def holt( data, alpha=hw_alpha, beta=hw_beta ):
@@ -131,6 +134,9 @@ def plotholt( holtdf, h=12 ):
      return
 
 
+if __name__ == "__main__":
+     system.endmodule()
+
 
 # ====================================== GRAVEYARD =============================
 
@@ -139,7 +145,3 @@ def plotholt( holtdf, h=12 ):
 #                     180, 164, 171, 206, 193, 207, 218, 229, 225, 204, 227, 
 #                     223, 242, 239, 266 ] )
 
-
-if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
