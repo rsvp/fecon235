@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-05
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: use absolute_import.
 2015-12-05  python3 compatible: use yi_0sys module and fix print.
                Modify import style for urlopen.
 2015-12-04  Remedy deprecated convert_objects for pd > 0.16.
@@ -74,8 +75,7 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2014-07-24  First version converted from fred-plot.ipynb
 '''
 
-from __future__ import print_function
-import yi_0sys as system
+from __future__ import absolute_import, print_function
 
 try:
     from urllib.request import urlopen
@@ -87,8 +87,9 @@ except ImportError:
 import matplotlib.pyplot as plt   #  for standard plots.
 import pandas as pd               #  for data munging.
 
-import yi_1tools as tools         #  Our tools.
-import yi_timeseries as ts        #  esp. Holt-Winters.
+import yi_0sys as system
+import yi_1tools as tools
+import yi_timeseries as ts 
 
 dotsperinch = 140                 #  Resolution for plot.
 
