@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-11-22
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_stocks.py : Access stock quotes.
@@ -32,6 +32,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2015-11-22  Test on python 2.7.10, IPython 4.0.0, pandas_datareader 0.2.0
                 As of pandas v0.17, pandas.io is deprecated and 
                 moved to a new package "pandas-datareader", 
@@ -39,10 +40,9 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2015-09-13  First version based on yi_quandl module.
 '''
 
+from __future__ import absolute_import, print_function
 
-import yi_1tools as tools         #  Our tools.
-import datetime                   #  pddata necessity.
-
+import datetime        #  pddata necessity.
 try:
     import pandas_datareader.data as pddata  
     #  for pandas 0.17 and above
@@ -56,14 +56,14 @@ except:
 #  to your pandas installation. The API for pandas-datareader v0.1.1 
 #  is the same as in pandas v0.16.1. (GH8961)
 
+import yi_0sys as system
+import yi_1tools as tools
 
 
 #      __________ Convenient ABBREVIATIONS for less typing of quotes:
-
 T      = 'T'                     #  Generic time index.
 Y      = 'Y'                     #  GENERIC FIRST COLUMN name herein.
 y      = 'Y'                     #  GENERIC FIRST COLUMN name herein.
-
 
 
 #      __________ Favorite ABBREVIATIONS as variables:
@@ -111,10 +111,10 @@ def stock_all( slang, maxi=3650 ):
      #        MAIN: use Yahoo Finance before Google Finance:
      try:
           df = pddata.DataReader( symbol, 'yahoo',  start, end )
-          print " ::  Retrieved from Yahoo Finance: " + symbol
+          print(" ::  Retrieved from Yahoo Finance: " + symbol )
      except:
           df = pddata.DataReader( symbol, 'google', start, end )
-          print " ::  Retrieved from Google Finance: " + symbol
+          print(" ::  Retrieved from Google Finance: " + symbol)
      return df
 
 
@@ -125,7 +125,6 @@ def stock_one( slang, maxi=3650, col='Close' ):
      df = stock_all( slang, maxi )
      #      return just a single column dataframe:
      return tools.todf( df[[ col ]] )
-
 
 
 def getstock( slang, maxi=3650 ):
@@ -145,7 +144,5 @@ def getstock( slang, maxi=3650 ):
      return df.dropna()
 
 
-
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
