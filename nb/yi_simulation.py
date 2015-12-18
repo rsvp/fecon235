@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2014-12-12
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_simulation.py : simulation module for financial economics.
@@ -11,12 +11,16 @@ _______________|  yi_simulation.py : simulation module for financial economics.
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2014-12-12  First version adapted from yi_fred.py
 '''
 
+from __future__ import absolute_import, print_function
+
 import numpy as np
-from yi_fred import readfile
+import yi_0sys as system
 from yi_1tools import todf, georet
+from yi_fred import readfile
 from yi_plot import plotn
 
 
@@ -33,10 +37,10 @@ def GET_simu_spx_pcent():
      datafile = 'SIMU-mn0-sd1pc-d4spx_1957-2014.csv.gz'
      try:
           df = readfile( datafile, compress='gzip' )
-          #  print ' ::  Import success: ' + datafile
+          #  print(' ::  Import success: ' + datafile)
      except:
           df = 0
-          print ' !!  Failed to find: ' + datafile
+          print(' !!  Failed to find: ' + datafile)
      return df
 
 
@@ -98,12 +102,11 @@ def simu_plots_spx( charts=1, N=N_PC_SPX, mean=MEAN_PC_SPX, std=STD_PC_SPX ):
           plotn( px )
           #  Plot, then for the given prices, compute annualized:
           #           geometric mean, arithmetic mean, volatility.
-          print '     georet: ' + str( georet(px) )
-          print '   ____________________________________'
-          print ''
+          print('     georet: ' + str( georet(px) ))
+          print('   ____________________________________')
+          print('')
      return
 
      
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
