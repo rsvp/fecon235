@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-09-11
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,19 +190,21 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-11  Add getfut to quickly retrieve futures price data.
 2015-08-26  Add silver futures symbol and w4cotr_metals.
 2015-08-03  First version patterned after yi_fred.py
 '''
 
+from __future__ import absolute_import, print_function
 
 import pandas as pd               #  for data munging.
 import yi_quandl_api as qdlapi    #  a.k.a. Quandl.py module
 
+import yi_0sys as system
 import yi_1tools as tools         #  Our tools.
 import yi_fred as fred            #  For: plotdf
 import yi_timeseries as ts        #  esp. Holt-Winters.
-
 
 
 #      __________ Convenient ABBREVIATIONS for less typing of quotes:
@@ -266,7 +268,7 @@ def setQuandlToken( API_key ):
      #  however, this is not necessary for very limited usage.
      dummy = qdlapi.get("NSE/OIL", authtoken=API_key, rows=1)
      #  The first request is all that matters for getting initiated.
-     print ' ::  Generated authtoken.p in local directory for API access.'
+     print(' ::  Generated authtoken.p in local directory for API access.')
      #
      #  For security, authtoken.p shall not be committed via .gitignore
 
@@ -390,7 +392,7 @@ def fut_decode( slang ):
 
     !!  Our short slang must be in all lower case, e.g. 
 
-    >>> print fut_decode( 'f4xau15z' )
+    >>> print(fut_decode( 'f4xau15z' ))
     CME/GCZ2015
     '''
     if slang.isupper():
@@ -585,10 +587,10 @@ def holtqdl( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
 #            eurold = readfile( 'FRED-EURUSD_1971-2002-ARC.csv.gz', compress='gzip' )
 #            eurall = eurold.combine_first( eurnow )
 #            #               ^appends dataframe
-#            print ' ::  EURUSD synthetically goes back monthly to 1971.'
+#            print(' ::  EURUSD synthetically goes back monthly to 1971.')
 #       except:
 #            eurall = eurnow
-#            print ' ::  EURUSD monthly without synthetic 1971-2002 archive.'
+#            print(' ::  EURUSD monthly without synthetic 1971-2002 archive.')
 #       return eurall
 #  
 #  
@@ -611,5 +613,4 @@ def holtqdl( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
 
 
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
