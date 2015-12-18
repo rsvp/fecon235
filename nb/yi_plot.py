@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-11-19
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_plot.py : essential plot functions.
@@ -10,6 +10,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2015-11-19  Add scatter, scats, and scat for rainbow scatter plots.
 2014-12-13  Add plotn where index are not dates (cf. plotdf and plotfred).
 2014-08-08  Add dpi for saving image files.
@@ -18,10 +19,13 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2014-08-05  Revise from yip_plot.py for boxplot to handle dataframe.
 '''
 
+from __future__ import absolute_import, print_function
+
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 import pandas as pd
-import yi_1tools
+import yi_0sys as system
+import yi_1tools as tools
 
 dotsperinch = 140                 #  DPI resolution for plot.
 
@@ -54,7 +58,7 @@ def plotn( dataframe, title='tmp' ):
          imgf = 'plotn-' + title + '.png' 
          fig.set_size_inches(11.5, 8.5)
          fig.savefig( imgf, dpi=dotsperinch )
-         print " ::  Finished: " + imgf
+         print(" ::  Finished: " + imgf)
     return
 
 
@@ -102,7 +106,7 @@ def boxplot( data, title='tmp', labels=[] ):
      imgf = 'boxplot-' + title + '.png' 
      fig.set_size_inches(11.5, 8.5)
      fig.savefig( imgf, dpi=dotsperinch )
-     print " ::  Finished: " + imgf
+     print(" ::  Finished: " + imgf)
      return
 
 
@@ -147,7 +151,7 @@ def scatter( dataframe, title='tmp', col=[0, 1] ):
          imgf = 'scat-' + title + '.png' 
          fig.set_size_inches(11.5, 8.5)
          fig.savefig( imgf, dpi=dotsperinch )
-         print " ::  Finished: " + imgf
+         print(" ::  Finished: " + imgf)
     return
 
 
@@ -162,11 +166,11 @@ def scats( dataframe, title='tmp' ):
     #  e.g. ncol==5  implies npairs==10
     #       ncol==10 implies npairs==45
     #       ncol==20 implies npairs==190
-    print " ::  Number of pair-wise plots: " + str(npairs)
+    print(" ::  Number of pair-wise plots: " + str(npairs))
     for pair in pairs:
-        print " ::  Show column pair: " + str(pair)
+        print(" ::  Show column pair: " + str(pair))
         scatter( dataframe, title, pair )
-        print "----------------------"
+        print("----------------------")
     return
 
 
@@ -174,11 +178,10 @@ def scats( dataframe, title='tmp' ):
 def scat( dfx, dfy, title='tmp', col=[0, 1] ):
     '''Scatter plot between two pasted dataframes.'''
     #  Renaming title will result in file output.
-    scatter( yi_1tools.paste([ dfx, dfy ]), title, col ) 
+    scatter( tools.paste([ dfx, dfy ]), title, col ) 
     return
 
 
 
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
