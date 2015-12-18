@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-11-13
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -11,6 +11,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible fix, introduce yi_0sys module.
 2015-11-13  Add stat for quick summary statistics with percentile arg.
 2015-11-12  Add dif for lagged difference.
 2014-12-09  Clarify comments, esp. regressformula.
@@ -35,6 +36,8 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2014-08-01  First version split from yi_fred.py
 '''
 
+from __future__ import absolute_import, print_function
+
 #  import numpy as np                #  for numerical work.
 import matplotlib.pyplot as plt   #  for standard plots.
 import pandas as pd               #  for data munging.
@@ -46,6 +49,8 @@ import statsmodels.formula.api as smf
 #         pandas can handle multiple dependent variables.
 from pandas.stats.api import ols
 #                 ^relies on other sci packages.
+
+import yi_0sys as system
 
 
 def nona( df ):
@@ -201,7 +206,7 @@ def regresstime( dfy, col='Y' ):
      #  Return just the fitted dataframe with original time intact.
      results = regressTIME( dfy, col )
      c, slope = results[1]
-     print " ::  regresstime slope = " + str(slope)
+     print(" ::  regresstime slope = " + str(slope))
      return results[0]
 
 
@@ -211,7 +216,7 @@ def regresstimeforecast( dfy, h=24, col='Y' ):
      forecast = [ c + (slope * i) for i in range(h+1) ]
      #  h=0 corresponds to the latest fitted point by design, 
      #      so h=1 corresponds one-period ahead forecast.
-     print " ::  regresstime slope = " + str(slope)
+     print(" ::  regresstime slope = " + str(slope))
      return todf( forecast, 'Forecast' )
 
 
@@ -251,25 +256,25 @@ def regress( dfy, dfx ):
 
 def stat2( dfy, dfx ):
      '''Quick STATISTICAL SUMMARY and regression on two variables'''
-     print " ::  FIRST variable:"
+     print(" ::  FIRST variable:")
      now = dfy.describe()
-     print now
-     print 
-     print " ::  SECOND variable:"
+     print(now)
+     print()
+     print(" ::  SECOND variable:")
      now = dfx.describe()
-     print now
-     print 
-     print " ::  CORRELATION"
+     print(now)
+     print()
+     print(" ::  CORRELATION")
      now = correlate( dfy, dfx )
-     print now
+     print(now)
      now = regress( dfy, dfx )
-     print now
+     print(now)
      return
 
 
 def stat( dataframe, pctiles=[0.25, 0.50, 0.75] ):
      '''QUICK summary statistics on given dataframe.'''
-     print dataframe.describe( percentiles=pctiles )
+     print(dataframe.describe( percentiles=pctiles ))
      #  excludes NaN values. Percentiles can be customized, 
      #  but 50% (median) cannot be suppressed even with [] as arg.
      #  Also handles object dtypes like strings, see
@@ -279,22 +284,22 @@ def stat( dataframe, pctiles=[0.25, 0.50, 0.75] ):
 
 def stats( dataframe ):
      '''VERBOSE statistics on given dataframe; CORRELATIONS without regression.'''
-     print dataframe.describe()
-     print
-     print " ::  Index on min:"
-     print dataframe.idxmin()
-     print
-     print " ::  Index on max:"
-     print dataframe.idxmax()
-     print
-     print " ::  Head:"
-     print head( dataframe )
-     print
-     print " ::  Tail:"
-     print tail( dataframe )
-     print
-     print " ::  Correlation matrix:"
-     print cormatrix( dataframe )
+     print(dataframe.describe())
+     print()
+     print(" ::  Index on min:")
+     print(dataframe.idxmin())
+     print()
+     print(" ::  Index on max:")
+     print(dataframe.idxmax())
+     print()
+     print(" ::  Head:")
+     print(head( dataframe ))
+     print()
+     print(" ::  Tail:")
+     print(tail( dataframe ))
+     print()
+     print(" ::  Correlation matrix:")
+     print(cormatrix( dataframe ))
      return
 
 
@@ -329,7 +334,7 @@ def paste( df_list ):
      #          (newer pandas append _x to non-unique names).
      for i in df_list:
           if not isinstance( i, pd.DataFrame ):
-               raise TypeError, ' !!  paste requires DataFrame args; use todf.'
+               raise TypeError(' !!  paste requires DataFrame args; use todf.')
                #  paste will choke on a Series type, so use todf beforehand.
      combo = df_list[0]
      for df in df_list[1:]:
@@ -346,10 +351,9 @@ def writefile( dataframe, filename='tmp-yi_1tools.csv', separator=',' ):
     '''Write dataframe to disk file using UTF-8 encoding.'''
     #  For tab delimited, use '\t' as separator.
     dataframe.to_csv( filename, sep=separator, encoding='utf-8' )
-    print ' ::  Dataframe written to file: ' + filename
+    print(' ::  Dataframe written to file: ' + filename)
     return
 
 
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
