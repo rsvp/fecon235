@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-09-14
+#  Python Module for import                           Date : 2015-12-17
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon : gathers yi_* modules for fecon235 project.
@@ -10,6 +10,7 @@ _______________|  fecon : gathers yi_* modules for fecon235 project.
 - Detailed code development does not belong here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-14  Add getstock and second argument maxi to get().
 2015-09-03  Exception handling.
 2015-08-31  First version unifies some commands.
@@ -20,6 +21,9 @@ TODO
          Bloomberg Global ID is a random 12-character alpha-numeric.
 '''
 
+from __future__ import absolute_import, print_function
+
+import yi_0sys as system
 #    Very lenient import style designed for notebooks.
 #    We access modules which are primary, and 
 #    catch collisions in namespace:
@@ -102,5 +106,4 @@ def forecast( data, h=12 ):
 
 
 if __name__ == "__main__":
-     print "\n ::  THIS IS A MODULE for import -- not for direct execution! \n"
-     raw_input('Enter something to get out: ')
+     system.endmodule()
