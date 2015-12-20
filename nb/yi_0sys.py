@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-03
+#  Python Module for import                           Date : 2015-12-19
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,10 +18,11 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-19  python3 compatible: absolute_import
 2015-12-03  First version.
 '''
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 #    __future__ for Python 2 and 3 compatibility; must be first in file.
 import sys
 import os
