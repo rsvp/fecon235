@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,6 +190,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-11  Add getfut to quickly retrieve futures price data.
 2015-08-26  Add silver futures symbol and w4cotr_metals.
@@ -198,13 +199,13 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 
 from __future__ import absolute_import, print_function
 
-import pandas as pd               #  for data munging.
-import yi_quandl_api as qdlapi    #  a.k.a. Quandl.py module
+import pandas as pd
 
-import yi_0sys as system
-import yi_1tools as tools         #  Our tools.
-import yi_fred as fred            #  For: plotdf
-import yi_timeseries as ts        #  esp. Holt-Winters.
+from . import yi_quandl_api as qdlapi    #  a.k.a. Quandl.py module
+from . import yi_0sys as system
+from . import yi_1tools as tools         
+from . import yi_fred as fred            #  For: plotdf
+from . import yi_timeseries as ts        #  esp. Holt-Winters.
 
 
 #      __________ Convenient ABBREVIATIONS for less typing of quotes:

@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_plot.py : essential plot functions.
@@ -10,6 +10,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-11-19  Add scatter, scats, and scat for rainbow scatter plots.
 2014-12-13  Add plotn where index are not dates (cf. plotdf and plotfred).
@@ -24,8 +25,8 @@ from __future__ import absolute_import, print_function
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 import pandas as pd
-import yi_0sys as system
-import yi_1tools as tools
+from . import yi_0sys as system
+from . import yi_1tools as tools
 
 dotsperinch = 140                 #  DPI resolution for plot.
 

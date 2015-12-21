@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -11,6 +11,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible fix, lib import fix.
 2015-12-17  python3 compatible fix, introduce yi_0sys module.
 2015-11-13  Add stat for quick summary statistics with percentile arg.
 2015-11-12  Add dif for lagged difference.
@@ -50,7 +51,7 @@ import statsmodels.formula.api as smf
 from pandas.stats.api import ols
 #                 ^relies on other sci packages.
 
-import yi_0sys as system
+from . import yi_0sys as system
 
 
 def nona( df ):

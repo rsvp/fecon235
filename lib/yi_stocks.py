@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_stocks.py : Access stock quotes.
@@ -32,6 +32,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-11-22  Test on python 2.7.10, IPython 4.0.0, pandas_datareader 0.2.0
                 As of pandas v0.17, pandas.io is deprecated and 
@@ -56,8 +57,8 @@ except:
 #  to your pandas installation. The API for pandas-datareader v0.1.1 
 #  is the same as in pandas v0.16.1. (GH8961)
 
-import yi_0sys as system
-import yi_1tools as tools
+from . import yi_0sys as system
+from . import yi_1tools as tools
 
 
 #      __________ Convenient ABBREVIATIONS for less typing of quotes:

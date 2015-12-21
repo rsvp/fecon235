@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_timeseries : essential time series functions.
@@ -23,6 +23,7 @@ See holt_winters_growth() vs. holt().
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-02-21  Add holtgrow and holtpc functions.
                Fix holtlevel to truly include alpha and beta.
@@ -39,8 +40,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-import yi_0sys as system 
-from yi_1tools import todf
+from . import yi_0sys as system 
+from .yi_1tools import todf
 
 
 #  Holt-Winters default parameters

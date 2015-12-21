@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_simulation.py : simulation module for financial economics.
@@ -11,6 +11,7 @@ _______________|  yi_simulation.py : simulation module for financial economics.
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2014-12-12  First version adapted from yi_fred.py
 '''
@@ -18,10 +19,11 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 from __future__ import absolute_import, print_function
 
 import numpy as np
-import yi_0sys as system
-from yi_1tools import todf, georet
-from yi_fred import readfile
-from yi_plot import plotn
+
+from . import yi_0sys as system
+from .yi_1tools import todf, georet
+from .yi_fred import readfile
+from .yi_plot import plotn
 
 
 #  ACTUAL SPX mean and volatility from 1957-01-03 to 2014-12-11 in percent.

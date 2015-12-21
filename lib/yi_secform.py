@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_secform.py : module for SEC forms.
@@ -10,6 +10,7 @@ References:
 - SEC-13F-parse.ipynb for derivation and debugging of this module.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-08-30  First revised version for form 13F.
 '''
@@ -19,7 +20,8 @@ from __future__ import absolute_import, print_function
 import numpy as np                #  for numerical work.
 import pandas as pd               #  for data munging.
 #      ^for best results, install lxml, and as fallback: bs4 & html5lib.
-import yi_0sys as system
+
+from . import yi_0sys as system
 
 
 #  For doctest, Stanley Druckenmiller's "Duquesne Family Office" on 2015-08-14: 

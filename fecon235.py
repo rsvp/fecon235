@@ -1,15 +1,17 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
-_______________|  fecon : gathers yi_* modules for fecon235 project.
+_______________|  fecon235.py : unifies yi_* modules for fecon235 project.
 
-- Designed to be dropped into an IPython notebook for CONVENIENT commands. 
-- User can always foo?? to access foo's orgin.
-- This is meant to unify modules in one place.
-- Frequently used commands can thus be generalized with shorter names.
-- Detailed code development does not belong here.
+- Designed to be invoked by an IPython/Jupyter console or notebook 
+  for convenient command access. CASUAL usage:
+        from fecon235.fecon235 import *
+- User can always foo?? to access foo's origin.
+- Unifies essential lib modules in one place, thus
+  frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-14  Add getstock and second argument maxi to get().
 2015-09-03  Exception handling.
@@ -23,18 +25,19 @@ TODO
 
 from __future__ import absolute_import, print_function
 
-import yi_0sys as system
-#    Very lenient import style designed for notebooks.
-#    We access modules which are primary, and 
-#    catch collisions in namespace:
-from yi_1tools import *
-from yi_fred import *
-from yi_plot import *
-from yi_simulation import *
-from yi_stocks import *
-from yi_timeseries import *
-from yi_quandl import *
-#    yi_quandl_api should NOT be imported.
+from .lib import yi_0sys as system
+
+#    CASUAL import style below intentionally for Jupyter notebooks
+#    and interactive settings (lib modules follow proper import protocol).
+#    We access essential modules and catch collisions in namespace:
+from .lib.yi_1tools import *
+from .lib.yi_fred import *
+from .lib.yi_plot import *
+from .lib.yi_quandl import *
+#         yi_quandl_api should NOT be imported.
+from .lib.yi_simulation import *
+from .lib.yi_stocks import *
+from .lib.yi_timeseries import *
 
 
 def get( code, maxi=0 ):
