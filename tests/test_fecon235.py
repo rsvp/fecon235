@@ -1,9 +1,9 @@
-#  Python Module for import                           Date : 2015-12-17
+#  Python Module for import                           Date : 2015-12-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
-_______________|  fecon_DEMO : Test, while demonstrating, the fecon module.
+_______________|  test_fecon235 : Test and demonstrate fecon235 module.
 
-IPython notebooks are indirectly integration tests in the interactive mode. 
+Jupyter notebooks are indirectly integration tests in the interactive mode. 
 However, non-interactive testing is desirable for the developer.
 Also, demonstration for the casual user is needed. Thus this module.
 
@@ -18,10 +18,19 @@ If nose is not installed, then this will work as fallback:
 
     $ python -m doctest fecon_DEMO.py   # exit 0 indicates tests passed.
 
-Reference:
-NOSETESTS: http://nose.readthedocs.org/en/latest/usage.html
+=>  As of fecon235 v4, we also favor pytest over nosetests, so e.g. 
+
+    $ py.test --doctest-modules
+
+REFERENCE:
+    nosetests: http://nose.readthedocs.org/en/latest/usage.html
+    pytest:    https://pytest.org/latest/getting-started.html
+                  or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-21  python3 compatible: lib import fix.
+               Mark very slow tests with "vSlow" suffix, so
+               $ py.test -k 'not vSlow'  # Excludes such tests.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-04  Add demo for forecast().
 2015-09-02  First version for get().
@@ -29,12 +38,16 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 
 from __future__ import absolute_import, print_function
 
-import yi_0sys as system
-from fecon import *
-#    ^in one line we get essential functions from the yi_* modules.
+from fecon235.fecon235 import *
+#    ^in one line we get essential functions from the yi_* modules,
+#     including yi_0sys as system.
+#
+#  N.B. -  in this tests directory without __init__.py, 
+#          we use absolute import as if outside the fecon235 package,
+#          not relative import (cf. modules within lib).
 
 
-def demo_GET_d4xau_from_FRED():
+def demo_GET_d4xau_from_FRED_vSlow():
     '''Test get() in fecon which uses getfred() in yi_fred module.
        Here we get gold quotes from the FRED database.
 
@@ -53,7 +66,7 @@ def demo_GET_d4xau_from_FRED():
 
 
 
-def demo_GET_w4cotr_metals_from_QUANDL():
+def demo_GET_w4cotr_metals_from_QUANDL_vSlow():
     '''Test get() in fecon which uses getqdl() in yi_quandl module.
        Thus it is an indirect test of yi_quandl_api module.
        Here we get the CFTC Commitment of Traders Reports 
@@ -70,7 +83,7 @@ def demo_GET_w4cotr_metals_from_QUANDL():
 
 
 
-def demo_FORECAST_m4xau_from_FRED():
+def demo_FORECAST_m4xau_from_FRED_vSlow():
     '''Test forecast() in fecon which uses Holt-Winters method.
        We use monthly gold data, and type forecast as integers 
        to avoid doctest with floats (almost equal problem).
