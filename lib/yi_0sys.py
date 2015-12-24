@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-19
+#  Python Module for import                           Date : 2015-12-23
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,6 +18,8 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-23  Add run command and gitinfo functions.
+               Update to PREAMBLE-p6.15.1223
 2015-12-19  python3 compatible: absolute_import
 2015-12-03  First version.
 '''
@@ -27,6 +29,9 @@ from __future__ import absolute_import, print_function
 import sys
 import os
 import time
+from subprocess import check_output
+#                      ^for Python 2.7 and 3+
+
 
 minimumPython = ( 2, 7, 0 )
 #             ... else a warning is generated in specs().
@@ -121,9 +126,44 @@ def version( module="IPython" ):
     print(" :: ", module, versionstr(module))
 
 
+def utf( immigrant, xnl=True ):
+    '''Convert to utf-8, and possibly delete new line character.
+       xnl means "delete new line"
+    '''
+    if xnl:
+        #                Decodes to utf-8, plus deletes new line.
+        return immigrant.decode('utf-8').strip('\n')
+    else:
+        #                Decode for compliance to utf-8:
+        return immigrant.decode('utf-8')
+
+
+def run( command, xnl=True ):
+    '''RUN **quote and space insensitive** SYSTEM-LEVEL command.
+       OTHERWISE: use check_output directly and list component 
+       parts of the command, e.g.  
+          check_output(["git", "describe", "--abbrev=0"])
+       then generally use our utf() since check_output 
+       usually does not return utf-8, so be prepared to 
+       receive bytes and also new line.
+    '''
+    return utf(check_output( command.split(), xnl ))
+
+
+def gitinfo():
+    '''From git, get repo name, current branch and annotated tag.'''
+    repopath = run("git rev-parse --show-toplevel")
+    #              ^returns the dir path plus working repo name.
+    repo = os.path.basename(repopath)
+    tag = run("git describe --abbrev=0")
+    #                       ^no --tags because we want annotated tags.
+    bra = run("git symbolic-ref --short HEAD")
+    #         ^returns the current working branch name.
+    return [repo, tag, bra]
+
+
 def specs():
-    '''Show ecosystem specifications, including execution date.'''
-    print(" ::  Timestamp:", date(hour=True, utc=True))
+    '''Show ecosystem specifications, including execution timestamp.'''
     #  APIs are subject to change, so versions are critical for debugging:
     version("Python")
     if pythontup() < minimumPython:
@@ -137,6 +177,13 @@ def specs():
     version("pandas")
     version("pandas_datareader")
     #       ^but package is "pandas-datareader" esp. for financial quotes. 
+    try:
+        repo, tag, bra = gitinfo()
+        print(" ::  Repository:", repo, tag, bra )
+    except:
+        print(" ::  Repository: NaN")
+        #           Possibly outside git boundaries.
+    print(" ::  Timestamp:", date(hour=True, utc=True))
 
 
 if pythontup() < (3, 0, 0):
@@ -162,24 +209,22 @@ if __name__ == "__main__":
 
 '''
 _______________ Appendix 1: PREAMBLE for Jupyter NOTEBOOKS
-                            First input cell for settings and system details:
+                            Input cell for settings and system details:
 
 
-#  NOTEBOOK v4 SETTINGS and system details:      [00-tpl v5.15.1203]
-from __future__ import print_function
-#    Strive for compatibility between Python 2, 3, Jupyter, 
-#    and being cross-platform (our backend is LINUX running bash shell). 
-import yi_0sys      ; yi_0sys.specs()
-import pandas as pd
+#  PREAMBLE-p6.15.1223 :: Settings and system details
+from __future__ import absolute_import, print_function
+system.specs()
+pwd = system.getpwd()   # present working directory as variable.
+print(" ::  $pwd:", pwd)
 #  If a module is modified, automatically reload it:
 %load_ext autoreload
 %autoreload 2
 #       Use 0 to disable this feature.
-pwd = yi_0sys.getpwd()    # present working directory as variable.
-print(" ::  $pwd:", pwd)
 
 #  Notebook DISPLAY options:
 #      Represent pandas DataFrames as text; not HTML representation:
+import pandas as pd
 pd.set_option( 'display.notebook_repr_html', False )
 #  Beware, for MATH display, use %%latex, NOT the following:
 #                   from IPython.display import Math
