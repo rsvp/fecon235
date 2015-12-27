@@ -19,6 +19,8 @@ REFERENCES:
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2015-12-27  Get jupyter version among specs().
+               Fix run command to accept errf argument.
+               For specs(), move gitinfo try clause therein.
 2015-12-23  Add run command and gitinfo functions.
                Update to PREAMBLE-p6.15.1223
 2015-12-19  python3 compatible: absolute_import
@@ -139,7 +141,7 @@ def utf( immigrant, xnl=True ):
         return immigrant.decode('utf-8')
 
 
-def run( command, xnl=True ):
+def run( command, xnl=True, errf=None ):
     '''RUN **quote and space insensitive** SYSTEM-LEVEL command.
        OTHERWISE: use check_output directly and list component 
        parts of the command, e.g.  
@@ -148,19 +150,28 @@ def run( command, xnl=True ):
        usually does not return utf-8, so be prepared to 
        receive bytes and also new line.
     '''
-    return utf(check_output( command.split(), xnl ))
+    #  N.B. -  errf=None means the usual redirection.
+    #          Cross-platform /dev/null   is os.devnull
+    #          Cross-platform /dev/stdout is STDOUT
+    #  https://docs.python.org/2/library/subprocess.html
+    return utf( check_output(command.split(), stderr=errf), xnl )
 
 
 def gitinfo():
     '''From git, get repo name, current branch and annotated tag.'''
-    repopath = run("git rev-parse --show-toplevel")
-    #              ^returns the dir path plus working repo name.
-    repo = os.path.basename(repopath)
-    tag = run("git describe --abbrev=0")
-    #                       ^no --tags because we want annotated tags.
-    bra = run("git symbolic-ref --short HEAD")
-    #         ^returns the current working branch name.
-    return [repo, tag, bra]
+    #  Suppressing error messages by os.devnull is cross-platform!
+    try:
+        repopath = run("git rev-parse --show-toplevel", errf=os.devnull)
+        #              ^returns the dir path plus working repo name.
+        repo = os.path.basename(repopath)
+        tag = run("git describe --abbrev=0", errf=os.devnull)
+        #                       ^no --tags because we want annotated tags.
+        bra = run("git symbolic-ref --short HEAD", errf=os.devnull)
+        #         ^returns the current working branch name.
+        return [repo, tag, bra]
+    except:
+        #    Probably outside git boundaries...
+        return ['git_repo_None', 'tag_None', 'branch_None']
 
 
 def specs():
@@ -179,12 +190,8 @@ def specs():
     version("pandas")
     version("pandas_datareader")
     #       ^but package is "pandas-datareader" esp. for financial quotes. 
-    try:
-        repo, tag, bra = gitinfo()
-        print(" ::  Repository:", repo, tag, bra )
-    except:
-        print(" ::  Repository: None")
-        #           Possibly outside git boundaries.
+    repo, tag, bra = gitinfo()
+    print(" ::  Repository:", repo, tag, bra )
     print(" ::  Timestamp:", date(hour=True, utc=True))
 
 
