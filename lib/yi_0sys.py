@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-23
+#  Python Module for import                           Date : 2015-12-27
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,6 +18,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-27  Get jupyter version among specs().
 2015-12-23  Add run command and gitinfo functions.
                Update to PREAMBLE-p6.15.1223
 2015-12-19  python3 compatible: absolute_import
@@ -169,6 +170,7 @@ def specs():
     if pythontup() < minimumPython:
         warn("may need newer Python version.")
     version("IPython")
+    version("jupyter")
     version("notebook")
     #       ^worked for Jupyter notebook 4.0.6
     version("matplotlib")
@@ -181,7 +183,7 @@ def specs():
         repo, tag, bra = gitinfo()
         print(" ::  Repository:", repo, tag, bra )
     except:
-        print(" ::  Repository: NaN")
+        print(" ::  Repository: None")
         #           Possibly outside git boundaries.
     print(" ::  Timestamp:", date(hour=True, utc=True))
 
