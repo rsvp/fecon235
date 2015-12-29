@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-27
+#  Python Module for import                           Date : 2015-12-29
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,6 +18,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-29  For errf in gitinfo(), our dev_null instead of os.devnull
 2015-12-27  Get jupyter version among specs().
                Fix run command to accept errf argument.
                For specs(), move gitinfo try clause therein.
@@ -32,12 +33,22 @@ from __future__ import absolute_import, print_function
 import sys
 import os
 import time
-from subprocess import check_output
+from subprocess import check_output, STDOUT
 #                      ^for Python 2.7 and 3+
 
 
 minimumPython = ( 2, 7, 0 )
 #             ... else a warning is generated in specs().
+
+
+#             Open  /dev/null equivalent file for Unix and Windows:
+dev_null = os.open(os.devnull, os.O_RDWR)
+#                                 ^Cross-platform read and write. 
+#             os.devnull is just a string:  "/dev/null" or "nul"
+#             thus redirecting to os.devnull is insufficient
+#             and that alone will cause a fileno error.
+#  We could later close it by: os.close(dev_null). Leave open.
+#  See gitinfo() for example of usage.
 
 
 def getpwd():
@@ -150,27 +161,29 @@ def run( command, xnl=True, errf=None ):
        usually does not return utf-8, so be prepared to 
        receive bytes and also new line.
     '''
-    #  N.B. -  errf=None means the usual redirection.
-    #          Cross-platform /dev/null   is os.devnull
+    #  N.B. -  errf=None means the usual error transmittal.
     #          Cross-platform /dev/stdout is STDOUT
+    #          Cross-platform /dev/null   is our dev_null above.
     #  https://docs.python.org/2/library/subprocess.html
     return utf( check_output(command.split(), stderr=errf), xnl )
 
 
+
 def gitinfo():
     '''From git, get repo name, current branch and annotated tag.'''
-    #  Suppressing error messages by os.devnull is cross-platform!
+    #  Suppressing error messages by os.devnull seems cross-platform,
+    #  but it is just a string, so use our open file dev_null instead.
     try:
-        repopath = run("git rev-parse --show-toplevel", errf=os.devnull)
+        repopath = run("git rev-parse --show-toplevel", errf=dev_null)
         #              ^returns the dir path plus working repo name.
         repo = os.path.basename(repopath)
-        tag = run("git describe --abbrev=0", errf=os.devnull)
+        tag = run("git describe --abbrev=0", errf=dev_null)
         #                       ^no --tags because we want annotated tags.
-        bra = run("git symbolic-ref --short HEAD", errf=os.devnull)
+        bra = run("git symbolic-ref --short HEAD", errf=dev_null)
         #         ^returns the current working branch name.
         return [repo, tag, bra]
-    except:
-        #    Probably outside git boundaries...
+    except CalledProcessError:
+        #  Probably outside git boundaries...
         return ['git_repo_None', 'tag_None', 'branch_None']
 
 
