@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2015-12-28
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -10,7 +10,15 @@ References:
 - Computational tools for pandas
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
+Note that np.float() is just an alias to Python's float type,
+which is only exposed for backwards compatibility with a very early 
+version of numpy that inappropriately exposed np.float64 as np.float, 
+causing problems upon: from numpy import *
+   - np.float() is not a numpy scalar type like np.float64()
+   - Plain float() is fine for our numerical work here.
+
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2015-12-28  python3 compatible fix, division, add div()
 2015-12-20  python3 compatible fix, lib import fix.
 2015-12-17  python3 compatible fix, introduce yi_0sys module.
 2015-11-13  Add stat for quick summary statistics with percentile arg.
@@ -37,9 +45,9 @@ CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2014-08-01  First version split from yi_fred.py
 '''
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 
-#  import numpy as np                #  for numerical work.
+import numpy as np                #  for numerical work.
 import matplotlib.pyplot as plt   #  for standard plots.
 import pandas as pd               #  for data munging.
 
@@ -78,6 +86,30 @@ def tailvalue( df, pos=0, row=1 ):
      return df.tail(row).values.tolist()[0][pos]
      #      values to array to list within list, then the element.
      #  Note how the name of a column is not required.
+
+
+def div( numerator, denominator, floor=False ):
+     '''Division via numpy for pandas, Python 2 and 3 compatibility.
+        Returns a scalar if both inputs are scalar, ndarray otherwise.
+        We shall AVOID the ambiguous python2-like: np.divide()
+     >>> x = np.array([0, 1, 2, 3, 4])
+     >>> div(x, 4, floor=False)
+     array([ 0.  ,  0.25,  0.5 ,  0.75,  1.  ])
+     >>> div(x, 4, floor=True)
+     array([0, 0, 0, 0, 1])
+     >>> div(2, 4, floor=True)
+     0
+     >>> div(2, 4)
+     0.5
+     >>> div(2, 0)  # Dividing by zero returns infinity, not error:
+     inf
+     '''
+     if floor:
+          #      Like python3 "//":
+          return np.floor_divide(numerator, denominator)
+     else:
+          #      Like python3 "/":
+          return np.true_divide(numerator, denominator)
 
 
 def dif( dfx, freq=1 ):
@@ -134,7 +166,7 @@ def zeroprice( rate, duration=9, yearly=2, face=100 ):
 def ema( y, alpha=0.20 ):
      '''EXPONENTIAL MOVING AVERAGE using traditional weight arg.'''
      #  y could be a dataframe.
-     s = (2/float(alpha)) - 1
+     s = (2 / float(alpha)) - 1
      #  Thus default alpha has span of 9, i.e. "9-period EWMA."
      return pd.ewma( y, span=s )
 
@@ -235,7 +267,8 @@ def detrend( dfy, col='Y' ):
 def detrendpc( dfy, col='Y' ):
      '''Detread using linear regression on time; percent deviation.'''
      trend = regresstime( dfy, col )
-     return ((dfy - trend) * 100.00) / trend
+     #  return ((dfy - trend) * 100.00) / trend  #-X 2015-12-28
+     return div((dfy - trend)*100, trend)
 
 
 def detrendnorm( dfy, col='Y' ):
