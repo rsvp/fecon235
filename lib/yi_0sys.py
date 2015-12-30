@@ -19,6 +19,7 @@ REFERENCES:
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
 2015-12-29  For errf in gitinfo(), our dev_null instead of os.devnull
+               Add minimumPandas variable esp. for tests.
 2015-12-27  Get jupyter version among specs().
                Fix run command to accept errf argument.
                For specs(), move gitinfo try clause therein.
@@ -39,6 +40,8 @@ from subprocess import check_output, STDOUT
 
 minimumPython = ( 2, 7, 0 )
 #             ... else a warning is generated in specs().
+minimumPandas = 15.0
+#               ^after replacing the first dot, then float.
 
 
 #             Open  /dev/null equivalent file for Unix and Windows:
