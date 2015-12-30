@@ -4,6 +4,39 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
+### 2015-12-30 v4.15.1230 MAJOR
+
+Major v4 benefits from the python3 compatibility changes
+made during v3. All modules are now operational under 
+both Python 2 and 3. Also, code has been rewritten for
+cross-platform performance (Linux, Mac, and Windows).
+
+We MOVED the yi-modules from nb to a new directory: lib. 
+Python 3 uses absolute import and our python2 code
+now conforms to that practice.
+
+To update pre-2016 notebooks, please use import style 
+discussed in *docs* README: https://git.io/fecon-intro 
+The top-level module **fecon235.py** 
+(formerly known as *nb/fecon.py*) is also 
+explained in that introduction.
+With adoption of python3 print_function, 
+the python2 print statement must be rewritten as a function.
+
+We also highly recommend inclusion of PREAMBLE-p6.15.1223
+which gives versioning requirements for successful
+notebook replication. With those fixes, our notebooks
+should run under both Python kernels in Jupyter.
+
+Make friends with np.true_divide() and np.floor_divide(),
+avoiding np.divide() like the plague: call our 
+convenient *div()* directly instead of numpy.
+
+The directory *tests* is no longer a package.
+Thus one can run tests easily against an installed
+version of the main package, and independently.
+Our tests should be nosetests and pytest compatible.
+
 ### 2015-12-16 v3.15.1216
 
 Module yi_0sys encourages cross-platform execution.
@@ -19,7 +52,7 @@ in fred-infl-unem-fed.ipynb
 leading to a discussion of the Phillips curve,
 i.e. the inflation vs unemployment relationship.
 
-### 2015-11-22 MAJOR v3.15.1122
+### 2015-11-22 v3.15.1122 MAJOR
 
 The major change to v3 marks our adoption of **Jupyter** 
 which has now become fully independent of IPython, 
