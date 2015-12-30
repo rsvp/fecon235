@@ -24,7 +24,7 @@ Selected topics are treated for in-depth studies.
 
 - Analysis using techniques from econometrics and machine learning.
 
-- Presentation of mathematical results (in LaTex) and models.
+- Presentation of mathematical results (in LaTex) and symbolic models.
 
 - Reproducible research which is collaborative and publicly accessible.
 
@@ -45,7 +45,7 @@ fit.
   economists, the best reference for getting started is the 
   Quantitative Economics site by Thomas [Sargent]. 
 
-* We rely primarily on Python, especially the IPython notebook and pandas 
+* We rely primarily on Python, especially the Jupyter notebook and pandas 
   packages. The code is designed to be cross-platform for users, however, 
   for developers we assume a Linux environment.
   R code may be used as needed, usually indirectly within wrappers.
@@ -56,17 +56,26 @@ fit.
   due to dependency hell.
 
 * Dependencies: pandas > 0.15 is suggested. 
-  Python 2.7 is our base (but recent code should be python3 compatible,
-  though there are still some outstanding external issues upstream).
+  All modules are now operational under 
+  both Python 2 and 3. Also, code has been rewritten for
+  cross-platform performance (Linux, Mac, and Windows).
   Our tests under the *Jupyter* fork of the IPython notebook 
   has not encountered any problems thus far.
+
+* Updates: for pre-2016 notebooks, please use import style 
+  discussed in *docs* README: https://git.io/fecon-intro 
+  The top-level module **fecon235.py** 
+  (formerly known as *nb/fecon.py*) is also 
+  explained in that introduction.
+  With adoption of python3 print_function, 
+  the python2 print statement must be rewritten as a function.
 
 ### Examples of code ###
 
 The best way to see the code in action is to run the 
 primary notebooks in the `nb` directory.
 Some of them are described at the end of this page. 
-(Note that GitHub can render IPython notebooks directly in the browser, 
+(Note that GitHub can render Jupyter notebooks directly in the browser, 
 however, they will not be executable.) 
 Here is a rendering of a notebook at GitHub for 
 [Housing starts, home prices and affordibility](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb). 
@@ -80,16 +89,16 @@ where the Phillips curve is discredited by constructing
 heat map scatter plots.
 
 Some basic commands, 
-e.g. get() and plot() in the fecon module, will do a lot of the heavy lifting 
+e.g. get() and plot() in the fecon235 module, will do a lot of the heavy lifting 
 to get you started immediately. 
-They are designed for scripts (not necessarily within IPython notebooks) 
+They are designed for scripts (not necessarily within Jupyter notebooks) 
 and any Python IDE interactive development environment. 
-Our [wiki] should be gradually adding tutorials and FAQs 
+The *docs* directory and our [wiki] should be gradually adding tutorials and FAQs 
 for any clarifications. 
 
 ### Useful modules ###
 
-These standalone Python modules are frequently imported 
+These standalone Python *lib* modules are frequently imported 
 into our Python scripts:
 
 * yi_1tools.py : essential utility functions.
@@ -100,8 +109,9 @@ into our Python scripts:
 * yi_quandl.py : Access Quandl with pandas for plots and analysis.
 * yi_stocks.py : Access stocks and funds with pandas for plots and analysis.
 
-However, for IPython notebooks and interactive sesssions, 
-only one generalized module **fecon** needs to be imported. 
+However, for Jupyter notebooks and interactive sesssions, 
+only one generalized module **fecon235.py** needs to be imported. 
+please see https://git.io/fecon-intro in *docs* for details.
 The commands are very easy to learn and customize, 
 producing relatively sophisticated results quickly 
 without detailed knowledge of the underlying numerical packages. 
@@ -267,7 +277,7 @@ Holt-Winters method.
 
 - - - -
 
-Revision date : 2015-12-16
+Revision date : 2015-12-30
 
 
 [admin]:      https://rsvp.github.com          "Adriano rsvp.github.com"
