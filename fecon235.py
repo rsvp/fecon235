@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2016-01-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,7 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-05  Add groupget, grouppc, groupgeoret, groupholtf functions.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-14  Add getstock and second argument maxi to get().
@@ -38,6 +39,14 @@ from .lib.yi_quandl import *
 from .lib.yi_simulation import *
 from .lib.yi_stocks import *
 from .lib.yi_timeseries import *
+
+
+#  We can specify our favorite series as a dictionary
+#  where key is name, and corresponding value is its data code:
+group4d = { 'Zero10' : d4zero10, 'SPX' : d4spx, 'XAU' : d4xau, 
+            'EURUSD' : d4eurusd, 'USDJPY' : d4usdjpy }
+#         For usage details, see fred-georeturns.ipynb for details,
+#         in particular, functions like group*() in this module.
 
 
 def get( code, maxi=0 ):
@@ -106,6 +115,62 @@ def forecast( data, h=12 ):
             raise ValueError('INVALID argument or data for fecon.forecast()')
     return df
 
+
+def groupget( ggdic=group4d, maxi=0 ):
+    '''Retrieve and create group dataframe, given group dictionary.'''
+    #  Since dictionaries are unordered, create SORTED list of keys:
+    keys = [ key for key in sorted(ggdic) ]
+    #  Download individual dataframes as values into a dictionary:
+    dfdic = { key : get(ggdic[key], maxi)  for key in keys }
+    #             ^Illustrates dictionary comprehension.
+    #  Paste together dataframes into one large sorted dataframe:
+    groupdf = paste([ dfdic[key] for key in keys ])
+    #  Name the columns:
+    groupdf.columns = keys
+    return groupdf
+
+
+def grouppc( groupdf, freq ):
+    '''Create overlapping pcent dataframe, given a group dataframe.'''
+    #  See groupget() to retrieve and create group dataframe.  
+    #  Very useful to visualize as boxplot, see fred-georeturns.ipynb
+    keys = list(groupdf.columns)
+    #  Compute individual columns as dataframe values in a dictionary:
+    pcdic = { key : todf(pcent(groupdf[key], freq))  for key in keys }
+    #             ^Illustrates dictionary comprehension.
+    #  Paste together dataframes into one large dataframe:
+    pcdf = paste([ pcdic[key] for key in keys ])
+    #  Name the columns:
+    pcdf.columns = keys
+    return pcdf
+
+
+def groupgeoret( groupdf, yearly ):
+    '''Geometric mean returns, non-overlapping, for group dataframe.
+       Argument "yearly" refers to annual frequency, e.g. 
+       256 for daily trading days, 12 for monthly, 4 for quarterly.
+    '''
+    keys = list(groupdf.columns)
+    #  Use dictionary comprehension to store lists from georet().
+    return { k : georet(todf(groupdf[k]), yearly) for k in keys }
+
+
+def groupholtf( groupdf, h=12, alpha=ts.hw_alpha, beta=ts.hw_beta ):
+    '''Holt-Winters forecasts h-periods ahead from group dataframe.'''
+    #  Tip: use all available (non-sliced) data for forecasting.    
+    #  This is essentially a Kalman filter with optimal alpha-beta, 
+    #  applied to each series individually, not jointly.
+    #  cf. holtfred() which works given a single series dataframe.
+    forecasts = []
+    keys = list(groupdf.columns)
+    for k in keys:
+        kdf = todf( groupdf[k] )
+        holtdf = holt( kdf, alpha, beta )
+        forecastdf = holtforecast( holtdf, h )
+        forecasts.append( forecastdf )
+    keysdf = paste( forecasts )
+    keysdf.columns = keys
+    return keysdf
 
 
 if __name__ == "__main__":
