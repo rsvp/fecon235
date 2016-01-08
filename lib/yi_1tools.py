@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-28
+#  Python Module for import                           Date : 2016-01-08
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-08  Append sample size and dates to georet() output.
 2015-12-28  python3 compatible fix, division, add div()
 2015-12-20  python3 compatible fix, lib import fix.
 2015-12-17  python3 compatible fix, introduce yi_0sys module.
@@ -144,7 +145,13 @@ def georet( dfx, yearly=256 ):
      #                        ^^^^^^i.e. std sigma, or volatility.
      lst = [ round(i*100, 2) for i in lst ]
      #       ^[ geor, mean, volatility ] in readable % form.
-     return lst + [ yearly ]
+     lst.append( yearly )
+     lst.append( dfx.shape[0] )
+     lst.append(str(dfx.index[0] ).replace(' 00:00:00', ''))
+     lst.append(str(dfx.index[-1]).replace(' 00:00:00', ''))
+     #   So lst: [ geor, mean, volatility, yearly, 
+     #                   sample_size, start_date, end_date ]
+     return lst
 
 
 def zeroprice( rate, duration=9, yearly=2, face=100 ):
