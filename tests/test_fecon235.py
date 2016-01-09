@@ -104,5 +104,18 @@ def demo_FORECAST_m4xau_from_FRED_vSlow():
 
 
 
+def demo_groupgeoret_test_georet_Geometric_Mean_vSlow():
+    '''Test groupget, followed by groupgeoret which depends on georet.
+       First create a group dictionary, then retrieve...
+
+    >>> fxdic = { 'EURUSD' : d4eurusd, 'USDJPY' : d4usdjpy }
+    >>> fxdf = groupget( fxdic )
+    >>> groupgeoret( fxdf['2010':'2015'], 256 )
+    [[4.19, 4.63, 9.3, 256, 1565, '2010-01-01', '2015-12-31', 'USDJPY'], [-4.54, -4.08, 9.64, 256, 1565, '2010-01-01', '2015-12-31', 'EURUSD']]
+    '''
+    pass
+
+
+
 if __name__ == "__main__":
      system.endmodule()
