@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-05
+#  Python Module for import                           Date : 2016-01-08
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,8 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-08  For groupgeoret, sort results in a list, yearly default.
+               For grouppc, freq default as in pcent.
 2016-01-05  Add groupget, grouppc, groupgeoret, groupholtf functions.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
@@ -130,7 +132,7 @@ def groupget( ggdic=group4d, maxi=0 ):
     return groupdf
 
 
-def grouppc( groupdf, freq ):
+def grouppc( groupdf, freq=1 ):
     '''Create overlapping pcent dataframe, given a group dataframe.'''
     #  See groupget() to retrieve and create group dataframe.  
     #  Very useful to visualize as boxplot, see fred-georeturns.ipynb
@@ -145,14 +147,18 @@ def grouppc( groupdf, freq ):
     return pcdf
 
 
-def groupgeoret( groupdf, yearly ):
+def groupgeoret( groupdf, yearly=256 ):
     '''Geometric mean returns, non-overlapping, for group dataframe.
        Argument "yearly" refers to annual frequency, e.g. 
        256 for daily trading days, 12 for monthly, 4 for quarterly.
     '''
     keys = list(groupdf.columns)
-    #  Use dictionary comprehension to store lists from georet().
-    return { k : georet(todf(groupdf[k]), yearly) for k in keys }
+    #  Use list comprehension to store lists from georet():
+    geo = [ georet(todf(groupdf[k]), yearly) + [k]  for k in keys ]
+    #  where each georet list gets appended with a identifying key.
+    geo.sort(reverse=True)
+    #  Group is ordered in-place with respect to decreasing georet.
+    return geo
 
 
 def groupholtf( groupdf, h=12, alpha=ts.hw_alpha, beta=ts.hw_beta ):
