@@ -11,8 +11,14 @@ zmp-*
 #  ANY filename containing tmp is temporary!
 
 
+#  Committing images will add unnecessary binary blot to the repo!
 *.png
 #  charts generally produced from notebooks.
+*.jpg
+#  images locally for notebooks.
+#     Suggest hosting them externally, thus avoid committing them.
+#     Use Image() to display them with embed=False.
+
 
 #  Interim IPython notebooks:
 .ipynb_checkpoints/
