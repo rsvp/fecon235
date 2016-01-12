@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-08
+#  Python Module for import                           Date : 2016-01-11
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,7 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-11  Add forefunds() to forecast Fed Funds rate.
 2016-01-08  For groupgeoret, sort results in a list, yearly default.
                For grouppc, freq default as in pcent.
 2016-01-05  Add groupget, grouppc, groupgeoret, groupholtf functions.
@@ -177,6 +178,21 @@ def groupholtf( groupdf, h=12, alpha=ts.hw_alpha, beta=ts.hw_beta ):
     keysdf = paste( forecasts )
     keysdf.columns = keys
     return keysdf
+
+
+def forefunds( nearby='16m', distant='17m' ):
+    '''Forecast distant Fed Funds rate using Eurodollar futures.'''
+    #  Long derivation is given in qdl-libor-fed-funds.ipynb
+    ffer = getfred('DFF')
+    #      ^Retrieve Fed Funds effective rate, daily since 1954.
+    ffer_ema = ema( ffer['1981':], 0.0645 )
+    #                    ^Eurodollar futures debut.
+    #          ^Exponentially Weighted Moving Average, 30-period.
+    libor_nearby  = get( 'f4libor' + nearby  ) 
+    libor_distant = get( 'f4libor' + distant )
+    libor_spread = todf( libor_nearby - libor_distant )
+    #     spread in forward style quote since futures uses 100-rate.
+    return todf( ffer_ema + libor_spread )
 
 
 if __name__ == "__main__":
