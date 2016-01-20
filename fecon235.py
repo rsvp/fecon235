@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-11
+#  Python Module for import                           Date : 2016-01-19
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,9 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-19  Add groupfun() to apply some function to group columns.
+               This was derived by generalizing grouppc.
+               Add cotr() for normalized COTR position indicators.
 2016-01-11  Add forefunds() to forecast Fed Funds rate.
 2016-01-08  For groupgeoret, sort results in a list, yearly default.
                For grouppc, freq default as in pcent.
@@ -44,12 +47,20 @@ from .lib.yi_stocks import *
 from .lib.yi_timeseries import *
 
 
-#  We can specify our favorite series as a dictionary
+#  GROUPS:  specify our favorite series as a dictionary
 #  where key is name, and corresponding value is its data code:
+
 group4d = { 'Zero10' : d4zero10, 'SPX' : d4spx, 'XAU' : d4xau, 
             'EURUSD' : d4eurusd, 'USDJPY' : d4usdjpy }
 #         For usage details, see fred-georeturns.ipynb for details,
 #         in particular, functions like group*() in this module.
+
+cotr4w = { 'Bonds' : w4cotr_bonds, 'Equities' : w4cotr_equities, 
+           'Metals' : w4cotr_metals, 'USD' : w4cotr_usd }
+#         For usage details, see qdl-COTR-positions.ipynb for details,
+#         "Market position indicators using CFTC COTR"
+#         COTR := Commitment of Traders Report.
+
 
 
 def get( code, maxi=0 ):
@@ -133,19 +144,28 @@ def groupget( ggdic=group4d, maxi=0 ):
     return groupdf
 
 
+def groupfun( fun, groupdf, *pargs, **kwargs ):
+    '''Use fun(ction) column-wise, then output new group dataframe.'''
+    #  In math, this is known as an "operator":
+    #           a function which takes another function as argument.
+    #  Examples of fun: pcent, normalize, etc. See grouppc() next.
+    #  See groupget() to retrieve and create group dataframe.  
+    keys = list(groupdf.columns)
+    #  Compute individual columns as dataframes in a list:
+    out = [todf( fun(todf(groupdf[key]), *pargs, **kwargs) ) for key in keys]
+    #            ^Python 2 and 3 compatible: apply() removed in Python 3.
+    #  Paste together dataframes into one large dataframe:
+    outdf = paste( out )
+    #  Name the columns:
+    outdf.columns = keys
+    return outdf
+
+
 def grouppc( groupdf, freq=1 ):
     '''Create overlapping pcent dataframe, given a group dataframe.'''
     #  See groupget() to retrieve and create group dataframe.  
     #  Very useful to visualize as boxplot, see fred-georeturns.ipynb
-    keys = list(groupdf.columns)
-    #  Compute individual columns as dataframe values in a dictionary:
-    pcdic = { key : todf(pcent(groupdf[key], freq))  for key in keys }
-    #             ^Illustrates dictionary comprehension.
-    #  Paste together dataframes into one large dataframe:
-    pcdf = paste([ pcdic[key] for key in keys ])
-    #  Name the columns:
-    pcdf.columns = keys
-    return pcdf
+    return groupfun( pcent, groupdf, freq )
 
 
 def groupgeoret( groupdf, yearly=256 ):
@@ -193,6 +213,14 @@ def forefunds( nearby='16m', distant='17m' ):
     libor_spread = todf( libor_nearby - libor_distant )
     #     spread in forward style quote since futures uses 100-rate.
     return todf( ffer_ema + libor_spread )
+
+
+def cotr( group=cotr4w ): 
+    '''Compute latest normalized CFTC COTR position indicators.'''
+    #  COTR is the Commitment of Traders Report, 
+    #  for detail derivation, see qdl-COTR-positions.ipynb
+    positions = groupget( group )
+    return groupfun( normalize, positions )
 
 
 if __name__ == "__main__":
