@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-20
+#  Python Module for import                           Date : 2016-01-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_plot.py : essential plot functions.
@@ -10,6 +10,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-21  plotn(): Replace its "dataframe = dataframe.dropna()" with todf.
 2016-01-20  Receive plotdf(), versions 2014-15, from yi_fred module.
                plotdf was actually the very first plot routine written.
                Replace its "dataframe = dataframe.dropna()" with todf.
@@ -41,7 +42,7 @@ def plotdf( dataframe, title='tmp' ):
     '''Plot dataframe where its index are dates.'''
     dataframe = tools.todf(dataframe)
     #                ^todf must dropna(),
-    #                 otherwise timestamp of last point plotted may be wrong.
+    #                 otherwise index of last point plotted may be wrong.
     #           Also helps if dataframe resulted from synthetic operations,
     #           or if a Series was incorrectly submitted as Dataframe.      
     fig, ax = plt.subplots()
@@ -72,11 +73,14 @@ def plotdf( dataframe, title='tmp' ):
 
 
 def plotn( dataframe, title='tmp' ):
-    '''Plot dataframe where the index is numbered (not dates).'''
-    #  2014-12-13  Adapted from plotdf for dates in yi_fred.py
-    dataframe = dataframe.dropna()
-    #           ^esp. if it resulted from synthetic operations, 
-    #                 else timestamp of last point plotted may be wrong.
+    '''Plot dataframe (or list) where the index is numbered (not dates).'''
+    #  2014-12-13  Adapted from plotdf which uses date index.
+    #  2016-01-21  With todf pre-filter, list type will be converted.
+    dataframe = tools.todf(dataframe)
+    #                ^todf must dropna(),
+    #                 otherwise index of last point plotted may be wrong.
+    #           Also helps if dataframe resulted from synthetic operations,
+    #           or if a Series was incorrectly submitted as Dataframe.      
     fig, ax = plt.subplots()
     #  ax.xaxis_date()
     #  #  ^interpret x-axis values as dates.
