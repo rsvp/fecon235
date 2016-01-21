@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2016-01-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-20  Logical move of plotdf() to yi_plot module.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: use absolute_import.
 2015-12-05  python3 compatible: use yi_0sys module and fix print.
@@ -85,14 +86,12 @@ except ImportError:
     from urllib2 import urlopen
     #    ^for python2 
 
-import matplotlib.pyplot as plt   #  for standard plots.
-import pandas as pd               #  for data munging.
-
+import pandas as pd
 from . import yi_0sys as system
 from . import yi_1tools as tools
+from . import yi_plot as plot
 from . import yi_timeseries as ts 
 
-dotsperinch = 140                 #  Resolution for plot.
 
 
 #      __________ Convenient ABBREVIATIONS for less typing of quotes:
@@ -304,40 +303,6 @@ def getdata_fred( fredcode ):
     #                Change import style for python3 compatibility.
     fredcsv = urlopen( makeURL(fredcode) )
     return readfile( fredcsv )
-
-
-#  The function to plot data looks routine, but in actuality specifying the
-#  details can be such a hassle involving lots of trial and error.
-
-def plotdf( dataframe, title='tmp' ):
-    '''Plot dataframe where its index are dates.'''
-    dataframe = dataframe.dropna()
-    #           ^esp. if it resulted from synthetic operations, 
-    #                 else timestamp of last point plotted may be wrong.
-    fig, ax = plt.subplots()
-    ax.xaxis_date()
-    #  ^interpret x-axis values as dates.
-    plt.xticks( rotation='vertical' )
-    #       show x labels vertically.
-
-    ax.plot( dataframe.index, dataframe, 'b-' )
-    #        ^x               ^y          blue line
-    #                                     k is black.
-    ax.set_title( title + ' / last ' + str(dataframe.index[-1]) )  
-    #                                  ^timestamp of last data point
-    plt.grid(True)
-    plt.show()
-
-    #  Now prepare the image FILE to save, 
-    #  but ONLY if the title is not the default
-    #  (since this operation can be very slow):
-    if title != 'tmp':
-         title = title.replace( ' ', '_' )
-         imgf = 'plotdf-' + title + '.png' 
-         fig.set_size_inches(11.5, 8.5)
-         fig.savefig( imgf, dpi=dotsperinch )
-         print(" ::  Finished: " + imgf)
-    return
 
 
 
@@ -612,14 +577,14 @@ def getfred( fredcode ):
 
 
 def plotfred( data, title='tmp', maxi=87654321 ):
-     '''Plot data should be it given as dataframe or fredcode.'''
+     '''Plot data should be given as dataframe or fredcode.'''
      #  maxi is an arbitrary maximum number of points to be plotted.
      if isinstance( data, pd.DataFrame ):
-          plotdf( tools.tail( data, maxi ), title )
+          plot.plotdf( tools.tail( data, maxi ), title )
      else:
           fredcode = data
           df = getfred( fredcode )
-          plotdf( tools.tail( df,   maxi ), title )
+          plot.plotdf( tools.tail( df,   maxi ), title )
      return
 
 

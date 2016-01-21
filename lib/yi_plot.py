@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2016-01-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_plot.py : essential plot functions.
@@ -10,6 +10,9 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-20  Receive plotdf(), versions 2014-15, from yi_fred module.
+               plotdf was actually the very first plot routine written.
+               Replace its "dataframe = dataframe.dropna()" with todf.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-11-19  Add scatter, scats, and scat for rainbow scatter plots.
@@ -29,6 +32,43 @@ from . import yi_0sys as system
 from . import yi_1tools as tools
 
 dotsperinch = 140                 #  DPI resolution for plot.
+
+
+#  The function to plot data looks routine, but in actuality specifying the
+#  details can be such a hassle involving lots of trial and error.
+
+def plotdf( dataframe, title='tmp' ):
+    '''Plot dataframe where its index are dates.'''
+    dataframe = tools.todf(dataframe)
+    #                ^todf must dropna(),
+    #                 otherwise timestamp of last point plotted may be wrong.
+    #           Also helps if dataframe resulted from synthetic operations,
+    #           or if a Series was incorrectly submitted as Dataframe.      
+    fig, ax = plt.subplots()
+    ax.xaxis_date()
+    #  ^interpret x-axis values as dates.
+    plt.xticks( rotation='vertical' )
+    #       show x labels vertically.
+
+    ax.plot( dataframe.index, dataframe, 'b-' )
+    #        ^x               ^y          blue line
+    #                                     k is black.
+    ax.set_title( title + ' / last ' + str(dataframe.index[-1]) )  
+    #                                  ^timestamp of last data point
+    plt.grid(True)
+    plt.show()
+
+    #  Now prepare the image FILE to save, 
+    #  but ONLY if the title is not the default
+    #  (since this operation can be very slow):
+    if title != 'tmp':
+         title = title.replace( ' ', '_' )
+         imgf = 'plotdf-' + title + '.png' 
+         fig.set_size_inches(11.5, 8.5)
+         fig.savefig( imgf, dpi=dotsperinch )
+         print(" ::  Finished: " + imgf)
+    return
+
 
 
 def plotn( dataframe, title='tmp' ):
