@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-19
+#  Python Module for import                           Date : 2016-01-22
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,8 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-01-22  Include plotdf() in plot() as first candidate.
+               Rename cotr() to groupcotr(), then include smoothing.
 2016-01-19  Add groupfun() to apply some function to group columns.
                This was derived by generalizing grouppc.
                Add cotr() for normalized COTR position indicators.
@@ -99,20 +101,28 @@ def get( code, maxi=0 ):
                 else:
                     df = getstock( code )
             except: 
-                raise ValueError('INVALID symbol string or code for fecon.get()')
+                raise ValueError('INVALID symbol string or code for fecon get()')
     return df
 
 
 def plot( data, title='tmp', maxi=87654321 ):
-    '''Unifies plotfred and plotqdl for plotting data.'''
-    #  "data" could also be fredcode or quandlcode, but not stock slang.
+    '''Unifies plotdf, plotfred and plotqdl for plotting data.
+       The "data" argument could also be fredcode or quandlcode, 
+       but not stock slang -- a Dataframe is first choice, 
+       yet (as of 2016-01-20) Series type is also acceptable.
+       Assumes date index; for numbered index or List, use plotn() instead.
+    '''
     try:
-        plotfred( data, title, maxi )
+        plotdf( tail(data, maxi), title )
+        #  2016-01-20  plotdf now sports a todf pre-filter for convenience.
     except:
         try:
-            plotqdl( data, title, maxi )
+            plotfred( data, title, maxi )
         except:
-            raise ValueError('INVALID argument or data for fecon.plot()')
+            try:
+                plotqdl( data, title, maxi )
+            except:
+                raise ValueError('INVALID argument or data for fecon plot()')
     return
 
 
@@ -126,7 +136,7 @@ def forecast( data, h=12 ):
         try:
             df = holtqdl( data, h )
         except:
-            raise ValueError('INVALID argument or data for fecon.forecast()')
+            raise ValueError('INVALID argument or data for fecon forecast()')
     return df
 
 
@@ -200,6 +210,22 @@ def groupholtf( groupdf, h=12, alpha=ts.hw_alpha, beta=ts.hw_beta ):
     return keysdf
 
 
+def groupcotr( group=cotr4w, alpha=0 ): 
+    '''Compute latest normalized CFTC COTR position indicators.
+       Optionally specify alpha for Exponential Moving Average
+       which is a smoothing parameter: 0 < alpha < 1 (try 0.26)
+       COTR is the Commitment of Traders Report from US gov agency.
+    '''
+    #  For detailed derivation, see qdl-COTR-positions.ipynb
+    positions = groupget( group )
+    norpositions = groupfun( normalize, positions )
+    #  alpha default should skip SMOOTHING operation...
+    if alpha:
+        return groupfun( ema, norpositions, alpha )
+    else:
+        return norpositions
+
+
 def forefunds( nearby='16m', distant='17m' ):
     '''Forecast distant Fed Funds rate using Eurodollar futures.'''
     #  Long derivation is given in qdl-libor-fed-funds.ipynb
@@ -213,14 +239,6 @@ def forefunds( nearby='16m', distant='17m' ):
     libor_spread = todf( libor_nearby - libor_distant )
     #     spread in forward style quote since futures uses 100-rate.
     return todf( ffer_ema + libor_spread )
-
-
-def cotr( group=cotr4w ): 
-    '''Compute latest normalized CFTC COTR position indicators.'''
-    #  COTR is the Commitment of Traders Report, 
-    #  for detail derivation, see qdl-COTR-positions.ipynb
-    positions = groupget( group )
-    return groupfun( normalize, positions )
 
 
 if __name__ == "__main__":
