@@ -4,6 +4,40 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
+### 2016-01-23 v4.16.0123
+
+We adopt use of *group* dictionaries where
+key serves as name, and value is its data code.
+Some new functions in the fecon235 module:
+groupget, grouppc, groupgeoret, groupholtf -- 
+are helpful in clarifying logic and reducing notebook clutter.
+The function groupfun() is mathematically an operator.
+
+For example, cotr4w is a group, and further 
+usage is explained in nb/qdl-COTR-positions.ipynb
+for CFTC Commitment of Traders Reports.
+One command: groupcotr() will summarize results, 
+with optional smoothing parameter.
+
+For fecon235.py: add forefunds() to forecast Fed Funds directly.
+Its derivation is explained in qdl-libor-fed-funds.ipynb.
+
+Append sample size and dates to georet() output,
+making it suitable for logging purposes.
+Geometric mean returns are ranked in groupgeoret().
+
+Procedure plotdf() has a *todf* pre-filter for convenience 
+so that Series type can be plotted directly.
+That procedure is now tried first in plot().
+
+Fix issue 2 with v4 and p6 upgrades:
+
+- fred-georeturns.ipynb
+- qdl-libor-fed-funds.ipynb
+
+To update pre-2016 notebooks, sections for import and the preamble 
+must be modified, please see [issue 2].
+
 ### 2015-12-30 v4.15.1230 MAJOR
 
 Major v4 benefits from the python3 compatibility changes
@@ -125,4 +159,9 @@ Recommend pandas > 0.15
 
 Included modules have passed tests. Imperative that pandas > 0.13 
 with recommended dependencies on numpy.
- 
+
+- - - -
+
+[issue 2]: https://github.com/rsvp/fecon235/issues/2
+
+
