@@ -1,141 +1,132 @@
-## fecon235 :: Computational data tools for financial economics ##
+## fecon235 : Computational data tools for financial economics ##
 
 [![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This is a free open source project for software tools 
-useful in financial economics. We develop research notebooks 
+in financial economics. We develop code for research notebooks 
 which are executable scripts capable of statistical 
-computations, as well as collecting raw data in real-time. 
-This serves to directly verify theoretical ideas and 
-practical methods.
+computations, as well as, collection of raw data in real-time. 
+This serves to verify theoretical ideas and 
+practical methods interactively.
 
-The project name derives from the seminar series held at the 
+The project derives from the seminar series held at the 
 University of California at Berkeley, jointly sponsored by the 
 Department of Economics and the Haas School of Business. 
-Selected topics are treated for in-depth studies.
+Selected topics are treated for replicable analysis.
+
 
 ### What is this repository for? ###
 
-- Source data, both historical and the most current. 
+- Economic and financial data, both historical and the most current. 
 
-- Easy data munging, e.g. resampling and alignment of time series.
+- Data munging, for example, resampling and alignment of time series.
 
-- Exploration of data using graphical packages. 
+- Analysis using techniques from econometrics and statistical machine learning.
 
-- Analysis using techniques from econometrics and machine learning.
+- Visualization of data using graphical packages. 
 
-- Presentation of mathematical results (in LaTex) and symbolic models.
+- Reproducible research which is collaborative and openly accessible.
 
-- Reproducible research which is collaborative and publicly accessible.
+**Database:** the primary source is [FRED], the U.S. Federal Reserve
+Economic Data bank which is accessed directly online using our interface. 
+Other specialized data can be directly retrieved using our [Quandl] API 
+module, for example, futures prices. Data for stocks, mutual funds, and 
+ETFs is sourced from Yahoo Finance, but falls back on Google Finance. 
+All data access is designed to be completely *free* of charge.
 
-**Database:** currently our main source is [FRED], the U.S. Federal Reserve
-Economic Data bank which is accessed directly online using our programs. 
-Some specialized data can be directly retrieved using our [Quandl] API 
-module, for example, futures prices. Data for stocks, ETFs, and mutual 
-funds comes directly from Yahoo Finance, and falls back on Google Finance.
+**Models:** our baseline is *Ferbus*, the 
+model used internally by the Federal Reserve Bank, 
+however at fecon235, the accuracy of out-of-sample forecasts 
+takes precedence over traditional measures of model fit. 
+We also develop tools for asset pricing and portfolio optimization, 
+in addition to econometric models.
 
-**Models:** we emphasize original research where the baseline comparison is to
-*Ferbus*, the model used internally by the Federal Reserve Bank.  Accuracy of
-out-of-sample forecasts takes precedence over traditional measures of model
-fit.
 
-### How do I get set up? ###
+### How does one get started? ###
 
-* Deployment: for introduction to the Python ecosystem for financial 
-  economists, the best reference for getting started is the 
-  Quantitative Economics site by Thomas [Sargent]. 
+* We rely primarily on Python, especially the Jupyter/IPython notebook 
+  and pandas packages (though the R kernel may be used as needed). 
 
-* We rely primarily on Python, especially the Jupyter notebook and pandas 
-  packages. The code is designed to be cross-platform for users, however, 
-  for developers we assume a Linux environment.
-  R code may be used as needed, usually indirectly within wrappers.
+* Deployment: the best reference to the Python ecosystem for financial economists 
+  is the Quantitative Economics site by Thomas [Sargent]. 
 
-* Configuration: we strongly recommend [Anaconda], a completely free Python
-  distribution which includes about 200 of the most useful Python packages for
-  science, math, engineering, data analysis. It will resolve your headaches 
-  due to dependency hell.
+* Dependencies: pandas > 0.15 is highly recommended. 
+  All modules are tested against both Python 2.7 and 3 series. 
+  User code has been rewritten for cross-platform performance 
+  (Linux, Mac, and Windows).
 
-* Dependencies: pandas > 0.15 is suggested. 
-  All modules are now operational under 
-  both Python 2 and 3. Also, code has been rewritten for
-  cross-platform performance (Linux, Mac, and Windows).
-  Our tests under the *Jupyter* fork of the IPython notebook 
-  has not encountered any problems thus far.
+* Configuration: we strongly recommend [Anaconda], a free Python
+  distribution which includes about 200 of the most useful Python packages 
+  for science, math, engineering, data analysis. 
+  It will resolve your headaches due to dependency hell.
 
 * Updates: for pre-2016 notebooks, please use import style 
   discussed in *docs* README: https://git.io/fecon-intro 
-  The top-level module **fecon235.py** 
-  (formerly known as *nb/fecon.py*) is also 
-  explained in that introduction.
-  With adoption of python3 print_function, 
-  the python2 print statement must be rewritten as a function.
+
+Some basic commands, e.g. get() and plot() in the fecon235 top module, 
+will do a lot of the heavy lifting to get you started immediately. 
+The commands are designed for scripts (not necessarily within Jupyter notebooks) 
+and any Python IDE interactive development environment. 
+
+The *docs* directory and our [wiki] should be gradually adding tutorials and FAQs. 
+The source code, in the meantime, is thoroughly self-documenting.
+
 
 ### Examples of code ###
 
-The best way to see the code in action is to run the 
-primary notebooks in the `nb` directory.
+The best way to see the code in action is to 
+run the notebooks in the `nb` directory.
 Some of them are described at the end of this page. 
-(Note that GitHub can render Jupyter notebooks directly in the browser, 
-however, they will not be executable.) 
+Note that GitHub can render Jupyter notebooks directly in the browser, 
+however, they will not be executable.
+
 Here is a rendering of a notebook at GitHub for 
 [Housing starts, home prices and affordibility](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb). 
-If you locally executed that notebook, it would 
-also seek out the latest available data to bring 
-the research up-to-date.   
+If you had executed that notebook locally, it would 
+have also retrieved the latest available data and 
+recomputed the results.
 
-To see how we score the Federal Reserve's performance under its dual
+To score the Federal Reserve's performance under its dual
 mandate for inflation and unemployment, see https://git.io/fed
-where the Phillips curve is discredited by constructing
-heat map scatter plots.
+(where tangentially the Phillips curve is discredited by constructing
+heat map scatter plots). Please see https://git.io/fedfunds 
+to forecast the Fed Funds rate using futures contracts on LIBOR.
 
-Some basic commands, 
-e.g. get() and plot() in the fecon235 module, will do a lot of the heavy lifting 
-to get you started immediately. 
-They are designed for scripts (not necessarily within Jupyter notebooks) 
-and any Python IDE interactive development environment. 
-The *docs* directory and our [wiki] should be gradually adding tutorials and FAQs 
-for any clarifications. 
+The notebook https://git.io/cotr discerns how various asset classes 
+are positioned in the market. In contrast, an overview of asset prices is 
+given in https://git.io/georet using geometric mean returns.
+
 
 ### Useful modules ###
 
-These standalone Python *lib* modules are frequently imported 
-into our Python scripts:
+These are some of our Python modules in the `lib` directory:
 
-* yi_1tools.py : essential utility functions.
-* yi_plot.py : essential plot functions.
-* yi_timeseries : useful time series functions.
-* yi_simulation : useful functions for simulation studies.
-* yi_fred.py : Access FRED with pandas for plots and analysis.
-* yi_quandl.py : Access Quandl with pandas for plots and analysis.
-* yi_stocks.py : Access stocks and funds with pandas for plots and analysis.
+* yi_1tools : essential utility functions.
+* yi_plot : plot functions and visualizations.
+* yi_timeseries : time series functions and filters.
+* yi_simulation : building blocks for simulations.
+* yi_fred : Freely access FRED Federal Reserve data with pandas.
+* yi_quandl : Access free Quandl and government data with pandas.
+* yi_stocks : Get stock, mutual fund, and ETF quotes with pandas.
 
-However, for Jupyter notebooks and interactive sesssions, 
-only one generalized module **fecon235.py** needs to be imported. 
-please see https://git.io/fecon-intro in *docs* for details.
-The commands are very easy to learn and customize, 
-producing relatively sophisticated results quickly 
-without detailed knowledge of the underlying numerical packages. 
+For Jupyter notebooks and interactive sesssions, 
+only one module **fecon235** needs to be imported; 
+please consult https://git.io/fecon-intro for details.
+The commands are very easy to customize, 
+producing sophisticated results quickly 
+without tweaking the underlying numerical packages.
 
-### Development ###
 
-* Code revisions: please kindly follow [Github flow]. 
-  You are also invited to directly add commentary 
-  to existing notebooks.
-
-* Running tests: details are in the `tests` directory. 
-  For integration testing, we run all notebooks in batch mode. 
-  This also syncs temporary notebooks with current data.
+### Development and contacts ###
 
 * Guidelines: we welcome your [pull request] to improve our code. 
-  Please be sure to pull origin/master and rebase beforehand. 
+  Details are outlined in [Development].
 
-* Documents and data for fecon235 seminars: contact us if you need 
-  help incorporating your material into this repository.
+* For fecon235 presentations: contact us if you need help 
+  incorporating your material into an auxiliary repository.
 
-
-### Contact info ###
-
-Repo [admin]
+Lead developer is Adriano rsvp.github.com: [admin]. 
+Please join our chat with fellow users and developers at [Gitter].
 
 
 ### Partial contents of nb directory ###
@@ -202,7 +193,7 @@ excessive equity valuations aside from inflationary pressures.
 For every wage dollar paid, what is GDP output?  In answering this question,
 we derive a model for GDP growth based on observations from wage growth.  
 
-##### [fred-georeturns.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-georeturns.ipynb) : Geometric mean returns on FRED series
+##### [fred-georeturns.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-georeturns.ipynb) : Comparative geometric mean returns
 
 We examine economic and financial time series where Holt-Winters is used to
 forecast one-year ahead. Daily data for bonds, equity, and gold is then
@@ -277,17 +268,15 @@ Holt-Winters method.
 
 - - - -
 
-Revision date : 2015-12-30
+Revision date : 2016-01-23
 
-
-[admin]:      https://rsvp.github.com          "Adriano rsvp.github.com"
-[wiki]:       https://github.com/rsvp/fecon235/wiki  "Wiki for fecon235"
-[Anaconda]:   http://continuum.io/downloads   "Anaconda Python distribution"
-[FRED]: http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
-[Quandl]:       https://www.quandl.com  "Quandl, financial and economic data"
-[Github flow]:  http://scottchacon.com/2011/08/31/github-flow.html "Github Flow"
+[admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
+[Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
+[Development]:  https://github.com/rsvp/fecon235/blob/master/CONTRIBUTING.md "Development"
+[FRED]:         http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
+[Gitter]:       https://gitter.im/rsvp/fecon235 "Gitter fecon235"
 [intro page]:   http://rsvp.github.com/pg/fecon235-intro.html "fecon235 Introduction"
 [pull request]: https://help.github.com/articles/using-pull-requests/ "Pull request"
-[Sargent]:      http://quant-econ.net/py       "Thomas Sargent, Quantitative Economics"
-
-
+[Quandl]:       https://www.quandl.com  "Quandl, financial and economic data"
+[Sargent]:      http://quant-econ.net/py "Thomas Sargent, Quantitative Economics"
+[wiki]:         https://github.com/rsvp/fecon235/wiki  "Wiki for fecon235"
