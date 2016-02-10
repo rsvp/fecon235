@@ -81,7 +81,7 @@ Note that GitHub can render Jupyter notebooks directly in the browser,
 however, they will not be executable.
 
 Here is a rendering of a notebook at GitHub for 
-[Housing starts, home prices and affordibility](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb). 
+*Housing economy, home prices and affordibility* https://git.io/housing 
 If you had executed that notebook locally, it would 
 have also retrieved the latest available data and 
 recomputed the results.
@@ -200,12 +200,13 @@ forecast one-year ahead. Daily data for bonds, equity, and gold is then
 analyzed. The focus is on geometric mean returns because they optimally
 express mean-variance under logarithmic utility. Shortcut: https://git.io/georet
 
-##### [fred-housing.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb) : Housing starts, home prices and affordibility  
+##### [fred-housing.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-housing.ipynb) : Housing economy, home prices and affordibility  
 
-Greenspan in 2014 pointed out that there was never a recovery from recession
+Alan Greenspan in 2014 pointed out that there was never a recovery from recession
 without improvements in housing construction. Here we examine some relevant
 data, including the Case-Shiller series, and derive an insightful measure of
-the housing economy which takes affordibility into account.  
+the housing economy, *hscore*, which takes affordibility into account.
+Shortcut: https://git.io/housing
 
 ##### [fred-inflation.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-inflation.ipynb) : Inflation data from FRED using pandas
 
