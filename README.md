@@ -96,6 +96,9 @@ The notebook https://git.io/cotr discerns how various asset classes
 are positioned in the market. In contrast, an overview of asset prices is 
 given in https://git.io/georet using geometric mean returns.
 
+In https://git.io/gold we make a conjecture that 
+real gold prices is a stationary time-series bound by real interest rates.
+
 
 ### Useful modules ###
 
@@ -261,19 +264,22 @@ long haul.
 
 ##### [fred-xau-tips.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-xau-tips.ipynb) : Gold and Treasury TIPS, their daily relationship  
 
-Using monthly data we previously found that there is a strong correlation
-between gold and real rates, so we investigate this on a finer time scale. We
-then use this correlation to help make forecasts using the univariate
-Holt-Winters method.  
+Using monthly data we previously found that there is strong correlation 
+between gold and real rates, so we investigate this relationship on a daily frequency. 
+We then use this correlation to help make forecasts using the 
+Holt-Winters time-series method. 
+Lastly, we show the history of gold prices in real terms which leads to our 
+conjecture that real gold is a stationary time-series bound by real interest rates. 
+Shortcut: https://git.io/gold
 
 
 - - - -
 
-Revision date : 2016-01-23
+Revision date : 2016-02-21
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
-[Development]:  https://github.com/rsvp/fecon235/blob/master/CONTRIBUTING.md "Development"
+[Development]:  https://github.com/rsvp/fecon235/blob/master/.github/CONTRIBUTING.md "Development"
 [FRED]:         http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
 [Gitter]:       https://gitter.im/rsvp/fecon235 "Gitter fecon235"
 [intro page]:   http://rsvp.github.com/pg/fecon235-intro.html "fecon235 Introduction"
