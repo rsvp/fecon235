@@ -4,6 +4,22 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
+### 2016-02-21 v4.16.0221
+
+Add directory `.github` for issue and PR templates,
+see [2016-02-17 GitHub post](https://github.com/blog/2111-issue-and-pull-request-templates)
+
+- Rename CONTRIBUTING.md -> .github/CONTRIBUTING.md
+- Add .github/ISSUE_TEMPLATE.md
+- Add .github/PULL_REQUEST_TEMPLATE.md
+
+Fix issue #2 by v4 and p6 updates:
+
+- fred-housing.ipynb
+- fred-xau-tips.ipynb
+
+We conjecture that real gold is a stationary time-series bound by real interest rates.
+
 ### 2016-01-23 v4.16.0123
 
 We adopt use of *group* dictionaries where
