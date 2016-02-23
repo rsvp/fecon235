@@ -50,7 +50,7 @@ in addition to econometric models.
 * Deployment: the best reference to the Python ecosystem for financial economists 
   is the Quantitative Economics site by Thomas [Sargent]. 
 
-* Dependencies: pandas > 0.15 is highly recommended. 
+* Dependencies: pandas > 0.16 is highly recommended. 
   All modules are tested against both Python 2.7 and 3 series. 
   User code has been rewritten for cross-platform performance 
   (Linux, Mac, and Windows).
@@ -98,6 +98,9 @@ given in https://git.io/georet using geometric mean returns.
 
 In https://git.io/gold we make a conjecture that 
 real gold prices is a stationary time-series bound by real interest rates.
+
+SEC 13F filings can be easily parsed, see https://git.io/13F
+where we track asset managers Stanley Druckenmiller and John Paulson.
 
 
 ### Useful modules ###
@@ -164,9 +167,12 @@ Shortcut: https://git.io/cotr
 ##### [SEC-13F-parse.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/SEC-13F-parse.ipynb) : Use pandas to read 13F filings from SEC
 
 Sort percentage allocation to long equities. 
-Caveats should be noted for portfolio management. 
-Module yi_secform.py, derived from this notebook, 
-easily sums up 13F filings in one function.
+Caveats are noted for portfolio management. 
+Module yi_secform easily sums up 13F filings by one function.
+For illustration, we follow asset managers with significant positions in GLD,
+a gold ETF; see Stanley Druckenmiller's sudden accumulation,
+and John Paulson's dramatic liquidation.
+Shortcut: https://git.io/13F
 
 ##### [fred-debt-pop.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-debt-pop.ipynb) : Growth of Federal debt, its burden on the US population  
 
@@ -275,7 +281,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-02-21
+Revision date : 2016-02-23
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
