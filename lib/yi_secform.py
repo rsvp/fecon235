@@ -1,15 +1,17 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2016-02-22
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_secform.py : module for SEC forms.
 
-References:
-- SEC form 13F
-  http://www.sec.gov/answers/form13f.htm
+REFERENCES:
+     - SEC form 13F, http://www.sec.gov/answers/form13f.htm
 
-- SEC-13F-parse.ipynb for derivation and debugging of this module.
+     - Jupyter notebook SEC-13F-parse.ipynb derives and debugs this module.
+          For static view, see https://git.io/13F
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-02-22  Replace .sort(columns=...) with .sort_values(by=...)
+               per future deprecation warning in pandas 0.17.1
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-08-30  First revised version for form 13F.
@@ -81,7 +83,8 @@ def pcent13f( url=druck150814, top=7654321 ):
      #  Also we need float anyways for Python2 division later.
      #
      #  Sort holdings by dollar value:
-     dfusd = df.sort( ['usd'], ascending=[False] )
+     dfusd = df.sort_values( by=['usd'], ascending=[False] )
+     #         .sort(columns=...) to be deprecated per pandas 0.17.1
      #  Sum total portfolio in USD:
      usdsum = sum( dfusd.usd )
      #
