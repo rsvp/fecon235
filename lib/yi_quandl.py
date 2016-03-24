@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2016-03-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,6 +190,8 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-03-21  Add freqM2MS for compatibility with FRED monthly format.
+               Add m4spx_1871_p, m4spx_1871_e, m4spx_1871_d. 
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-09-11  Add getfut to quickly retrieve futures price data.
@@ -204,7 +206,7 @@ import pandas as pd
 from . import yi_quandl_api as qdlapi    #  a.k.a. Quandl.py module
 from . import yi_0sys as system
 from . import yi_1tools as tools         
-from . import yi_fred as fred            #  For: plotdf
+from . import yi_fred as fred            #  For: plotdf, freqM2MS
 from . import yi_timeseries as ts        #  esp. Holt-Winters.
 
 
@@ -252,6 +254,13 @@ w4cotr_metals   = 'w4cotr_metals'   #  CFTC COTR Manager position: Gold, Silver
 w4cotr_usd      = 'w4cotr_usd'      #  CFTC COTR Manager position: US Dollar
 w4cotr_bonds    = 'w4cotr_bonds'    #  CFTC COTR Manager position: Bonds
 w4cotr_equities = 'w4cotr_equities' #  CFTC COTR Manager position: Equities
+
+
+
+#      __________ MONTHLY quandlcode:
+m4spx_1871_p    = 'm4spx_1871_p'    #  Shiller S&P500 nominal price
+m4spx_1871_e    = 'm4spx_1871_e'    #  Shiller S&P500 nominal earnings 12-month
+m4spx_1871_d    = 'm4spx_1871_d'    #  Shiller S&P500 nominal dividends 12-month
 
 
 
@@ -455,6 +464,56 @@ def getfut( slang, maxi=512, col='Settle' ):
 #  different combinations of roll date and price adjustment.
 
 
+def freqM2MS( dataframe ):
+     '''Change Monthly dates to (FRED-compatible) Month Start frequency.'''
+     #  FRED uses first day of month 'MS' to index that month's data,
+     #  whereas Quandl data *may* use varying end of month dates.
+     df = dataframe.set_index(pd.DatetimeIndex(
+                    [i.replace(day=1) for i in dataframe.index]))
+     df.index = df.index.normalize()
+     #  Thus converted to midnight (normalize) first day of month.
+     df.index.name = 'T'
+     #             ... but rename your columns elsewhere.
+     #  Quandl *may* not infer frequency in its transmitted dataframes.
+     #  So lastly, resampling converts index freq from None to 'MS'
+     #  which may be necessary to align operations between dataframes:
+     return fred.monthly( df )
+
+
+#  For details on Shiller m4spx_1871_*, see notebook qdl-spx-earn-div.ipynb
+#  esp. for underlying sources of reconstructed data.
+
+
+def getm4spx_1871_p():
+     '''Retrieve nominal monthly Shiller S&P500 price, starting 1871.'''
+     price  = freqM2MS(quandl( 'MULTPL/SP500_REAL_PRICE_MONTH' ))
+     #                           ^But they meant NOMINAL!
+     #  Their inflation-adjusted monthly series is called
+     #        MULTPL/SP500_INFLADJ_MONTH
+     #  Alternative: official YALE/SPCOMP, but 9 months latency!
+     return tools.todf( price )
+
+
+def getm4spx_1871_e():
+     '''Retrieve nominal monthly Shiller S&P500 earnings, starting 1871.'''
+     ratio = freqM2MS(quandl( 'MULTPL/SP500_PE_RATIO_MONTH' ))
+     #  Gets price/earnings ratio, so solve for 12-month earnings.
+     #  Alternative: official YALE/SPCOMP, but 9 months latency!
+     price = getm4spx_1871_p()
+     earn  = tools.div( price, ratio )
+     return tools.todf( earn )
+
+
+def getm4spx_1871_d():
+     '''Retrieve nominal monthly Shiller S&P500 dividends, starting 1871.'''
+     dyield = freqM2MS(quandl( 'MULTPL/SP500_DIV_YIELD_MONTH' ))
+     #  Gets dividend yield in percentage form, 
+     #  but we want just plain dividends over previous 12 months.
+     #  Alternative: official YALE/SPCOMP, but 9 months latency!
+     dyield = tools.todf(tools.div( dyield, 100 ))
+     price  = getm4spx_1871_p()
+     return tools.todf( dyield * price )
+
 
 def getqdl( quandlcode, maxi=87654321 ):
      '''Retrieve from Quandl in dataframe format, INCL. SPECIAL CASES.
@@ -474,6 +533,13 @@ def getqdl( quandlcode, maxi=87654321 ):
           df = cotr_position_bonds()
      elif quandlcode == w4cotr_equities:
           df = cotr_position_equities()
+
+     elif quandlcode == m4spx_1871_p:
+          df = getm4spx_1871_p()
+     elif quandlcode == m4spx_1871_e:
+          df = getm4spx_1871_e()
+     elif quandlcode == m4spx_1871_d:
+          df = getm4spx_1871_d()
 
      elif quandlcode[:2] == 'f4':
           df = getfut( quandlcode )
@@ -525,7 +591,7 @@ def holtqdl( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
 #  #  ======================================== yi_fred.py module =============
 #  
 #  
-#  #  For details on frequency conversion, see McKinney 2103, 
+#  #  For details on frequency conversion, see McKinney 2013, 
 #  #       Chp. 10 Resampling, esp. Table 10-5 on downsampling.
 #  #       pandas defaults are:
 #  #            how='mean', closed='right', label='right'
