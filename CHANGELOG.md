@@ -4,6 +4,18 @@
 within itself. This file simply gives a grand overview of such details 
 and the annotations in the commits and tags.*
 
+
+### 2016-03-29 v4.16.0329
+
+SEC-13F-parse.ipynb: Fix issue #2 by v4 and p6 updates.
+Noteworthy dramatic GLD liquidation in 2016-Q4 by Paulson.
+
+Add NEW nb/qdl-spx-earn-div.ipynb which examines the
+three separable components of total return for equities:
+enterprise and speculative returns plus dividend yield,
+using the Shiller database dating back to 1871.
+Shortcut: https://git.io/equities or https://git.io/spx
+
 ### 2016-02-21 v4.16.0221
 
 Add directory `.github` for issue and PR templates,
