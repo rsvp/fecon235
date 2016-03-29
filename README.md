@@ -102,6 +102,11 @@ real gold prices is a stationary time-series bound by real interest rates.
 SEC 13F filings can be easily parsed, see https://git.io/13F
 where we track asset managers Stanley Druckenmiller and John Paulson.
 
+In https://git.io/equities we examine the separable components
+of total return for equities, especially due to enterprise earnings
+and market speculation, using S&P data assembled by Robert Shiller
+which goes back to the year 1871.
+
 
 ### Useful modules ###
 
@@ -136,6 +141,17 @@ Please join our chat with fellow users and developers at [Gitter].
 
 
 ### Partial contents of nb directory ###
+
+##### [qdl-spx-earn-div.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-spx-earn-div.ipynb) : Separable components of total return for equities
+
+We specify a model for equity returns by decomposition into enterprise and
+speculative returns, plus dividend yield. That model is then tested using stock market
+data going back to the year 1871 (well-known database assembled by Robert Shiller).
+An understanding of their respective contributions helps us to form
+better informed expectations of total return for equities.
+We demonstrate that the (arithmetic) percentage reasoning is prone is large errors,
+whereas a logarithmic (geometric) version is exact.
+Shortcut: https://git.io/equities or https://git.io/spx
 
 ##### [qdl-libor-fed-funds.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-libor-fed-funds.ipynb) : Use pandas to analyze short-term rates
 
@@ -281,7 +297,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-02-23
+Revision date : 2016-03-29
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
