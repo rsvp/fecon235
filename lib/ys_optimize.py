@@ -1,10 +1,10 @@
-#  Python Module for import                           Date : 2016-04-04
+#  Python Module for import                           Date : 2016-04-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_optimize.py : Convex optimization given noisy data. 
 
 We smooth some of the rough edges among the "scipy.optimize" algorithms.  Our
-"minimize" algorithm first begins by a coarse grid search, then unconstrained
+"optimize" algorithm first begins by a coarse grid search, then unconstrained
 Nelder-Mead simplex method, and finally the refined L-BFGS-B method which
 approximates a low-rank Hessian so that we can work in high (>250) dimensions.
 
@@ -41,19 +41,24 @@ Suitability: WITH knowledge of the gradient: quasi-Newton methods:
 Suitability: WITHOUT knowledge of the gradient:
     L-BFGS-B (scipy.optimize.fmin_l_bfgs_b())
         where gradient need not be provided analytically.
+        Constraints are optional, so this method is excellent
+        if you have a specific strategy.
 
-For scipy.optimize.minimize():
+General strategy:
+    For scipy.optimize.minimize():
     http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
-    a singe method must be selected.
-
-However, our version of minimize() is a sequence of methods which starts from
-brute to refined.
+    a singe method must be selected.  However, our optimize() is a sequence of 
+    methods which starts from brute to refined, in above order.
 
 References:
 - Mathematical optimization using scipy
   http://www.scipy-lectures.org/advanced/mathematical_optimization
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-06  Semantic change of names to avoid misunderstanding.
+               minimize() -> optimize()
+               For optimize(): boundpairs -> initialpairs
+            Make funarg=() as default.
 2016-04-04  First fecon235 version.
 '''
 
@@ -70,14 +75,12 @@ DISPLAY = 0
 #  Some routines offer "full_output" if you want messy iterative evaluations.
 
 
-#  Notice: "funarg" is used to specify other inputs to function "fun".
-#          It is a tuple and usually optional, but we have made it MANDATORY 
-#          to specify since we shall use it to inject data into fun.
-#          For ordinary optimization, just set funarg=().
+#  Notice: tuple "funarg" is used to specify other inputs to function "fun".
+#          We shall use it to inject data into fun.
 #  Please see tests/test_optimize.py which also serves as a TUTORIAL.
 
 
-def minBrute( fun, funarg, boundpairs, grids=20 ):
+def minBrute( fun, boundpairs, funarg=(), grids=20 ):
     '''Minimization by brute force grid search.
            boundpairs is a list of (min, max) pairs for fun arguments.
            grids are number of steps are taken in each direction.
@@ -98,7 +101,7 @@ def minBrute( fun, funarg, boundpairs, grids=20 ):
     return result
 
 
-def minNelder( fun, funarg, initial ):
+def minNelder( fun, initial, funarg=() ):
     '''Nelder-Mead simplex algorithm.'''
     #  http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin.html
     #  Nelder, J.A. and Mead, R. (1965), "A simplex method for function 
@@ -110,12 +113,12 @@ def minNelder( fun, funarg, initial ):
     return result
 
 
-def minBroyden( fun, funarg, initial, boundpairs=None ):
+def minBroyden( fun, initial, funarg=(), boundpairs=None ):
     '''Broyden-Fletcher-Goldfarb-Shanno L-BFGS-B algorithm with box boundaries.
        At each step an approximate low-rank Hessian is refined,
        so this should work in high (>250) dimensions.
            fun is our function to minimize.
-           funarg should be a sequence of arguments for fun.
+           funarg should be a tuple of arguments for fun.
            initial guesses must be an ndarray, i.e. np.array([...])
            boundpairs is an OPTIONAL list of (min, max) pairs for fun arguments,
                where None can be used for min or max to indicate no bound.
@@ -141,26 +144,30 @@ def minBroyden( fun, funarg, initial, boundpairs=None ):
     return result[0]
 
 
-def minimize( fun, funarg, boundpairs, grids=20 ):
-    '''Minimize by grid search, Nelder-Mead simplex, and L-BFGS-B methods.
+def optimize( fun, initialpairs, funarg=(), grids=20 ):
+    '''Optimize by grid search, Nelder-Mead simplex, and L-BFGS-B methods.
        First a broad global search, followed by coarse non-gradient method,
        then refined quasi-Newton method by approximate low-rank Hessian.
-           boundpairs is a list of (min, max) pairs for fun arguments.
-       However, here we are intentionally NOT CONSTRAINED by boundpairs.
+           initialpairs is a list of (min, max) pairs for fun arguments.
+       However, here we are intentionally NOT CONSTRAINED by initialpairs.
     '''
-    #  Argument boundpairs can be just our preliminary wild guess.
-    #  Essentially better and better initial estimates are passed along.
-    brute   =   minBrute( fun, funarg, boundpairs, grids )
+    #  The argument initialpairs can be just our preliminary wild guess.
+    #  minBrute will respect initialpairs as strict boundpairs using grids, 
+    #  however, better and better initial point estimates are passed 
+    #  along to other algorithms which will ignore any strict bounds
+    #  if the minimization can be improved.
+    brute = minBrute(fun=fun, funarg=funarg, boundpairs=initialpairs, grids=grids)
     if DISPLAY:
         print( brute )
         brute = brute[0]
         #             ^but just the ndarray part for next initial:
-    nelder  =  minNelder( fun, funarg, initial=brute )
+    nelder  =  minNelder( fun=fun, funarg=funarg, initial=brute )
     if DISPLAY:
         print( nelder )
-    broyden = minBroyden( fun, funarg, initial=nelder, boundpairs=None )
-    #   broyden should NOT use top boundpairs because
-    #   nelder may have found something better outside those boundpairs.
+    broyden = minBroyden(fun=fun, funarg=funarg, initial=nelder, boundpairs=None)
+    #   broyden should NOT set boundpairs=initialpairs because
+    #   nelder may have found something better outside initialpairs.
+    #   Thus nelder and broyden are both unconstrained results.
     if DISPLAY:
         print( broyden )
     #      broyden is our final estimated minimum as ndarray:

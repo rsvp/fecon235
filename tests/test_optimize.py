@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-04-04
+#  Python Module for import                           Date : 2016-04-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  test_optimize : Test fecon235 ys_optimize module.
@@ -24,11 +24,12 @@ Our selected methods feature the following and their unification:
 - minBroyden(): WITHOUT knowledge of the gradient:
     L-BFGS-B (scipy.optimize.fmin_l_bfgs_b())
         where gradient need not be provided analytically.
+        Constraints are optional, so great for very specific use.
         BFGS abbreviates Broyden-Fletcher-Goldfarb-Shanno.
 
-- minimize(): 
-    For scipy.optimize.minimize(): a singe method must be selected. However,
-    our version of minimize() is a sequence of methods which starts from brute
+- optimize(): 
+    For scipy.optimize.minimize(): a single method must be selected. 
+    However, our optimize() is a sequence of methods which starts from brute
     to refined in above order. This is the MAIN FUNCTION for GENERAL USE.
 
 
@@ -40,6 +41,9 @@ REFERENCE
                or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-06  Semantic change of names to avoid misunderstanding.
+               minimize() -> optimize()
+               For optimize(): boundpairs -> initialpairs
 2016-04-04  First version. Thanks to so12311 (2011) for his example at 
                Stack Overflow: http://stackoverflow.com/a/8672743
 '''
@@ -146,35 +150,35 @@ def test_minBroyden_ys_optimize_fecon235_wild_startparms():
     assert abs(result[1] - b_true) < 0.01
 
 
-#  ============================================= MAIN FUNCTION: minimize() ====== 
+#  ============================================= MAIN FUNCTION: optimize() ====== 
 
-#  SUMMARY: yop.minimize() accurately integrates all of our techniques,
-#  while being tolerant of wild guesses for boundpairs!
+#  SUMMARY: yop.optimize() accurately integrates all of our techniques,
+#  while being tolerant of wild guesses for initialpairs!
 
-def test_minimize_ys_optimize_fecon235_Inadequate_boundpairs():
-    '''Test minimize() using intentionally inadequate boundpairs.
+def test_optimize_ys_optimize_fecon235_Inadequate_initialpairs():
+    '''Test optimize() using intentionally inadequate initialpairs.
        However, we expect very accurate estimates since we
        minimize by grid search, Nelder-Mead simplex, and L-BFGS-B methods.
        First a broad global search, followed by coarse non-gradient method,
        then refined quasi-Newton method by approximate low-rank Hessian.
-           boundpairs is a list of (min, max) pairs for fun arguments.
-       By design, we are intentionally NOT CONSTRAINED by boundpairs.
+           initialpairs is a list of (min, max) pairs for fun arguments.
+       By design, we are intentionally NOT CONSTRAINED by initialpairs.
     '''
-    result = yop.minimize(fun=sqerror, funarg=(y_true,x_true), 
-                          boundpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
+    result = yop.optimize(fun=sqerror, funarg=(y_true,x_true), 
+                          initialpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
     #  We shall accept +/- 0.0001 of true values:
     assert abs(result[0] - m_true) < 0.0001
     assert abs(result[1] - b_true) < 0.0001
 
 
-def test_minimize_ys_optimize_fecon235_aberror_loss_function():
-    '''Test minimize() using sum of absolute errors loss function, 
+def test_optimize_ys_optimize_fecon235_aberror_loss_function():
+    '''Test optimize() using sum of absolute errors loss function, 
        instead of sum of squared errors loss function,
-       and intentionally inadequate boundpairs.
-       By design, we are intentionally NOT CONSTRAINED by boundpairs.
+       and intentionally inadequate initialpairs.
+       By design, we are intentionally NOT CONSTRAINED by initialpairs.
     '''
-    result = yop.minimize(fun=aberror, funarg=(y_true,x_true), 
-                          boundpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
+    result = yop.optimize(fun=aberror, funarg=(y_true,x_true), 
+                          initialpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
     #  We shall accept +/- 0.0001 of true values:
     assert abs(result[0] - m_true) < 0.0001
     assert abs(result[1] - b_true) < 0.0001
@@ -182,18 +186,19 @@ def test_minimize_ys_optimize_fecon235_aberror_loss_function():
 
 
 #  =================================================== ROSENBROCK test ========== 
-#  This is a typical test in convex optimization.
-#  Test multivariate function without data, thus funarg=().
+#  This is a classic test in convex optimization.
 
 def rosenbrock( z ):   
     '''Famous Rosenbrock test function.'''
+    #  Optimize on two variables z[0] and z[1].
     return 0.5*(1 - z[0])**2 + (z[1] - z[0]**2)**2
 
 
-def test_minimize_ys_optimize_fecon235_rosenbrock_function():
-    '''Test minimize() using Rosenbrock function.'''
-    result = yop.minimize(fun=rosenbrock, funarg=(), 
-                          boundpairs=[(-98.0,98.0),(-98.0,98.0)], grids=20)
+def test_optimize_ys_optimize_fecon235_rosenbrock_function():
+    '''Test optimize() using Rosenbrock function.'''
+    #  Test multivariate function without data, thus funarg=().
+    result = yop.optimize(fun=rosenbrock, funarg=(), 
+                          initialpairs=[(-98.0,98.0),(-98.0,98.0)], grids=20)
     #  We shall accept +/- 0.0001 of true values:
     assert abs(result[0] - 1.0) < 0.0001
     assert abs(result[1] - 1.0) < 0.0001
