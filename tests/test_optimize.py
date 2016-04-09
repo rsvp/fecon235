@@ -1,10 +1,11 @@
-#  Python Module for import                           Date : 2016-04-06
+#  Python Module for import                           Date : 2016-04-08
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  test_optimize : Test fecon235 ys_optimize module.
 
 MUST SEE lib/ys_optimize.py for implementation details and references.
-This test file is also intended as a TUTORIAL for USAGE.
+This test file is also intended as a TUTORIAL for USAGE,
+see especially the section on Robust Estimation for a quick example.
 
 Our selected methods feature the following and their unification:
 
@@ -24,13 +25,16 @@ Our selected methods feature the following and their unification:
 - minBroyden(): WITHOUT knowledge of the gradient:
     L-BFGS-B (scipy.optimize.fmin_l_bfgs_b())
         where gradient need not be provided analytically.
-        Constraints are optional, so great for very specific use.
+        Constraints are optional, so GREAT for very NARROW USE.
         BFGS abbreviates Broyden-Fletcher-Goldfarb-Shanno.
 
 - optimize(): 
     For scipy.optimize.minimize(): a single method must be selected. 
     However, our optimize() is a sequence of methods which starts from brute
     to refined in above order. This is the MAIN FUNCTION for GENERAL USE.
+
+Here we test three types of LOSS FUNCTIONS: sum of squared errors,
+sum of absolute errors, and median of absolute errors.
 
 
 Testing: As of fecon235 v4, we favor pytest over nosetests, so e.g. 
@@ -41,6 +45,7 @@ REFERENCE
                or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-08  Clarify model specification and add median absolute error.
 2016-04-06  Semantic change of names to avoid misunderstanding.
                minimize() -> optimize()
                For optimize(): boundpairs -> initialpairs
@@ -77,9 +82,17 @@ y_true = m_true*x_true + b_true
 #        Parameters which satisfy that goal are called BEST estimates
 #        for the specified functional form.
 
+#  Loss function should DISTINGUISH between parameters to be optimized,
+#  and other supplemental arguments. The latter is introduced
+#  via a tuple called funarg, frequently used to inject data.
+#  (Compare to classical optimization, see Rosenbrock test below.)
+
+
 def sqerror(params, *args):
     '''LOSS FUNCTION: sum of squared errors for our model.'''
+    #  Notice how params works like a tuple:
     m, b = params
+    #  Assignment for non-parameter arguments (see funarg below):
     y = args[0]
     x = args[1]
     #  Functional form of our MODEL: 
@@ -107,10 +120,18 @@ def aberror(params, *args):
     return np.sum( np.absolute(error) )
 
 
+#  NOTICE: TUPLE "funarg" is used to specify arguments to function "fun"
+#          which are NOT the parameters to be optimized (e.g. data).
+#          Gotcha: Remember a single-element tuple must include
+#          that mandatory comma: ( alone, )
+
+#  ============================================= Test helper functions ========== 
+
+
 def test_minBrute_ys_optimize_fecon235_Inadequate_boundpairs():
     '''Test minBrute using intentionally inadequate boundpairs.'''
     #  Brute force works with range of guesses to start parameter estimation.
-    result = yop.minBrute(fun=sqerror, funarg=(y_true,x_true), 
+    result = yop.minBrute(fun=sqerror, funarg=(y_true, x_true), 
                           boundpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
     #  We know in advance that the result should NOT fit
     #  our true parameters. In fact, the result 
@@ -123,7 +144,7 @@ def test_minBrute_ys_optimize_fecon235_Inadequate_boundpairs():
 
 def test_minBrute_ys_optimize_fecon235_Adequate_boundpairs():
     '''Test minBrute using adequate boundpairs.'''
-    result = yop.minBrute(fun=sqerror, funarg=(y_true,x_true), 
+    result = yop.minBrute(fun=sqerror, funarg=(y_true, x_true), 
                           boundpairs=[(70.0,90.0),(70.0,90.0)], grids=20)
     #  We know in advance that the result should FIT,
     #  though approximately since the grid search is coarse.
@@ -135,7 +156,8 @@ def test_minBrute_ys_optimize_fecon235_Adequate_boundpairs():
 def test_minNelder_ys_optimize_fecon235_wild_startparms():
     '''Test minNelder using wild starting parameter guesses.'''
     startparms = np.array([1000.0, 1000.0])
-    result = yop.minNelder(fun=sqerror, funarg=(y_true,x_true), initial=startparms )
+    result = yop.minNelder(fun=sqerror, funarg=(y_true, x_true), 
+                           initial=startparms)
     #  We shall accept +/- 0.01 of true values:
     assert abs(result[0] - m_true) < 0.01
     assert abs(result[1] - b_true) < 0.01
@@ -144,7 +166,8 @@ def test_minNelder_ys_optimize_fecon235_wild_startparms():
 def test_minBroyden_ys_optimize_fecon235_wild_startparms():
     '''Test minBroyden using wild starting parameter guesses.'''
     startparms = np.array([1000.0, 1000.0])
-    result = yop.minBroyden(fun=sqerror, funarg=(y_true,x_true), initial=startparms )
+    result = yop.minBroyden(fun=sqerror, funarg=(y_true, x_true), 
+                            initial=startparms)
     #  We shall accept +/- 0.01 of true values:
     assert abs(result[0] - m_true) < 0.01
     assert abs(result[1] - b_true) < 0.01
@@ -152,7 +175,7 @@ def test_minBroyden_ys_optimize_fecon235_wild_startparms():
 
 #  ============================================= MAIN FUNCTION: optimize() ====== 
 
-#  SUMMARY: yop.optimize() accurately integrates all of our techniques,
+#  SUMMARY: yop.optimize() accurately integrates all of the helper functions
 #  while being tolerant of wild guesses for initialpairs!
 
 def test_optimize_ys_optimize_fecon235_Inadequate_initialpairs():
@@ -164,7 +187,7 @@ def test_optimize_ys_optimize_fecon235_Inadequate_initialpairs():
            initialpairs is a list of (min, max) pairs for fun arguments.
        By design, we are intentionally NOT CONSTRAINED by initialpairs.
     '''
-    result = yop.optimize(fun=sqerror, funarg=(y_true,x_true), 
+    result = yop.optimize(fun=sqerror, funarg=(y_true, x_true), 
                           initialpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
     #  We shall accept +/- 0.0001 of true values:
     assert abs(result[0] - m_true) < 0.0001
@@ -177,32 +200,111 @@ def test_optimize_ys_optimize_fecon235_aberror_loss_function():
        and intentionally inadequate initialpairs.
        By design, we are intentionally NOT CONSTRAINED by initialpairs.
     '''
-    result = yop.optimize(fun=aberror, funarg=(y_true,x_true), 
+    result = yop.optimize(fun=aberror, funarg=(y_true, x_true), 
                           initialpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
     #  We shall accept +/- 0.0001 of true values:
     assert abs(result[0] - m_true) < 0.0001
     assert abs(result[1] - b_true) < 0.0001
 
 
+#  =================================================== ROBUST Estimation ======== 
+#  We revisit the fitting of the sloped line example, 
+#  but this time more generalized for templating in other applications.
+#  Usage with other data structures becomes more apparent, e.g. DataFrame.
+
+#  Let's first WRITE THE MODEL in terms of tuple p for parameters.
+#  This conceptually separates the model specifications from the loss function.
+#  Also it can output the fitted values for the model given optimal parameters.
+
+def model_slope( p, X ):
+    '''Model of sloped line: given parameters p and data X.'''
+    #  Big X could be a pandas DataFrame with interesting columns.
+    #  Note that we are not limited to just a simple equation here.
+    #  This section could have also been a complicated procedure
+    #  with constraints, masks, etc.
+    return p[0]*X + p[1]
+
+#  For good practice, let the last element of p be the 
+#  estimated constant INTERCEPT. Rewriting the model is thus easier
+#  because no shifting of locations is involved 
+#  when you want to remove that slack variable.
+
+
+def medaberror( p, *args ):
+    '''Loss function: np.median of absolute errors for our model.
+       This is much more robust than using np.sum or np.mean.
+       Perhaps better than editing "outliers" out of data.
+       This illustrates a LOSS FUNCTION in its SIMPLICITY.
+    '''
+    #   y represents the independent variable, while
+    #   X represents the dependent variable(s).
+    #   Here the model is introduced via *args.
+    y = args[0]
+    model = args[1]
+    X = args[2]
+    error = y - model(p, X)
+    return np.median( np.absolute(error) )
+
+
+#  SUMMARY: optimize() computes the model parameters
+#  which minimizes a given loss function. There are many types
+#  of loss functions which can be used to estimate a model.
+
+def test_optimize_ys_optimize_fecon235_medaberror_loss_function():
+    '''Test optimize() using median of absolute errors loss function, 
+       instead of sum of squared errors loss function,
+       and intentionally inadequate initialpairs.
+       By design, we are intentionally NOT CONSTRAINED by initialpairs.
+    '''
+    #  We have y_true and x_true as ndarrays to serve as data.
+    #  Note that funarg here also include model specification.
+    result = yop.optimize(fun=medaberror, funarg=(y_true, model_slope, x_true), 
+                          initialpairs=[(10.0,50.0),(10.0,30.0)], grids=20)
+    #  We shall accept +/- 0.0001 of true values:
+    assert abs(result[0] - m_true) < 0.0001
+    assert abs(result[1] - b_true) < 0.0001
+    #
+    #  What exactly was the LEAST ERROR with optimal parameters?
+    #
+    least_error = medaberror( result, y_true, model_slope, x_true )
+    assert abs(least_error - 0.0) < 0.0001
+
+
+#  REMARKS: if the loss function is squared error, then theoretically
+#  Ordinary Least Squares method will directly provide unique unbiased 
+#  linear estimates in closed form. Now if the distribution of
+#  the error terms is Gaussian then maximum likelihood estimates 
+#  are the same as the OLS estimates asymptotically.
+#
+#  Loss functions based on absolute error does require iterative 
+#  solutions for estimates that are generally neither unique nor 
+#  available in closed form. They can be computationally expensive. 
+#  This is the case for our optimize() algorithm. But the estimates
+#  are practically more robust, facing outliers and corrupt data.
+#
+#  Reference:
+#  https://www.quora.com/How-would-a-model-change-if-we-minimized-absolute-error-instead-of-squared-error-What-about-the-other-way-around/answer/Ben-Packer-1
+
+
 
 #  =================================================== ROSENBROCK test ========== 
 #  This is a classic test in convex optimization.
+#  Note how simply the parameters to be optimized are expressed in Python:
 
 def rosenbrock( z ):   
     '''Famous Rosenbrock test function.'''
-    #  Optimize on two variables z[0] and z[1].
+    #  Optimize on two variables z[0] and z[1] by just writing them out:
     return 0.5*(1 - z[0])**2 + (z[1] - z[0]**2)**2
 
 
 def test_optimize_ys_optimize_fecon235_rosenbrock_function():
     '''Test optimize() using Rosenbrock function.'''
-    #  Test multivariate function without data, thus funarg=().
+    #  Test multivariate function without supplemental arguments, so funarg=().
     result = yop.optimize(fun=rosenbrock, funarg=(), 
                           initialpairs=[(-98.0,98.0),(-98.0,98.0)], grids=20)
     #  We shall accept +/- 0.0001 of true values:
     assert abs(result[0] - 1.0) < 0.0001
     assert abs(result[1] - 1.0) < 0.0001
-
 
 
 if __name__ == "__main__":

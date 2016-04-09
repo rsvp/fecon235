@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-04-06
+#  Python Module for import                           Date : 2016-04-08
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_optimize.py : Convex optimization given noisy data. 
@@ -55,6 +55,7 @@ References:
   http://www.scipy-lectures.org/advanced/mathematical_optimization
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-08  Clarify comments.
 2016-04-06  Semantic change of names to avoid misunderstanding.
                minimize() -> optimize()
                For optimize(): boundpairs -> initialpairs
@@ -75,14 +76,19 @@ DISPLAY = 0
 #  Some routines offer "full_output" if you want messy iterative evaluations.
 
 
-#  Notice: tuple "funarg" is used to specify other inputs to function "fun".
-#          We shall use it to inject data into fun.
+#  NOTICE: TUPLE "funarg" is used to specify arguments to function "fun"
+#          which are NOT the parameters to be optimized (e.g. data).
+#          Gotcha: Remember a single-element tuple must include
+#          that mandatory comma: ( alone, )
+#
 #  Please see tests/test_optimize.py which also serves as a TUTORIAL.
 
 
 def minBrute( fun, boundpairs, funarg=(), grids=20 ):
     '''Minimization by brute force grid search.
-           boundpairs is a list of (min, max) pairs for fun arguments.
+           fun is our function to minimize, given parameters for optimization.
+           boundpairs is a list of (min, max) pairs for fun parameters.
+           funarg is a tuple of supplemental arguments for fun.
            grids are number of steps are taken in each direction.
     '''
     #  http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brute.html
@@ -102,7 +108,11 @@ def minBrute( fun, boundpairs, funarg=(), grids=20 ):
 
 
 def minNelder( fun, initial, funarg=() ):
-    '''Nelder-Mead simplex algorithm.'''
+    '''Nelder-Mead simplex algorithm.
+           fun is our function to minimize, given parameters for optimization.
+           initial parameter guesses must be an ndarray, i.e. np.array([...])
+           funarg is a tuple of supplemental arguments for fun.
+    '''
     #  http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin.html
     #  Nelder, J.A. and Mead, R. (1965), "A simplex method for function 
     #      minimization", The Computer Journal, 7, pp. 308-313
@@ -117,11 +127,11 @@ def minBroyden( fun, initial, funarg=(), boundpairs=None ):
     '''Broyden-Fletcher-Goldfarb-Shanno L-BFGS-B algorithm with box boundaries.
        At each step an approximate low-rank Hessian is refined,
        so this should work in high (>250) dimensions.
-           fun is our function to minimize.
-           funarg should be a tuple of arguments for fun.
-           initial guesses must be an ndarray, i.e. np.array([...])
-           boundpairs is an OPTIONAL list of (min, max) pairs for fun arguments,
-               where None can be used for min or max to indicate no bound.
+           fun is our function to minimize, given parameters for optimization.
+           initial parameter guesses must be an ndarray, i.e. np.array([...])
+           funarg is a tuple of supplemental arguments for fun.
+           boundpairs is an OPTIONAL list of (min, max) pairs for fun parameters,
+               where None can be used for either min or max to indicate no bound.
     '''
     #  http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_l_bfgs_b.html
     #  Ref: C. Zhu, R. H. Byrd and J. Nocedal. L-BFGS-B: Algorithm 778: L-BFGS-B, 
@@ -148,7 +158,10 @@ def optimize( fun, initialpairs, funarg=(), grids=20 ):
     '''Optimize by grid search, Nelder-Mead simplex, and L-BFGS-B methods.
        First a broad global search, followed by coarse non-gradient method,
        then refined quasi-Newton method by approximate low-rank Hessian.
-           initialpairs is a list of (min, max) pairs for fun arguments.
+           fun is our function to minimize, given parameters for optimization.
+           funarg is a tuple of supplemental arguments for fun.
+           initialpairs is a list of (min, max) pairs for fun parameters.
+           grids are number of steps are taken in each direction.
        However, here we are intentionally NOT CONSTRAINED by initialpairs.
     '''
     #  The argument initialpairs can be just our preliminary wild guess.
