@@ -127,6 +127,12 @@ The commands are very easy to customize,
 producing sophisticated results quickly 
 without tweaking the underlying numerical packages.
 
+* ys_optimize : global "optimize" function integrates a coarse grid search,
+  then unconstrained Nelder-Mead simplex method, and finally the refined
+  L-BFGS-B method which approximates a low-rank Hessian so that we can work in
+  high (>250) dimensions. Easy to use for estimating model parameters with
+  arbitrary loss functions; see tests/test_optimize.py for quick tutorial.
+
 
 ### Development and contacts ###
 
