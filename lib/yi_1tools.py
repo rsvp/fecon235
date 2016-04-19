@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-08
+#  Python Module for import                           Date : 2016-04-16
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-16  Add lagdf() to create dataframe with lagged columns.
 2016-01-08  Append sample size and dates to georet() output.
 2015-12-28  python3 compatible fix, division, add div()
 2015-12-20  python3 compatible fix, lib import fix.
@@ -386,6 +387,23 @@ def paste( df_list ):
           combo = temp.dropna()
           #            ^so row values will be comparable.
      return combo
+
+
+def lagdf( df, lags=1 ):
+    '''Create dataframe with lagged columns (labeled with underscore_lag).'''
+    #  Argument df may have single or mutiple column(s).
+    #  Argument lags can be any positive integer.
+    #  N.B. -  useful data structure for vector autoregression of AR(lags).
+    if not isinstance( df, pd.DataFrame ):
+        raise TypeError(' !!  lagdf requires DataFrame arg; use todf.')
+    lagged = paste([ df.shift(i) for i in range(lags+1) ])
+    #            Due to shift(0), original df is included in lagged.
+    #  But shift() does NOT rename columns to indicate lag,
+    #  which can be confusing for multiple lags, so we fix that next:
+    lagged.columns = [ i + '_' + str(j) for j in range(lags+1) 
+                       for i in df.columns ]
+    #      ^Thus: original column names + underscore_lag notation.
+    return lagged
 
 
 def writefile( dataframe, filename='tmp-yi_1tools.csv', separator=',' ):
