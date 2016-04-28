@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-29
+#  Python Module for import                           Date : 2016-04-28
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,6 +18,8 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-28  Use version('jupyter_core') instead of version('jupyter').
+               Update to PREAMBLE-p6.16.0428
 2015-12-29  For errf in gitinfo(), our dev_null instead of os.devnull
                Add minimumPandas variable esp. for tests.
 2015-12-27  Get jupyter version among specs().
@@ -197,7 +199,7 @@ def specs():
     if pythontup() < minimumPython:
         warn("may need newer Python version.")
     version("IPython")
-    version("jupyter")
+    version("jupyter_core")
     version("notebook")
     #       ^worked for Jupyter notebook 4.0.6
     version("matplotlib")
@@ -236,8 +238,14 @@ if __name__ == "__main__":
 _______________ Appendix 1: PREAMBLE for Jupyter NOTEBOOKS
                             Input cell for settings and system details:
 
+CHANGE LOG
+2016-04-28  Remove old LaTeX warnings:
+            #  Beware, for MATH display, use %%latex, NOT the following:
+            #                   from IPython.display import Math
+            #                   from IPython.display import Latex
 
-#  PREAMBLE-p6.15.1223 :: Settings and system details
+
+#  PREAMBLE-p6.16.0428 :: Settings and system details
 from __future__ import absolute_import, print_function
 system.specs()
 pwd = system.getpwd()   # present working directory as variable.
@@ -251,9 +259,6 @@ print(" ::  $pwd:", pwd)
 #      Represent pandas DataFrames as text; not HTML representation:
 import pandas as pd
 pd.set_option( 'display.notebook_repr_html', False )
-#  Beware, for MATH display, use %%latex, NOT the following:
-#                   from IPython.display import Math
-#                   from IPython.display import Latex
 from IPython.display import HTML # useful for snippets
 #  e.g. HTML('<iframe src=http://en.mobile.wikipedia.org/?useformat=mobile width=700 height=350></iframe>')
 from IPython.display import Image 
