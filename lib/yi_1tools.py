@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-04-16
+#  Python Module for import                           Date : 2016-04-28
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,8 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-04-28  Revise regress() since ols from pandas.stats.api deprecated.
+               New n argument for stats() Head and Tail display.
 2016-04-16  Add lagdf() to create dataframe with lagged columns.
 2016-01-08  Append sample size and dates to georet() output.
 2015-12-28  python3 compatible fix, division, add div()
@@ -54,12 +56,12 @@ import matplotlib.pyplot as plt   #  for standard plots.
 import pandas as pd               #  for data munging.
 
 import statsmodels.formula.api as smf
-#      ^pandas uses some portions of this package.
-#
-#  ols := Ordinary Least Squares, aka Linear Regression, 
-#         pandas can handle multiple dependent variables.
-from pandas.stats.api import ols
-#                 ^relies on other sci packages.
+
+#  #  2016-04-28  DEPRECATED as of pandas 0.18
+#  #  ols := Ordinary Least Squares, aka Linear Regression, 
+#  #         pandas can handle multiple dependent variables.
+#  from pandas.stats.api import ols
+#  #    See https://github.com/pydata/pandas/blob/master/pandas/stats/ols.py
 
 from . import yi_0sys as system
 
@@ -213,11 +215,12 @@ def regressformula( df, formula ):
      #          Omit the 0 if you want an intercept fitted.
      #
      #  USAGE given that: result = regressformula( ... )
-     #        - print result.summary()
+     #        - print( result.summary() )
      #        - result.params
      #        - coeff = result.params.tolist()
+     #        - result.rsquared is also available.
+     #        - result.aic is Akaike Information Criterion AIC.
      #
-     #  ATTN:   ols is different from default OLS in pandas! see regress.
      return smf.ols(formula=formula, data=df).fit()
 
 
@@ -286,17 +289,28 @@ def detrendnorm( dfy, col='Y' ):
 
 
 
-def regress( dfy, dfx ):
+def regress( dfy, dfx, intercept=True ):
     '''Perform LINEAR REGRESSION, a.k.a. Ordinary Least Squares.'''
-    #          pandas ols can handle multiple dependent variables,
-    #          but here we require only a single dependency.
-    #          Other packages may not handle time index alignment.
-    #  Returns summary printout,  
-    #  (cf. more detailed regressformula which requires column names):
-    return ols( y=dfy, x=dfx )
+    #  2016-04-28  DEPRECATED ols from pandas.stats.api as of pandas 0.18,
+    #                 so use regressformula() instead.
+    #                 Add intercept option as boolean.    <= New feature!
+    tmpdf = paste([todf(dfy), todf(dfx)])
+    #  Need paste to properly align their index.
+    tmpdf.columns = ['Y', 'X']
+    if intercept:
+        result = regressformula( tmpdf, 'Y ~ X' )
+        #   Implicitly, formula includes constant intercept term...
+    else:
+        result = regressformula( tmpdf, 'Y ~ 0 + X' )
+        #         ... whereas 0 excludes constant intercept term.
+    #  Formerly pandas ols returned printable result summary,  <= Gotcha
+    #  but now that is achieved by: print(result.summary())
+    #  Returning pure result gives us the flexibility to access
+    #  list of coefficients later as: result.params.tolist()
+    return result
 
 
-def stat2( dfy, dfx ):
+def stat2( dfy, dfx, intercept=True ):
      '''Quick STATISTICAL SUMMARY and regression on two variables'''
      print(" ::  FIRST variable:")
      now = dfy.describe()
@@ -309,8 +323,8 @@ def stat2( dfy, dfx ):
      print(" ::  CORRELATION")
      now = correlate( dfy, dfx )
      print(now)
-     now = regress( dfy, dfx )
-     print(now)
+     now = regress( dfy, dfx, intercept )
+     print(now.summary())
      return
 
 
@@ -324,7 +338,7 @@ def stat( dataframe, pctiles=[0.25, 0.50, 0.75] ):
      return
 
 
-def stats( dataframe ):
+def stats( dataframe, n=3 ):
      '''VERBOSE statistics on given dataframe; CORRELATIONS without regression.'''
      print(dataframe.describe())
      print()
@@ -335,10 +349,9 @@ def stats( dataframe ):
      print(dataframe.idxmax())
      print()
      print(" ::  Head:")
-     print(head( dataframe ))
-     print()
+     print(head( dataframe, n ))
      print(" ::  Tail:")
-     print(tail( dataframe ))
+     print(tail( dataframe, n ))
      print()
      print(" ::  Correlation matrix:")
      print(cormatrix( dataframe ))
