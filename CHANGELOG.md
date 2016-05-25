@@ -5,6 +5,41 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2016-05-25 v4.16.0525
+
+qdl-spx-earn-div.ipynb: remedy for issue #3 Math Processing Error.
+GitHub choking on LaTeX equations, so provide
+alternative view link at Jupyter.
+No problems if notebook is locally executed.
+
+Add lib/ys_optimize.py featuring the following:
+
+- minBrute(): non-convex problem: GLOBAL optimizers: Brute force grid search.
+- minNelder(): if data is NOISY: Nelder-Mead simplex method.
+- minBroyden(): WITHOUT knowledge of the gradient: L-BFGS-B, Broyden-Fletcher-Goldfarb-Shanno.
+- optimize(): unifies the three above.
+
+Add tests/test_optimize.py for ys_optimize module.
+This also serves as a tutorial for optimization of loss functions,
+given data and model, see Robust Estimation section.
+
+lib/yi_1tools.py: add lagdf() to create lagged DataFrame,
+useful data structure for vector autoregressions.
+
+Add tests/test_1tools.py esp. to test lagdf(),
+other functions in module yi_1tools are tested along the way.
+
+yi_1tools.py: replace deprecated ols from pandas.stats.api,
+revise regress() by using regressformula().
+Introduce new intercept argument, used also for stat2().
+
+Finalize fred-employ-nfp.ipynb for May 2016 release.
+Forecast monthly change in NFP using a variety of optics:
+baseline expectation since 1939, Holt-Winters method,
+visual selection of local range, and regression against SPX -- but
+standard errors are inherently very large due to survey measurement error.
+
+
 ### 2016-03-29 v4.16.0329
 
 SEC-13F-parse.ipynb: Fix issue #2 by v4 and p6 updates.
