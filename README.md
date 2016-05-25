@@ -120,7 +120,7 @@ These are some of our Python modules in the `lib` directory:
 * yi_quandl : Access free Quandl and government data with pandas.
 * yi_stocks : Get stock, mutual fund, and ETF quotes with pandas.
 
-For Jupyter notebooks and interactive sesssions, 
+For Jupyter notebooks and interactive sessions, 
 only one module **fecon235** needs to be imported; 
 please consult https://git.io/fecon-intro for details.
 The commands are very easy to customize, 
@@ -199,6 +199,13 @@ Shortcut: https://git.io/13F
 ##### [fred-debt-pop.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-debt-pop.ipynb) : Growth of Federal debt, its burden on the US population  
 
 We examine government debt in real terms, and the current debt per capita.  
+
+##### [fred-employ-nfp.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-employ-nfp.ipynb) : US employment data, Nonfarm Payroll
+
+We focus on forecasting the monthly change in NFP using a variety of optics:
+baseline expectation since 1939, Holt-Winters method, visual selection of local range,
+regression against economic activity (SPX) -- but the
+standard errors are inherently very large due to survey measurement error.
 
 ##### [fred-eur-fx.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-eur-fx.ipynb) : Euro currency qua Foreign Exchange  
 
@@ -303,7 +310,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-03-29
+Revision date : 2016-05-25
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
