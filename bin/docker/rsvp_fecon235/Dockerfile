@@ -1,7 +1,8 @@
-#  Dockerfile                                                  Date : 2016-10-09
+#  Dockerfile                                                  Date : 2016-10-25
 #
 # _______________|  Jupyter notebooks from fecon235 using Docker containers
 #                   Computational data tools for FINANCIAL ECONOMICS
+#                   https://hub.docker.com/r/rsvp/fecon235
 #
 #           Usage:  To BUILD this Dockerfile:
 #                        $ docker build -t IMAGENAME -f Dockerfile .
@@ -23,36 +24,41 @@
 #                          see FROM line at Begin Script.
 #                   Python code:  https://github.com/rsvp/fecon235
 #
-#  CHANGE LOG  
-#  2016-10-09  First stable version.
+#  CHANGE LOG 
+#  2016-10-25  Use own tagged base: rsvp/ana2-pd0181 for replication and tests.
+#              Improve entry UI.  Change SHELL from sh to bash. 
+#              Introduce REBUILD line to induce new clone of fecon235. 
+#              Reorder commands to optimize for Docker's copy-on-write.
+#  2016-10-09  First stable version produced rsvp/fecon:v4.16.0525
 
 # _______________     ::  BEGIN  Script ::::::::::::::::::::::::::::::::::::::::
 
 #  Tip: Obtain the base image in itself by, for example:
-#       $ docker pull continuumio/anaconda
-FROM continuumio/anaconda
+#       $ docker pull continuumio/anaconda:4.2.0
+FROM rsvp/ana2-pd0181
 #  The size of this image alone is just over 2 GB -- so patience.
+#  We may switch to miniconda and install only needed packages.
 
-MAINTAINER Adriano, rsvp.github.com
+MAINTAINER Adriano rsvp.github.com
 #          Lead developer for fecon235
 
+
 #      __________ SET-UP
+
+SHELL ["/bin/bash", "-c"]
+#  Other RUN will use /bin/sh as default (ugh!)
 
 #  Update the repository sources:
 #  RUN apt-get update
 #  ... advisable before any apt-get installs for the Linux environment.
 
 #  Make DIRECTORIES:  [Hassle of setting up an USER can be avoided.]
-RUN mkdir -p /opt/rsvp/bin
+RUN mkdir -p /opt/rsvp/bin  /opt/rsvp/dock
 #            /opt is designed for third-party software.
 
 #  Set ENVIRONMENT variables for Bash and Python:
 ENV PATH /opt/rsvp/bin:$PATH
 ENV PYTHONPATH /opt/rsvp/bin:/opt/rsvp:$PYTHONPATH
-
-#  Install fecon235 REPOSITORY from GitHub:
-RUN cd /opt/rsvp && git clone https://github.com/rsvp/fecon235.git
-
 
 #  conda is like pip for Python, but for anaconda* environments.
 #  Use conda to INSTALL jupyter and other Python dependencies:
@@ -60,6 +66,14 @@ RUN /opt/conda/bin/conda install \
     jupyter \
     pandas-datareader \
     -y --quiet 
+
+
+RUN echo " ::  REBUILD BELOW, marker: CHANGE THIS LINE: 2016-10-17 ::::::::"
+#  Editing this line will induce new clone of fecon235.
+
+#  Install fecon235 REPOSITORY from GitHub:
+RUN cd /opt/rsvp && git clone https://github.com/rsvp/fecon235.git
+
 
 #  Expose the traditional port for Jupyter notebook: 
 #  EXPOSE 8888
@@ -86,14 +100,19 @@ RUN echo '/opt/conda/bin/jupyter notebook --notebook-dir=/opt/rsvp/fecon235/nb \
 
 
 #  Set the MAIN command for this image, with user instructions:
-ENTRYPOINT echo ' ::  Working directory: /opt/rsvp'  &&  cd /opt/rsvp             \
-   &&  echo ' ::  Run "nbstart" for notebooks, then browse http://localhost:8888' \
+ENTRYPOINT cd /opt/rsvp/fecon235 \
+   &&  echo ' PORT required:  $ docker run -p 8888:8888 -it rsvp/fecon235' \
+   &&  echo ' '  \
+   &&  echo ' ::  Welcome! Git repository cloned at:  /opt/rsvp/fecon235'  \
+   &&  echo ' ::  Run "nbstart" for Jupyter notebooks, then interact with' \
+   &&  echo ' ::                host browser at http://localhost:8888'     \
+   &&  echo ' '  \
    &&  /bin/bash
 #  ... should yield root prompt, all set for action, e.g. nbstart
 #  (Using WORKDIR only scopes within a Dockerfile, not in a container.)
 
 #  Specify default argument to Entrypoint:
-#  CMD ['nbstart']
+#  CMD ['-c', 'nbstart']
 #  ... fallback when an argument is not given on command line by user,
 #      however, the container's Bash prompt will not be accessible
 #      after the execution of 'nbstart'.
