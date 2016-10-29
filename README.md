@@ -60,6 +60,9 @@ in addition to econometric models.
   for science, math, engineering, data analysis. 
   It will resolve your headaches due to dependency hell.
 
+* Docker container: instantly run fully-configured notebooks and programs; 
+  start by: `docker pull rsvp/fecon235` -- see our [Docker] image for details.  
+
 * Updates: for pre-2016 notebooks, please use import style 
   discussed in *docs* README: https://git.io/fecon-intro 
 
@@ -310,11 +313,12 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-05-25
+Revision date : 2016-10-28
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
 [Development]:  https://github.com/rsvp/fecon235/blob/master/.github/CONTRIBUTING.md "Development"
+[Docker]:       https://hub.docker.com/r/rsvp/fecon235 "Docker image rsvp/fecon235"
 [FRED]:         http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
 [Gitter]:       https://gitter.im/rsvp/fecon235 "Gitter fecon235"
 [intro page]:   http://rsvp.github.com/pg/fecon235-intro.html "fecon235 Introduction"
