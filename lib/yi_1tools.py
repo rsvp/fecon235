@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-04-28
+#  Python Module for import                           Date : 2016-10-29
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-10-29  Per issue #5, ema() will be moved to yi_timeseries module.
 2016-04-28  Revise regress() since ols from pandas.stats.api deprecated.
                New n argument for stats() Head and Tail display.
 2016-04-16  Add lagdf() to create dataframe with lagged columns.
@@ -168,17 +169,20 @@ def zeroprice( rate, duration=9, yearly=2, face=100 ):
      return float(face) / (( 1 + periodrate) ** periods )
 
 
-
-#  SMOOTH out data using EWMA, exponential weighted moving average,
-#  where alpha=2/(span+1) where alpha is weight on the most recent point. 
-#  The popular jargon is "span-day EW moving average."
-
-def ema( y, alpha=0.20 ):
-     '''EXPONENTIAL MOVING AVERAGE using traditional weight arg.'''
-     #  y could be a dataframe.
-     s = (2 / float(alpha)) - 1
-     #  Thus default alpha has span of 9, i.e. "9-period EWMA."
-     return pd.ewma( y, span=s )
+#  #       As of pandas 0.18, pd.ewma() is DEPRECATED. 
+#  #       Thus our ema() will be modified in the yi_timeseries module.
+#  #       See issue #5 for details.
+#  
+#  #  SMOOTH out data using EWMA, exponential weighted moving average,
+#  #  where alpha=2/(span+1) where alpha is weight on the most recent point. 
+#  #  The popular jargon is "span-day EW moving average."
+#  
+#  def ema( y, alpha=0.20 ):
+#       '''EXPONENTIAL MOVING AVERAGE using traditional weight arg.'''
+#       #  y could be a dataframe.
+#       s = (2 / float(alpha)) - 1
+#       #  Thus default alpha has span of 9, i.e. "9-period EWMA."
+#       return pd.ewma( y, span=s )
 
 
 def normalize( dfy ):

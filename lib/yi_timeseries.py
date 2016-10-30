@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2016-10-29
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_timeseries : essential time series functions.
@@ -23,6 +23,7 @@ See holt_winters_growth() vs. holt().
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-10-29  Per issue #5, ema() moved here from yi_1tools module.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-02-21  Add holtgrow and holtpc functions.
@@ -133,6 +134,14 @@ def plotholt( holtdf, h=12 ):
      #  plotdf will not work since index there is assumed to be dates.
      holtforecast( holtdf, h ).plot( title='Holt-Winters linear forecast')
      return
+
+
+def ema( y, alpha=0.20 ):
+     '''EXPONENTIAL MOVING AVERAGE using traditional weight arg.'''
+     #  y could be a dataframe.
+     #  ema is mathematically equivalent to holtlevel with beta=0,
+     #  thus issue #5 can be easily resolved for all pandas versions.
+     return holtlevel( y, alpha, beta=0 )
 
 
 if __name__ == "__main__":
