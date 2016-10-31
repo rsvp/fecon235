@@ -5,6 +5,22 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2016-10-30 v4.16.1030
+
+Add bin/docker/rsvp_fecon235/Dockerfile for Docker image.
+See public hub at https://hub.docker.com/r/rsvp/fecon235
+regarding running our Docker container.
+
+Move and rewrite ema() to close #5
+since *pd.ewma() is deprecated* as of pandas 0.18.
+Our old ema() has been commented out in lib/yi_1tools.py
+then new ema() has been rewritten in lib/yi_timeseries.py
+as a special case of holtlevel().
+See issue #5 for details on pandas deprecation warning,
+Exponential Moving Average and Holt-Winters smoothing:
+https://github.com/rsvp/fecon235/issues/5
+
+
 ### 2016-05-25 v4.16.0525
 
 qdl-spx-earn-div.ipynb: remedy for issue #3 Math Processing Error.
