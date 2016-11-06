@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-03-21
+#  Python Module for import                           Date : 2016-11-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,6 +190,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-11-05  Remove comments intended as code templates.
 2016-03-21  Add freqM2MS for compatibility with FRED monthly format.
                Add m4spx_1871_p, m4spx_1871_e, m4spx_1871_d. 
 2015-12-20  python3 compatible: lib import fix.
@@ -585,83 +586,6 @@ def holtqdl( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
      return ts.holtforecast( holtdf, h )
 
 
-
-
-
-#  #  ======================================== yi_fred.py module =============
-#  
-#  
-#  #  For details on frequency conversion, see McKinney 2013, 
-#  #       Chp. 10 Resampling, esp. Table 10-5 on downsampling.
-#  #       pandas defaults are:
-#  #            how='mean', closed='right', label='right'
-#  #
-#  #  2014-08-10  closed and label to the 'left' conform to FRED practices.
-#  #              how='median' since it is more robust than 'mean'. 
-#  #  2014-08-14  If upsampling, interpolate() does linear evenly, 
-#  #              disregarding uneven time intervals.
-#  
-#  
-#  def daily( dataframe ):
-#       '''Resample data to daily using only business days.'''
-#       #                         'D' is used calendar daily
-#       #                          B  for business daily
-#       df =   dataframe.resample('B', how='median', 
-#                                      closed='left', label='left', 
-#                                      fill_method=None)
-#       #       how= for downsampling, fill_method= for upsampling.
-#       return df.interpolate(method='linear')
-#       #         ^applies to nulls, if upsampling.
-#  
-#  
-#  def monthly( dataframe ):
-#       '''Resample data to FRED's month start frequency.'''
-#       #  FRED uses the start of the month to index its monthly data.
-#       #                         'M' is used for end of month.
-#       #                          MS for start of month.
-#       df =   dataframe.resample('MS', how='median', 
-#                                       closed='left', label='left', 
-#                                       fill_method=None)
-#       #        how= for downsampling, fill_method= for upsampling.
-#       return df.interpolate(method='linear')
-#       #         ^applies to nulls, if upsampling.
-#  
-#  
-#  def quarterly( dataframe ):
-#       '''Resample data to FRED's quarterly start frequency.'''
-#       #  FRED uses the start of the month to index its monthly data.
-#       #  Then for quarterly data: 1-01, 4-01, 7-01, 10-01.
-#       #                            Q1    Q2    Q3     Q4
-#       #
-#       #                          ______Start at first of months,
-#       #                          ______for year ending in indicated month.
-#       df =   dataframe.resample('QS-OCT', how='median', 
-#                                           closed='left', label='left', 
-#                                           fill_method=None)
-#       #            how= for downsampling, fill_method= for upsampling.
-#       return df.interpolate(method='linear')
-#       #         ^applies to nulls, if upsampling.
-#  
-#  
-#  
-#  def getm4eurusd( fredcode=d4eurusd ):
-#       '''Make monthly EURUSD, and try to prepend 1971-2002 archive.'''
-#       #  Synthetic euro is the average between 
-#       #                 DEM fixed at 1.95583 and 
-#       #                 FRF fixed at 6.55957.
-#       eurnow = monthly( getdata_fred( fredcode ) )
-#       try:
-#            eurold = readfile( 'FRED-EURUSD_1971-2002-ARC.csv.gz', compress='gzip' )
-#            eurall = eurold.combine_first( eurnow )
-#            #               ^appends dataframe
-#            print(' ::  EURUSD synthetically goes back monthly to 1971.')
-#       except:
-#            eurall = eurnow
-#            print(' ::  EURUSD monthly without synthetic 1971-2002 archive.')
-#       return eurall
-#  
-#  
-    
 
 
 #  #      __________ save and load dataframe by pickle. 
