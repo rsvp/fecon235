@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-20
+#  Python Module for import                           Date : 2016-11-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-11-05  New index_delta_secs() to infer index frequency in seconds.
 2016-01-20  Logical move of plotdf() to yi_plot module.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: use absolute_import.
@@ -86,6 +87,7 @@ except ImportError:
     from urllib2 import urlopen
     #    ^for python2 
 
+import numpy as np
 import pandas as pd
 from . import yi_0sys as system
 from . import yi_1tools as tools
@@ -305,11 +307,52 @@ def getdata_fred( fredcode ):
     return readfile( fredcsv )
 
 
+def index_delta_secs( dataframe ):
+    '''Find minimum in seconds between index values.'''
+    nanosecs_timedelta64 = np.diff(dataframe.index.values).min()
+    #  Picked min() over median() to conserve memory;      ^^^^^!
+    #  also avoids missing values issue, 
+    #  e.g. weekend or holidays gaps for daily data.
+    secs_timedelta64 = tools.div( nanosecs_timedelta64, 1e9 )
+    #  To avoid numerical error, we divide before converting type: 
+    secs = secs_timedelta64.astype( np.float32 )
+    if secs == 0.0:
+        system.warn('Index contains duplicate, min delta was 0.')
+        return secs
+    else:
+        return secs
 
-#  For details on frequency conversion, see McKinney 2103, 
-#       Chp. 10 Resampling, esp. Table 10-5 on downsampling.
-#       pandas defaults are:
-#            how='mean', closed='right', label='right'
+    #  There are OTHER METHODS to get the FREQUENCY of a dataframe:
+    #       e.g.  df.index.freq  OR  df.index.freqstr , 
+    #  however, these work only if the frequency was attributed:
+    #       e.g.  '1 Hour'       OR  'H'  respectively. 
+    #  The fecon235 derived dataframes will usually return None.
+    #  
+    #  Two timedelta64 units, 'Y' years and 'M' months, are 
+    #  specially treated because the time they represent depends upon
+    #  their context. While a timedelta64 day unit is equivalent to 
+    #  24 hours, there is difficulty converting a month unit into days 
+    #  because months have varying number of days. 
+    #       Other numpy timedelta64 units can be found here: 
+    #  http://docs.scipy.org/doc/numpy/reference/arrays.datetime.html
+    #  
+    #  For pandas we could do:  pd.infer_freq( df.index )
+    #  which, for example, might output 'B' for business daily series.
+    #  
+    #  But the STRING representation of index frequency is IMPRACTICAL
+    #  since we may want to compare two unevenly timed indexes. 
+    #  That comparison is BEST DONE NUMERICALLY in some common unit 
+    #  (we use seconds since that is the Unix epoch convention).
+    #
+    #  Such comparison will be crucial for the machine 
+    #  to chose whether downsampling or upsampling is appropriate.
+    #  The casual user should not be expected to know the functions
+    #  within index_delta_secs() to smoothly work with a notebook.
+
+
+#  For details on frequency conversion, see McKinney 2013, 
+#       Chp. 10 RESAMPLING, esp. Table 10-5 on downsampling.
+#       pandas defaults are:  how='mean', closed='right', label='right'
 #
 #  2014-08-10  closed and label to the 'left' conform to FRED practices.
 #              how='median' since it is more robust than 'mean'. 
