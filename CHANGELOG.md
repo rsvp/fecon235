@@ -5,6 +5,20 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2016-11-07 v5.16.1107 MAJOR
+
+New *index_delta_secs()* to infer frequency 
+in lib/yi_fred.py module for the purpose of appropriately 
+chosing downsampling or upsampling for .resample
+
+New *resample_main()* fixes #6 deprecations. 
+Rewrite daily(), monthly(), quarterly() in lib/yi_fred.py, 
+then add tests/test_fred.py to test module.
+
+***As a result of pandas revised API for resampling, fecon235 
+must advance to v5 and require pandas 0.18 or higher.***
+
+
 ### 2016-10-30 v4.16.1030
 
 Add bin/docker/rsvp_fecon235/Dockerfile for Docker image.
