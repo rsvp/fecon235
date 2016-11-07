@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-11-05
+#  Python Module for import                           Date : 2016-11-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,8 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-11-06  New resample_main() fixes #6 deprecations, and is used to
+               rewrite daily(), monthly(), quarterly().
 2016-11-05  New index_delta_secs() to infer index frequency in seconds.
 2016-01-20  Logical move of plotdf() to yi_plot module.
 2015-12-20  python3 compatible: lib import fix.
@@ -358,47 +360,54 @@ def index_delta_secs( dataframe ):
 #              how='median' since it is more robust than 'mean'. 
 #  2014-08-14  If upsampling, interpolate() does linear evenly, 
 #              disregarding uneven time intervals.
+#  2016-11-06  McKinney 2013 on resampling is outdated as of pandas 0.18
+
+
+def resample_main( dataframe, rule, secs ):
+    '''Generalized resample routine for downsampling or upsampling.'''
+    #  rule is the offset string or object representing target conversion,
+    #       e.g. 'B', 'MS', or 'QS-OCT' to be compatible with FRED.
+    #  secs should be the maximum seconds expected for rule frequency.
+    if index_delta_secs(dataframe) < secs:
+        df = dataframe.resample(rule, closed='left', label='left').median()
+        #    how='median' for DOWNSAMPLING deprecated as of pandas 0.18
+        return df
+    else:
+        df = dataframe.resample(rule, closed='left', label='left').fillna(None)
+        #    fill_method=None for UPSAMPLING deprecated as of pandas 0.18
+        #    note that None almost acts like np.nan which fails as argument.
+        #    interpolate() applies to those filled nulls when upsampling:
+        #    'linear' ignores index values treating it as equally spaced.
+        return df.interpolate(method='linear')
 
 
 def daily( dataframe ):
-     '''Resample data to daily using only business days.'''
-     #                         'D' is used calendar daily
-     #                          B  for business daily
-     df =   dataframe.resample('B', how='median', 
-                                    closed='left', label='left', 
-                                    fill_method=None)
-     #       how= for downsampling, fill_method= for upsampling.
-     return df.interpolate(method='linear')
-     #         ^applies to nulls, if upsampling.
+    '''Resample data to daily using only business days.'''
+    #                         'D' is used calendar daily
+    #                         'B' for business daily
+    secs1day2hours = 93600.0
+    return resample_main( dataframe, 'B', secs1day2hours )
 
 
 def monthly( dataframe ):
-     '''Resample data to FRED's month start frequency.'''
-     #  FRED uses the start of the month to index its monthly data.
-     #                         'M' is used for end of month.
-     #                          MS for start of month.
-     df =   dataframe.resample('MS', how='median', 
-                                     closed='left', label='left', 
-                                     fill_method=None)
-     #        how= for downsampling, fill_method= for upsampling.
-     return df.interpolate(method='linear')
-     #         ^applies to nulls, if upsampling.
+    '''Resample data to FRED's month start frequency.'''
+    #  FRED uses the start of the month to index its monthly data.
+    #                         'M'  is used for end of month.
+    #                         'MS' for start of month.
+    secs31days = 2678400.0
+    return resample_main( dataframe, 'MS', secs31days )
 
 
 def quarterly( dataframe ):
-     '''Resample data to FRED's quarterly start frequency.'''
-     #  FRED uses the start of the month to index its monthly data.
-     #  Then for quarterly data: 1-01, 4-01, 7-01, 10-01.
-     #                            Q1    Q2    Q3     Q4
-     #
-     #                          ______Start at first of months,
-     #                          ______for year ending in indicated month.
-     df =   dataframe.resample('QS-OCT', how='median', 
-                                         closed='left', label='left', 
-                                         fill_method=None)
-     #            how= for downsampling, fill_method= for upsampling.
-     return df.interpolate(method='linear')
-     #         ^applies to nulls, if upsampling.
+    '''Resample data to FRED's quarterly start frequency.'''
+    #  FRED uses the start of the month to index its monthly data.
+    #  Then for quarterly data: 1-01, 4-01, 7-01, 10-01.
+    #                            Q1    Q2    Q3     Q4
+    #  ________ Start at first of months,
+    #  ________ for year ending in indicated month.
+    #  'QS-OCT'
+    secs93days = 8035200.0
+    return resample_main( dataframe, 'QS-OCT', secs93days )
 
 
 
