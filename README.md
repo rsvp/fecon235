@@ -50,7 +50,7 @@ in addition to econometric models.
 * Deployment: the best reference to the Python ecosystem for financial economists 
   is the Quantitative Economics site by Thomas [Sargent]. 
 
-* Dependencies: pandas > 0.16 is highly recommended. 
+* Dependencies: pandas 0.18 or higher is required as of our v5. 
   All modules are tested against both Python 2.7 and 3 series. 
   User code has been rewritten for cross-platform performance 
   (Linux, Mac, and Windows).
@@ -60,8 +60,9 @@ in addition to econometric models.
   for science, math, engineering, data analysis. 
   It will resolve your headaches due to dependency hell.
 
-* Docker container: instantly run fully-configured notebooks and programs; 
-  start by: `docker pull rsvp/fecon235` -- see our [Docker] image for details.  
+* Docker container (optional): instantly run fully-configured programs and 
+  interactive notebooks; start by: `docker pull rsvp/fecon235` # see our 
+  [Docker] image for details.  
 
 * Updates: for pre-2016 notebooks, please use import style 
   discussed in *docs* README: https://git.io/fecon-intro 
@@ -313,7 +314,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-10-28
+Revision date : 2016-11-07
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
