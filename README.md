@@ -90,6 +90,8 @@ If you had executed that notebook locally, it would
 have also retrieved the latest available data and 
 recomputed the results.
 
+How is worker's wage correlated with GDP output? See https://git.io/gdpwage
+
 To score the Federal Reserve's performance under its dual
 mandate for inflation and unemployment, see https://git.io/fed
 (where tangentially the Phillips curve is discredited by constructing
@@ -232,8 +234,9 @@ excessive equity valuations aside from inflationary pressures.
 
 ##### [fred-gdp-wage.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-gdp-wage.ipynb) : U.S. GDP vs. Wage Income 
 
-For every wage dollar paid, what is GDP output?  In answering this question,
-we derive a model for GDP growth based on observations from wage growth.  
+How is wage correlated with GDP output?  In answering this question,
+we derive a model for GDP growth based on observations from wage growth. 
+Shortcut: https://git.io/gdpwage
 
 ##### [fred-georeturns.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-georeturns.ipynb) : Comparative geometric mean returns
 
@@ -264,7 +267,7 @@ gives a numerical score to the Fed's performance on its dual mandate.
 The key is to find comparable units to measure performance and a suitable
 scalar measure to show deviation from the dual mandate. The visualization
 includes sequential scatter plots using color heat map, which can be 
-extended to studies of the Phillips curve.
+extended to studies of the Phillips curve. Shortcut: https://git.io/phillips
 
 ##### [fred-infl-velocity.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-infl-velocity.ipynb) : Inflation, money velocity, and interest rates  
 
