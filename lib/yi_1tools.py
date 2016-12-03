@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-10-29
+#  Python Module for import                           Date : 2016-12-01
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-12-01  Add retrace() and retracedf() to compute retracements.
 2016-10-29  Per issue #5, ema() will be moved to yi_timeseries module.
 2016-04-28  Revise regress() since ols from pandas.stats.api deprecated.
                New n argument for stats() Head and Tail display.
@@ -126,6 +127,37 @@ def dif( dfx, freq=1 ):
 def pcent( dfx, freq=1 ):
      '''PERCENTAGE CHANGE method for pandas.'''
      return dfx.pct_change( periods=freq ) * 100
+
+
+def retrace( minimum, maximum, percent=50 ):
+     '''Compute retracement between minimum and maximum.
+        Noteworthy Fibonacci retracements: 23.6%, 38.2%, 61.8%
+        Set percent as negative for retracement down from maximum, 
+        whereas positive percent implies retrace up from the minimum.
+     >>> retrace( 10, 110, -20 )
+     90.0
+     >>> retrace( 10, 110, 20 )
+     30.0
+     '''
+     if isinstance( minimum, pd.DataFrame ):
+          system.die("DataFrame argument UNACCEPTABLE. Try retracedf()")
+     span = maximum - minimum
+     portion = span * (abs(percent)/100.0)
+     if percent < 0:
+          target = maximum - portion
+     else:
+          target = minimum + portion
+     return target
+
+
+def retracedf( dfx, percent=50 ):
+     '''Compute retracement between minimum and maximum of dataframe.'''
+     #  Set percent as negative for retracement down from maximum, 
+     #  whereas positive percent implies retrace up from the minimum.
+     minimum = dfx.min().iloc[0]
+     maximum = dfx.max().iloc[0]
+     target = retrace( minimum, maximum, percent )
+     return [ target, percent, minimum, maximum ]
 
 
 def georet( dfx, yearly=256 ):
