@@ -181,7 +181,8 @@ The *London Bullion Market Association* ceased publishing daily data
 on their *Gold Forward Offered Rate* (**GOFO**), as of 30 January 2015 -- 
 so we develop an observable proxy called *tango* using gold futures 
 and LIBOR. This supply/demand indicator is then compared against 
-spot prices. 
+change in spot prices. Observed strong correlations appear 
+to be artificial. Shortcut: https://git.io/xau-contango
 
 ##### [qdl-COTR-positions.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-COTR-positions.ipynb) : Use pandas to read CFTC COTR
 
@@ -317,7 +318,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-11-07
+Revision date : 2016-12-04
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
