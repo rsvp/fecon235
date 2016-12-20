@@ -1,7 +1,16 @@
-#  Python Module for import                           Date : 2016-12-14
+#  Python Module for import                           Date : 2016-12-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_timeseries : essential time series functions.
+
+TESTS for this module are carried out in tests/test_timeseries.py 
+and the doctests there show numerical examples of how some of our 
+time-series algorithms are built.
+
+OPTIMIZATION will be carried out in separate modules to avoid clutter here. 
+For example, to optimize Holt-Winters parameters alpha and beta, 
+conditional on a particular dataset, for forecasting purposes (rather than 
+smoothing), please kindly see our module lib/ys_opt_holt.py
 
 REFERENCES:
 
@@ -23,6 +32,7 @@ See holt_winters_growth() vs. holt().
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-12-20  Update introduction: tests and optimization.
 2016-12-14  Fix initial guess of b[0] for holt_winters_growth(),
                especially critical when beta=0 e.g. in new ema().
 2016-10-29  Per issue #5, ema() moved here from yi_1tools module.
