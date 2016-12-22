@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-11-06
+#  Python Module for import                           Date : 2016-12-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-12-21  Add Fed Funds and its "30-day" ema as d4ff and d4ff30.
 2016-11-06  New resample_main() fixes #6 deprecations, and is used to
                rewrite daily(), monthly(), quarterly().
 2016-11-05  New index_delta_secs() to infer index frequency in seconds.
@@ -128,6 +129,8 @@ d4defl    = 'd4defl'             # synthetic deflator dataframe, see deflator()
 d4libjpy  = 'JPY3MTD156N'        # 3-m LIBOR JPY, daily
 d4libeur  = 'EUR3MTD156N'        # 3-m LIBOR EUR, daily
 d4libusd  = 'USD3MTD156N'        # 3-m LIBOR USD, daily
+d4ff      = 'DFF'                # Fed Funds, daily since 1954
+d4ff30    = 'd4ff30'             # Fed Funds synthetic, "30-day" exp.mov.avg.
 d4bills   = 'DTB3'               # Treasury bills, daily
 d4zero10  = 'd4zero10'           # Zero-coupon price of Treasury 10-y, daily
 d4bond10  = 'DGS10'              # Treasury 10-y constant, daily
@@ -576,6 +579,9 @@ def getfred( fredcode ):
           xauusd = getfred( m4xau ) / float(1000)
           df = usdrtb * xauusd
 
+     elif fredcode == d4ff30:
+          df = ts.ema(getdata_fred( d4ff ), 0.0645)
+          #       exponential moving avg.   ^"30-day"
      elif fredcode == d4zero10:
           bond10 = getdata_fred( d4bond10 )
           df = tools.zeroprice( bond10, zero10dur )
