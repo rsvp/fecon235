@@ -5,6 +5,59 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2016-12-25  (tag: v5.16.1225)
+
+fred-gdp-wage.ipynb: Fix #2 by v5, p6.16.0428 upgrades -- 
+notebook code is now Python 2.7 and 3 compatible.
+Minor changes in the econometrics due to new
+additional data since December 2014 (two more years of data).
+
+fred-infl-unem-fed.ipynb: Fix #2 by v5, p6.16.0428 upgrades -- 
+switch from fecon to fecon235 for main import module. 
+Minor edits given additional year of data.
+
+Update README.md with recent shortcut URLs. 
+Worker wage correlated with GDP output: https://git.io/gdpwage 
+Studies of the Phillips curve: https://git.io/phillips 
+which redirects to fred-infl-unem-fed.ipynb 
+thus the same as: https://git.io/fed
+
+lib/yi_1tools.py: Add retrace() and retracedf() -- 
+useful in understanding how technical chart points are derived.
+
+qdl-xau-contango.ipynb: Solve #2 by v5 & p6.16.0428 upgrades -- 
+switch from fecon to fecon235 for main import module, 
+minor edits given more data and change in futures basis.
+During 2015 we detected strong negative correlation between price change and
+tango, however, in 2016 that strong correlation became positive -- thus we
+conclude the relationship is spurious. The observed correlations are mere
+artifacts which do not imply any significant economic relationships.
+
+2016-12-14 CRITICAL fix of initial b[0] for holt_winters_growth() -- 
+modified: yi_timeseries.py, 
+also a fix for recently rewritten ema() since it assumes beta=0.
+The symptoms were bizarre exponential moving average estimates
+due to the growth coefficient unintentionally set always to a
+non-zero constant equal to y[1]-y[0], rather than zero.
+Add tests/test_timeseries.py to verify fix #5 -- 
+see discussion: https://github.com/rsvp/fecon235/issues/5
+
+Add lib/ys_opt_holt.py optimize Holt-Winters alpha and beta -- 
+conditional on specific data, helpful application of our optimization package.
+
+Add Fed Funds and its "30-day" exponential moving average 
+as d4ff and d4ff30 -- thus modifying lib/yi_fred.py. 
+The exponential moving average of d4ff is intended as
+a synthetic series to simulate the spot rate of the
+Fed Funds futures traded at the CME which uses a
+30-day average for settlement of its contracts.
+
+Huge revision: qdl-libor-fed-funds.ipynb Fed rate hikes -- 
+major clarification using transposition and tenor assumptions.
+Include 2016-12-14 Fed rate hike, and 2017 policy forecast; 
+must see: https://git.io/fedfunds
+
+
 ### 2016-11-07 v5.16.1107 MAJOR
 
 New *index_delta_secs()* to infer frequency 
