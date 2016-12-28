@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-19
+#  Python Module for import                           Date : 2016-12-28
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,7 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-12-28  Leave comment regarding optimize_holtforecast() in forecast().
 2016-12-19  Import lib.ys_opt_holt to optimize Holt-Winters alpha and beta.
 2016-01-22  Include plotdf() in plot() as first candidate.
                Rename cotr() to groupcotr(), then include smoothing.
@@ -132,6 +133,10 @@ def forecast( data, h=12 ):
     '''Unifies holtfred and holtqdl for quick forecasting.'''
     #  Using the defaults: alpha=ts.hw_alpha and beta=ts.hw_beta
     #  "data" could also be fredcode or quandlcode, but not stock slang.
+    #   
+    #  To find and use optimal alpha and beta to make forecasts, see:
+    #     optimize_holtforecast() in module ys_opt_holt
+    #     which is very time-consuming (not quick).
     try:
         df = holtfred( data, h )
     except:

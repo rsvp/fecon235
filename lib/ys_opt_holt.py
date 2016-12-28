@@ -1,7 +1,7 @@
-#  Python Module for import                           Date : 2016-12-19
+#  Python Module for import                           Date : 2016-12-28
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
-_______________|  ys_opt_holt.py : optimize Holt-Winters parameters
+_______________|  ys_opt_holt.py : optimize Holt-Winters parameters/forecast
 
 Here we rely on a single method to find optimal alpha and beta:
 
@@ -17,6 +17,8 @@ See lib/ys_optimize.py for implementation details and references.
 Also tests/test_optimize.py is intended as a TUTORIAL for USAGE.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-12-28  Add optimize_holtforecast() for forecasting.
+               Noted: 2*sigma approximated by 3*(median_absolute_error)
 2016-12-19  First version.
 '''
 
@@ -72,6 +74,13 @@ def loss_holt(params, *args):
     #  Ignore the first ten errors due to initialization warm-up:
     return np.median( np.absolute(error[10:]) )
 
+#  STATISTICAL NOTE: if L is the median absolute error, then by definition,
+#                    prob(-L <= error <= L) = 0.5
+#     If we assume the errors are Gaussian centered around zero, 
+#     then L = 0.675*sigma (by table look-up), thus sigma = 1.48*L.
+#
+#     Rule of thumb: Two sigma confidence can be approximated by 3*L.
+
 
 
 #  NOTICE: TUPLE "funarg" is used to specify arguments to function "fun"
@@ -101,6 +110,24 @@ def optimize_holt(dataframe, grids=50, alphas=(0.0, 1.0), betas=(0.0, 1.0)):
     #  Since np.round and np.around print ugly, use Python round()
     #  to display alpha and beta. Also include median absolute loss:
     return [round(alpha, 4), round(beta, 4), loss]
+
+
+def optimize_holtforecast( dataframe, h=12, grids=50 ):
+    '''Forecast ahead h periods using optimized Holt-Winters parameters.'''
+    #  Note: default hw_alpha and hw_beta from yi_timeseries module 
+    #        are NOT necessarily optimal given specific data.
+    alphabetaloss = optimize_holt(dataframe, grids=grids)
+    #  alphabetaloss will be a list: [alpha, beta, loss]
+    #     computed from default boundpairs: alphas=(0.0, 1.0), betas=(0.0, 1.0)
+    holtdf = ts.holt(dataframe, alpha=alphabetaloss[0], beta=alphabetaloss[1])
+    #  holdf is our Holt-Winters "workout" dataframe.
+    forecasts_df = ts.holtforecast(holtdf, h)
+    #  forecasts_df is a dataframe containing h period forecasts.
+    #
+    #  Unlike ts.holtforecast(), here we append alphabetaloss to the output
+    #     so that the model parameters and median absolute loss are available.
+    #     Forecasts alone can be obtained directly by func(...)[0]
+    return [ forecasts_df, alphabetaloss ]
 
 
 
