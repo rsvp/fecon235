@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-28
+#  Python Module for import                           Date : 2016-12-29
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,7 +11,7 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
-2016-12-28  Leave comment regarding optimize_holtforecast() in forecast().
+2016-12-29  Modify forecast() to include optimize_holtforecast().
 2016-12-19  Import lib.ys_opt_holt to optimize Holt-Winters alpha and beta.
 2016-01-22  Include plotdf() in plot() as first candidate.
                Rename cotr() to groupcotr(), then include smoothing.
@@ -36,6 +36,7 @@ TODO
 
 from __future__ import absolute_import, print_function
 
+import pandas as pd
 from .lib import yi_0sys as system
 
 #    CASUAL import style below intentionally for Jupyter notebooks
@@ -129,22 +130,34 @@ def plot( data, title='tmp', maxi=87654321 ):
     return
 
 
-def forecast( data, h=12 ):
-    '''Unifies holtfred and holtqdl for quick forecasting.'''
-    #  Using the defaults: alpha=ts.hw_alpha and beta=ts.hw_beta
-    #  "data" could also be fredcode or quandlcode, but not stock slang.
-    #   
-    #  To find and use optimal alpha and beta to make forecasts, see:
-    #     optimize_holtforecast() in module ys_opt_holt
-    #     which is very time-consuming (not quick).
-    try:
-        df = holtfred( data, h )
-    except:
+
+def forecast( data, h=12, grids=0, maxi=0 ):
+    '''Make h period ahead forecasts using holt* or optimize_holtforecast,
+       where "data" may be a DataFrame, fredcode, quandlcode, or stock slang.
+       (Supercedes: "Unifies holtfred and holtqdl for quick forecasting.")
+    '''
+    #  Generalization of 2016-12-29 preserves and expands former interface.
+    if not isinstance( data, pd.DataFrame ):
         try:
-            df = holtqdl( data, h )
+            data = get( data, maxi )
+            #           ^expecting fredcode, quandlcode, or stock slang
+            #      to be retrieved as DataFrame.
         except:
-            raise ValueError('INVALID argument or data for fecon forecast()')
-    return df
+            raise ValueError("INVALID argument for fecon235 forecast()")
+    if grids > 0:
+        #  Recommend grids=50 for reasonable results,
+        #  but TIME-CONSUMING for search grids > 49
+        #  to FIND OPTIMAL alpha and beta by minBrute():
+        opt =  optimize_holtforecast( data, h, grids=grids )
+        #  See optimize_holtforecast() in module ys_opt_holt for details.
+        system.warn( str(opt[1]), stub="OPTIMAL alpha, beta, losspc, loss:" )
+        return opt[0]
+    else:
+        #  QUICK forecasts when grids=0 ...
+        #  by using FIXED defaults: alpha=ts.hw_alpha and beta=ts.hw_beta:
+        holtdf = holt( data )
+        system.warn("Holt-Winters parameters have NOT been optimized.")
+        return holtforecast( holtdf, h )
 
 
 def groupget( ggdic=group4d, maxi=0 ):
