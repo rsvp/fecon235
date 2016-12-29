@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-28
+#  Python Module for import                           Date : 2016-12-29
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_opt_holt.py : optimize Holt-Winters parameters/forecast
@@ -17,6 +17,7 @@ See lib/ys_optimize.py for implementation details and references.
 Also tests/test_optimize.py is intended as a TUTORIAL for USAGE.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2016-12-29  Include percentage loss in alphabetaloss list.
 2016-12-28  Add optimize_holtforecast() for forecasting.
                Noted: 2*sigma approximated by 3*(median_absolute_error)
 2016-12-19  First version.
@@ -26,6 +27,7 @@ from __future__ import absolute_import, print_function
 
 import numpy as np
 from fecon235.lib import yi_0sys as system
+from fecon235.lib import yi_1tools as tools
 from fecon235.lib import yi_timeseries as ts
 from fecon235.lib import ys_optimize as yop
 #  Assuming that DISPLAY=0 at ys_optimize module.
@@ -93,11 +95,11 @@ def optimize_holt(dataframe, grids=50, alphas=(0.0, 1.0), betas=(0.0, 1.0)):
     '''Optimize Holt-Winters parameters alpha and beta for given data.
        The alphas and betas are boundaries of respective explored regions.
        Function interpolates "grids" from its low bound to its high bound,
-       inclusive. Final output: [alpha, beta, median absolute loss]
+       inclusive. Final output: [alpha, beta, losspc, median absolute loss]
        TIP: narrow down alphas and betas using optimize_holt iteratively.
     '''
     if grids > 49:
-        system.warn("[alpha, beta, loss] for Holt-Winters may take TIME!")
+        system.warn("Optimizing Holt-Winters alphabetaloss may take TIME!")
         #  Exploring loss at all the grids is COMPUTATIONALLY INTENSE
         #  due to holt(), especially if the primary data is very large.
         #  Tip: truncate dataframe to recent data.
@@ -107,9 +109,11 @@ def optimize_holt(dataframe, grids=50, alphas=(0.0, 1.0), betas=(0.0, 1.0)):
     alpha, beta = list(result)
     #  Compute loss, given optimal parameters:
     loss = loss_holt((alpha, beta), dataframe)
-    #  Since np.round and np.around print ugly, use Python round()
-    #  to display alpha and beta. Also include median absolute loss:
-    return [round(alpha, 4), round(beta, 4), loss]
+    #  Compute percentage loss relative to absolute tailvalue:
+    losspc = (float(loss) / abs(tools.tailvalue(dataframe))) * 100
+    #  Since np.round and np.around print ugly, use Python round() to
+    #  display alpha and beta. Also include losspc and median absolute loss:
+    return [round(alpha, 4), round(beta, 4), round(losspc, 4), loss]
 
 
 def optimize_holtforecast( dataframe, h=12, grids=50 ):
@@ -117,7 +121,7 @@ def optimize_holtforecast( dataframe, h=12, grids=50 ):
     #  Note: default hw_alpha and hw_beta from yi_timeseries module 
     #        are NOT necessarily optimal given specific data.
     alphabetaloss = optimize_holt(dataframe, grids=grids)
-    #  alphabetaloss will be a list: [alpha, beta, loss]
+    #  alphabetaloss will be a list: [alpha, beta, losspc, loss]
     #     computed from default boundpairs: alphas=(0.0, 1.0), betas=(0.0, 1.0)
     holtdf = ts.holt(dataframe, alpha=alphabetaloss[0], beta=alphabetaloss[1])
     #  holdf is our Holt-Winters "workout" dataframe.
