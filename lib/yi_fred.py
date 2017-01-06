@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-21
+#  Python Module for import                           Date : 2017-01-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-01-06  Add USDCNY daily series, Chinese Yuan from FRB H-10.
 2016-12-21  Add Fed Funds and its "30-day" ema as d4ff and d4ff30.
 2016-11-06  New resample_main() fixes #6 deprecations, and is used to
                rewrite daily(), monthly(), quarterly().
@@ -141,6 +142,7 @@ d4bei     = 'd4bei'              # 10_y Break-even inflation, getfred synthetic
 d4usdjpy  = 'DEXJPUS'            # USDJPY, daily
 d4eurusd  = 'DEXUSEU'            # EURUSD, daily
 d4eurjpy  = 'd4eurjpy'           # EURJPY, daily, getfred synthetic
+d4usdcny  = 'DEXCHUS'            # USDCNY, daily since 1981, not offshore USDCNH
 
 d4xau     = 'GOLDPMGBD228NLBM'   # London PM Gold fix, daily
 d4xauusd  =  d4xau               #  " synonym
