@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-11-05
+#  Python Module for import                           Date : 2017-02-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_quandl.py : Access Quandl with pandas for plots, etc.
@@ -190,6 +190,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-02-06  Use names() within getqdl() to standardize names.
 2016-11-05  Remove comments intended as code templates.
 2016-03-21  Add freqM2MS for compatibility with FRED monthly format.
                Add m4spx_1871_p, m4spx_1871_e, m4spx_1871_d. 
@@ -551,9 +552,11 @@ def getqdl( quandlcode, maxi=87654321 ):
      #                  for "transformation" and "collapse" (resampling), 
      #                  call quandl() directly.
      #
-     #         NO NULLS finally, esp. for synthetics derived from 
-     #         overlapping indexes, noting that in general: 
-     #         readfile does fillna with pad beforehand.
+     #         _Give default fecon235 names to column and index:
+     df = tools.names( df )
+     #         Finally NO NULLS, esp. for synthetics derived from 
+     #         overlapping indexes (note that readfile does 
+     #         fillna with pad beforehand):
      return df.dropna()
 
 

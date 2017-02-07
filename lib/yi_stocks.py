@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2017-02-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_stocks.py : Access stock quotes.
@@ -32,6 +32,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-02-06  Use names() within getstocks() to standardize names.
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2015-11-22  Test on python 2.7.10, IPython 4.0.0, pandas_datareader 0.2.0
@@ -139,9 +140,12 @@ def getstock( slang, maxi=3650 ):
           pass
      else:
           df = stock_one( slang, maxi, 'Close' )
-     #         NO NULLS finally, esp. for synthetics derived from 
-     #         overlapping indexes, noting that in general: 
-     #         readfile does fillna with pad beforehand.
+     #
+     #         _Give default fecon235 names to column and index:
+     df = tools.names( df )
+     #         Finally NO NULLS, esp. for synthetics derived from 
+     #         overlapping indexes (note that readfile does 
+     #         fillna with pad beforehand):
      return df.dropna()
 
 

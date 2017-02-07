@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-01
+#  Python Module for import                           Date : 2017-02-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-02-06  Add names() to rename column and index names.
 2016-12-01  Add retrace() and retracedf() to compute retracements.
 2016-10-29  Per issue #5, ema() will be moved to yi_timeseries module.
 2016-04-28  Revise regress() since ols from pandas.stats.api deprecated.
@@ -416,6 +417,25 @@ def todf( data, col='Y' ):
           target.columns = [ col ]
      #             ________ Explicitly drop NA values. Very helpful routinely!
      return target.dropna() 
+
+
+#  Data from different sources need standardized NAMES 
+#  to interoperate, esp. the time index which we call 'T'.
+#  We imposed this convention when importing FRED data, and 
+#  thus for compatibility we shall use names() 
+#  as part of getqdl() and getstocks().
+
+def names( data, col='Y', idx='T' ):
+     '''Give names to single column of a dataframe and its index.'''
+     #  pandas has a confusing history of using .reindex and .rename
+     #  but this works as of v5 (expect changes later from upstream):
+     if isinstance( data, pd.DataFrame ):
+          #  data.columns.names is wrong for FRED, Quandl, and stocks.
+          data.columns = [ col ]
+          data.index.names = [ idx ]
+     else:
+          raise TypeError(' !!  names() requires DataFrame; use todf.')
+     return data
 
 
 def paste( df_list ):
