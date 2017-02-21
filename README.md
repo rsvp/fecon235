@@ -104,6 +104,7 @@ given in https://git.io/georet using geometric mean returns.
 
 In https://git.io/gold we make a conjecture that 
 real gold prices is a stationary time-series bound by real interest rates.
+In https://git.io/xbt we statistically analyze Bitcoin as a financial asset.
 
 SEC 13F filings can be easily parsed, see https://git.io/13F
 where we track asset managers Stanley Druckenmiller and John Paulson.
@@ -183,6 +184,16 @@ so we develop an observable proxy called *tango* using gold futures
 and LIBOR. This supply/demand indicator is then compared against 
 change in spot prices. Observed strong correlations appear 
 to be artificial. Shortcut: https://git.io/xau-contango
+
+##### [qdl-xbt-bitcoin.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-xbt-bitcoin.ipynb) : Statistical analysis of Bitcoin as financial asset
+
+We first examine time-series data for price, mining, and capitalization of Bitcoin, 
+then optimize a robust model for the extremely volatile USD price series.
+Taking the viewpoint of a Chinese user we perform a comparative valuation in 
+Chinese yuan, and also cross-check with the perennial store of value: gold.
+The astonishing volatility and geometric return makes Bitcoin a 
+speculative financial asset which may hinder it as a payment system.
+Shortcut: https://git.io/xbt
 
 ##### [qdl-COTR-positions.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-COTR-positions.ipynb) : Use pandas to read CFTC COTR
 
@@ -318,7 +329,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2016-12-04
+Revision date : 2017-02-21
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
