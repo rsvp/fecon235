@@ -5,6 +5,61 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2017-02-21  (tag: v5.17.0221)
+
+For yi_1tools.py: Add names() for column and index names.
+Data from different sources need standardized NAMES
+to interoperate, esp. the time index which we call 'T'.
+We imposed this convention when importing FRED data, and
+thus for compatibility we shall use names()
+as part of getqdl() and getstocks().
+
+Generalize forecast() in main fecon235 module.
+This supercedes: "Unifies holtfred and holtqdl for quick forecasting,"
+yet preserves and expands former interface.
+Data retrieval logic is streamlined, and
+"data" may be a DataFrame, fredcode, quandlcode, or stock slang.
+Former argument defaults are duly respected.
+
+For lib/ys_opt_holt.py: Add optimize_holtforecast() which
+will produce forecasts using optimal Holt-Winters parameters.
+
+For ys_opt_holt.py: Include losspc among alphabetaloss list
+to indicate loss percentage relative to absolute tailvalue,
+useful in discerning the precision of the forecasts.
+
+For yi_fred.py: Add USDCNY daily series, Chinese yuan, "d4usdcny".
+The source is Federal Reserve Bank H.10
+which references the onshore rate,
+not the freely traded offshore USDCNH rate.
+The daily series goes back to 1981.
+
+For yi_quandl.py: Add Bitcoin count and USD price: 
+"d7xbtcount" and "d7xbtusd" are new quandlcodes.
+Use d7 quandlcode prefix to signify 7 days/week data.
+
+Add qdl-xbt-bitcoin.ipynb, new notebook for Bitcoin: 
+We first examine time-series data for price, mining, and capitalization of Bitcoin, 
+then optimize a robust model for the extremely volatile USD price series.
+Taking the viewpoint of a Chinese user we perform a comparative valuation in 
+Chinese yuan, and also cross-check with the perennial store of value: gold.
+The astonishing volatility and geometric return makes Bitcoin a 
+speculative financial asset which may hinder it as a payment system.
+Shortcut: https://git.io/xbt
+
+LICENSE.md: Add further terms & conditions, especially note:
+Our material has been prepared for informational and educational purposes
+only, without regard to any particular user's investment objectives, financial
+situation or means.  We are not soliciting any action based upon it. Our
+material is not to be construed as a recommendation; or an offer to buy or
+sell; or the solicitation of an offer to buy or sell any security, financial
+product, or instrument.
+You should neither construe any of our material as business, financial,
+investment, hedging, trading, legal, regulatory, tax, or accounting advice nor
+make our service the primary basis for any investment decisions made by or on
+behalf of you, your accountants, or your managed or fiduciary accounts.
+
+
 ### 2016-12-25  (tag: v5.16.1225)
 
 fred-gdp-wage.ipynb: Fix #2 by v5, p6.16.0428 upgrades -- 
