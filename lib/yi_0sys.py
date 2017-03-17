@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-04-28
+#  Python Module for import                           Date : 2017-03-16
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,6 +18,7 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-03-16  Revise: minimumPandas = 18.0
 2016-04-28  Use version('jupyter_core') instead of version('jupyter').
                Update to PREAMBLE-p6.16.0428
 2015-12-29  For errf in gitinfo(), our dev_null instead of os.devnull
@@ -42,7 +43,7 @@ from subprocess import check_output, STDOUT
 
 minimumPython = ( 2, 7, 0 )
 #             ... else a warning is generated in specs().
-minimumPandas = 15.0
+minimumPandas = 18.0
 #               ^after replacing the first dot, then float.
 
 
