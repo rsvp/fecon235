@@ -113,6 +113,9 @@ In https://git.io/equities we examine the separable components
 of total return for equities, especially due to enterprise earnings
 and market speculation, using S&P data assembled by Robert Shiller
 which goes back to the year 1871.
+In https://git.io/gdpspx we examine the close relationship between the
+real economy and the equities market, while demonstrating
+the Holt-Winters time-series model for predictions.
 
 
 ### Useful modules ###
@@ -240,9 +243,10 @@ foreign exchange rate, comparative GDP. Appendix 1 concisely explains the
 ##### [fred-gdp-spx.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-gdp-spx.ipynb) : US real GDP vs. SPX: Holt-Winters time series forecasting  
 
 We examine the US gross domestic product's relationship to the US equity
-market, in real terms. Forecasts for both are demonstrated using Holt-Winters
-technique. We derive the most likely range for real GDP growth, and identify
-excessive equity valuations aside from inflationary pressures.   
+market (S&P 500), in real terms. Forecasts for both are demonstrated 
+using the **Holt-Winters time-series model**. We derive the most likely range 
+for real GDP growth, and identify extreme equity valuations aside from 
+inflationary pressures. Shortcut: https://git.io/gdpspx
 
 ##### [fred-gdp-wage.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-gdp-wage.ipynb) : U.S. GDP vs. Wage Income 
 
@@ -329,7 +333,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-02-21
+Revision date : 2017-04-11
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
