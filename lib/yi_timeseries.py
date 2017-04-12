@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-20
+#  Python Module for import                           Date : 2017-04-11
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_timeseries : essential time series functions.
@@ -11,6 +11,11 @@ OPTIMIZATION will be carried out in separate modules to avoid clutter here.
 For example, to optimize Holt-Winters parameters alpha and beta, 
 conditional on a particular dataset, for forecasting purposes (rather than 
 smoothing), please kindly see our module lib/ys_opt_holt.py
+
+USAGE of the code for the Holt-Winters time-series model is illustrated 
+in the Jupyter notebook at https://git.io/gdpspx which is a rendering of
+nb/fred-gdp-spx.ipynb in the fecon235 repository.
+
 
 REFERENCES:
 
