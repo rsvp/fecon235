@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-02-06
+#  Python Module for import                           Date : 2017-05-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,8 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-05  Add Pearson kurtosis(), append it to stat().
+               Add df2a() to convert single column dataframe to np array.
 2017-02-06  Add names() to rename column and index names.
 2016-12-01  Add retrace() and retracedf() to compute retracements.
 2016-10-29  Per issue #5, ema() will be moved to yi_timeseries module.
@@ -347,6 +349,25 @@ def regress( dfy, dfx, intercept=True ):
     return result
 
 
+def kurtosis( data ):
+    '''Compute kurtosis of an array or a single column DataFrame.
+       Uses Pearson fourth central moment, where kurtosis is 3
+       if Gaussian. Fischer "excess kurtosis":= k_Pearson-3.
+    '''
+    if isinstance( data, pd.DataFrame ):
+        arr = df2a(data)
+    else:
+        arr = data
+    mu = np.mean(arr)
+    sigma = np.std(arr)
+    k_Pearson = (sum((arr - mu)**4)/len(arr)) / sigma**4
+    #  Equivalent to: scipy.stats.kurtosis(arr, fisher=False, bias=True)
+    #  and preferred by Wolfram: http://mathworld.wolfram.com/Kurtosis.html
+    #  which includes good references on estimation.
+    #  For normality test, see scipy.stats.kurtosistest()
+    return k_Pearson
+
+
 def stat2( dfy, dfx, intercept=True ):
      '''Quick STATISTICAL SUMMARY and regression on two variables'''
      print(" ::  FIRST variable:")
@@ -365,13 +386,15 @@ def stat2( dfy, dfx, intercept=True ):
      return
 
 
-def stat( dataframe, pctiles=[0.25, 0.50, 0.75] ):
+def stat( data, pctiles=[0.25, 0.50, 0.75] ):
      '''QUICK summary statistics on given dataframe.'''
+     dataframe = todf(data)
      print(dataframe.describe( percentiles=pctiles ))
      #  excludes NaN values. Percentiles can be customized, 
      #  but 50% (median) cannot be suppressed even with [] as arg.
      #  Also handles object dtypes like strings, see
      #  http://pandas.pydata.org/pandas-docs/version/0.17.0/generated/pandas.DataFrame.describe.html
+     print("kurtosis ", round(kurtosis(data), 6))
      return
 
 
@@ -393,6 +416,18 @@ def stats( dataframe, n=3 ):
      print(" ::  Correlation matrix:")
      print(cormatrix( dataframe ))
      return
+
+
+def df2a( dataframe ):
+    '''Convert single column dataframe to pure np.ndarray type.'''
+    #     After numpy operations, avoids getting single-value array,
+    #     rather than the single-value itself which one would be expecting.
+    #  Suppose len(dataframe) is m, then after dropna(),
+    #  data_n_1 of type np.ndarrary will have shape (n,1)
+    #  but that can be annoying, so data_n will have pure shape (n,) instead.
+    data_n_1 = dataframe.dropna().values
+    data_n = data_n_1.reshape( (len(data_n_1),) )
+    return data_n
 
 
 #  TIP:  After operating between dataframes, USE todf FOR CLARITY:
