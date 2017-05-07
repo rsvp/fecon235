@@ -1,8 +1,9 @@
-#  Python Module for import                           Date : 2015-12-20
+#  Python Module for import                           Date : 2017-05-06
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_simulation.py : simulation module for financial economics.
 
+- Essential probabilistic functions for simulations.
 - Pre-compute pool of asset returns.
      - SPX 1957-2014
 - Normalize, but include fat tails, so that mean and volatility can be specified.
@@ -11,12 +12,14 @@ _______________|  yi_simulation.py : simulation module for financial economics.
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-06  Add uniform randou(). Add maybe() random indicator function.
+               Add Gaussian randog(), simug(), and simug_mix().
 2015-12-20  python3 compatible: lib import fix.
 2015-12-17  python3 compatible: fix with yi_0sys
 2014-12-12  First version adapted from yi_fred.py
 '''
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 
 import numpy as np
 
@@ -31,6 +34,59 @@ from .yi_plot import plotn
 MEAN_PC_SPX = 7.6306
 STD_PC_SPX = 15.5742
 N_PC_SPX = 15116
+
+
+def randou( upper=1.0 ):
+    '''Single random float, not integer, from Uniform[0.0, upper).'''
+    #  Closed lower bound of zero, and argument for open upper bound.
+    #  To generate arrays, please use np.random.random().
+    return np.random.uniform(low=0.0, high=upper, size=None)
+
+
+def maybe( p=0.50 ):
+    '''Uniformly random indicator function such that prob(I=1=True) = p.'''
+    #  Nice to have for random "if" conditional branching.
+    #  Fun note: Python's boolean True is actually mapped to int 1.
+    if randou() <= p:
+        return 1
+    else:
+        return 0
+
+
+def randog( sigma=1.0 ):
+    '''Single random float from Gaussian N(0.0, sigma^2).'''
+    #  Argument sigma is the standard deviation, NOT the variance!
+    #  For non-zero mean, just add it to randog later.
+    #  To generate arrays, please use simug().
+    return np.random.normal(loc=0.0, scale=sigma, size=None)
+
+
+def simug( sigma, count=2560 ):
+    '''Simulate array of shape (count,) from Gaussian N(0.0, sigma^2).'''
+    #  Argument sigma is the standard deviation, NOT the variance!
+    arr = sigma * np.random.randn(count)
+    #  For non-zero mean, simply add it later: mu + simug(sigma)
+    return arr
+
+
+def simug_mix( p, sigma_1, sigma_2, count=2560 ):
+    '''Simulate array from zero-mean Gaussian mixture GM(2).'''
+    #     Mathematical details in nb/gauss-mix-kurtosis.ipynb
+    #  Pre-populate an array of shape (count,) with the FIRST Gaussian,
+    #  so that most of the work is done quickly and efficiently...
+    arr = simug( sigma_1, count )
+    #     ... except for some random replacements:
+    for i in range(count):
+        if maybe(p):
+            pass  
+        else:
+            arr[i] = randog( sigma_2 )
+            #  With probability 1-p, we have replaced an element
+            #  of the array with a float from the SECOND Gaussian.
+    return arr
+
+
+#==============================================================================
 
 
 def GET_simu_spx_pcent():
