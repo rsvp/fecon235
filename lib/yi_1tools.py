@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-05
+#  Python Module for import                           Date : 2017-05-10
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-10  Rename kurtosis() to kurtfun().
 2017-05-05  Add Pearson kurtosis(), append it to stat().
                Add df2a() to convert single column dataframe to np array.
 2017-02-06  Add names() to rename column and index names.
@@ -349,7 +350,7 @@ def regress( dfy, dfx, intercept=True ):
     return result
 
 
-def kurtosis( data ):
+def kurtfun( data ):
     '''Compute kurtosis of an array or a single column DataFrame.
        Uses Pearson fourth central moment, where kurtosis is 3
        if Gaussian. Fischer "excess kurtosis":= k_Pearson-3.
@@ -394,7 +395,7 @@ def stat( data, pctiles=[0.25, 0.50, 0.75] ):
      #  but 50% (median) cannot be suppressed even with [] as arg.
      #  Also handles object dtypes like strings, see
      #  http://pandas.pydata.org/pandas-docs/version/0.17.0/generated/pandas.DataFrame.describe.html
-     print("kurtosis ", round(kurtosis(data), 6))
+     print("kurtosis ", round(kurtfun(data), 6))
      return
 
 
