@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-10  Add diflog() to difference between lagged log(data).
 2017-05-10  Rename kurtosis() to kurtfun().
 2017-05-05  Add Pearson kurtosis(), append it to stat().
                Add df2a() to convert single column dataframe to np array.
@@ -509,6 +510,17 @@ def lagdf( df, lags=1 ):
                        for i in df.columns ]
     #      ^Thus: original column names + underscore_lag notation.
     return lagged
+
+
+def diflog( data, lags=1 ):
+    '''Difference between lagged log(data).'''
+    #  If data is a DataFrame, it must be given as single-column.
+    logged = np.log( todf(data) )
+    lagged = lagdf( logged, lags )
+    lagged.columns = ['Y_0', 'Y_lag']
+    #                        ^rename from 'Y_n' for whatever n=lags
+    #  Even if data is an array, output will always be a DataFrame:
+    return todf( lagged['Y_0'] - lagged['Y_lag'] )
 
 
 def writefile( dataframe, filename='tmp-yi_1tools.csv', separator=',' ):
