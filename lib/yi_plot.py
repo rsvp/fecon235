@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-01-21
+#  Python Module for import                           Date : 2017-05-15
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_plot.py : essential plot functions.
@@ -10,6 +10,7 @@ References:
   http://pandas.pydata.org/pandas-docs/stable/computation.html
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-15  Add plotqq() for quantile-quantile Q-Q probability plot.
 2016-01-21  plotn(): Replace its "dataframe = dataframe.dropna()" with todf.
 2016-01-20  Receive plotdf(), versions 2014-15, from yi_fred module.
                plotdf was actually the very first plot routine written.
@@ -29,6 +30,7 @@ from __future__ import absolute_import, print_function
 import matplotlib.pyplot as plt
 import matplotlib.cm as colormap
 import pandas as pd
+import scipy
 from . import yi_0sys as system
 from . import yi_1tools as tools
 
@@ -224,6 +226,54 @@ def scat( dfx, dfy, title='tmp', col=[0, 1] ):
     '''Scatter plot between two pasted dataframes.'''
     #  Renaming title will result in file output.
     scatter( tools.paste([ dfx, dfy ]), title, col ) 
+    return
+
+
+
+#  Note: Leptokurtosis ("fat tails") is much more distinctive in the 
+#  Q-Q plots than P-P plots. Bi-modality and skewness are more distinctive 
+#  in P-P plots (discriminating in regions of high probability density) 
+#  than Q-Q plots (better for regions of low probability density).
+#     See https://en.wikipedia.org/wiki/P–P_plot
+#     and http://v8doc.sas.com/sashtml/qc/chap8/sect9.htm
+
+
+def plotqq( data, title='tmp', dist='norm', fitLS=True ):
+    '''Display/save quantile-quantile Q-Q probability plot.
+       Q–Q plot here is used to compare data to a theoretical distribution.
+       Ref: https://en.wikipedia.org/wiki/Q–Q_plot
+    '''
+    #     Assume "data" to be np.ndarray or single-column DataFrame.
+    #  Theoretical quantiles on horizontal x-axis estimated by Filliben method.
+    #  Green line in plot depicits theoretical distribution; fitLS computes R^2:
+    #      The axes are purposely transformed in order to make the specified
+    #      distribution "dist" appear as a linear green line.
+    #                   'norm' is a Gaussian distribution.
+    #  The "data" plotted along the vertical y-axis.
+    fig, ax = plt.subplots()
+    arr = tools.toar( data )
+    #     ^Roundabout way guarantees a pure array needed for MAIN probplot:
+    _ = scipy.stats.probplot( arr, dist=dist, fit=fitLS, plot=plt )
+    #   Ignore numerical output, just give plot object to matplotlib.
+    #  https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.probplot.html
+    #  Prefer scipy version over statsmodels.graphics.gofplots.qqplot()
+    ax.get_lines()[0].set_marker('.')
+    ax.get_lines()[0].set_markersize(7.0)
+    ax.get_lines()[0].set_markerfacecolor('r')
+    #             [0] strangely refers to data points, set to red.
+    ax.get_lines()[1].set_color('g')
+    #             [1] refers to the straight theoretic line, set to green.
+    #         But points in common should be blue, rather than brown.
+    plt.title( title + " / plotqq " + dist + ", count=" + str(len(arr)) )
+    plt.grid(True)
+    plt.show()
+    #  Prepare image FILE to save, but ONLY if the title is not the default:
+    if title != 'tmp':
+         title = title.replace( ' ', '_' )
+         imgf = 'plotqq-' + title + '.png' 
+         fig.set_size_inches(11.5, 8.5)
+         fig.savefig( imgf, dpi=dotsperinch )
+         print(" ::  Finished: " + imgf)
     return
 
 
