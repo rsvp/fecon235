@@ -1,9 +1,10 @@
-#  Python Module for import                           Date : 2017-05-06
+#  Python Module for import                           Date : 2017-05-15
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_simulation.py : simulation module for financial economics.
 
 - Essential probabilistic functions for simulations.
+- Simulate Gaussian mixture model GM(2).
 - Pre-compute pool of asset returns.
      - SPX 1957-2014
 - Normalize, but include fat tails, so that mean and volatility can be specified.
@@ -12,6 +13,8 @@ _______________|  yi_simulation.py : simulation module for financial economics.
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-15  Rewrite simug_mix() in terms of prob(second Gaussian).
+               Let N generally be the count := sample size.
 2017-05-06  Add uniform randou(). Add maybe() random indicator function.
                Add Gaussian randog(), simug(), and simug_mix().
 2015-12-20  python3 compatible: lib import fix.
@@ -61,28 +64,27 @@ def randog( sigma=1.0 ):
     return np.random.normal(loc=0.0, scale=sigma, size=None)
 
 
-def simug( sigma, count=2560 ):
-    '''Simulate array of shape (count,) from Gaussian N(0.0, sigma^2).'''
+def simug( sigma, N=256 ):
+    '''Simulate array of shape (N,) from Gaussian Normal(0.0, sigma^2).'''
     #  Argument sigma is the standard deviation, NOT the variance!
-    arr = sigma * np.random.randn(count)
+    arr = sigma * np.random.randn( N )
     #  For non-zero mean, simply add it later: mu + simug(sigma)
     return arr
 
 
-def simug_mix( p, sigma_1, sigma_2, count=2560 ):
+def simug_mix( sigma1, sigma2, q=0.10, N=256 ):
     '''Simulate array from zero-mean Gaussian mixture GM(2).'''
     #     Mathematical details in nb/gauss-mix-kurtosis.ipynb
-    #  Pre-populate an array of shape (count,) with the FIRST Gaussian,
-    #  so that most of the work is done quickly and efficiently...
-    arr = simug( sigma_1, count )
+    #  Pre-populate an array of shape (N,) with the FIRST Gaussian,
+    #  so that most work is done quickly and memory efficient...
+    arr = simug( sigma1, N )
     #     ... except for some random replacements:
-    for i in range(count):
-        if maybe(p):
-            pass  
-        else:
-            arr[i] = randog( sigma_2 )
-            #  With probability 1-p, we have replaced an element
-            #  of the array with a float from the SECOND Gaussian.
+    for i in range(N):
+        #                p = 1-q = probability drawing from FIRST Gaussian.
+        #  So with probability q, replace an element of arr
+        #  with a float from the SECOND Gaussian:
+        if maybe( q ):
+            arr[i] = randog( sigma2 )
     return arr
 
 
