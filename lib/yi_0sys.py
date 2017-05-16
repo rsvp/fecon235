@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-03-16
+#  Python Module for import                           Date : 2017-05-15
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_0sys.py : system and date functions including specs.
@@ -18,6 +18,8 @@ REFERENCES:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-15  Add timestamp() per strict RFC-3339 standard.
+               Also include scipy and sympy in specs().
 2017-03-16  Revise: minimumPandas = 18.0
 2016-04-28  Use version('jupyter_core') instead of version('jupyter').
                Update to PREAMBLE-p6.16.0428
@@ -102,6 +104,13 @@ def date( hour=True, utc=True, localstr=' Local' ):
     else:
         form += localstr
         tup = time.localtime()
+    return time.strftime( form, tup ) 
+
+
+def timestamp():
+    '''Timestamp per strict RFC-3339 standard where timezone Z:=UTC.'''
+    form = "%Y-%m-%dT%H:%M:%SZ"
+    tup = time.gmtime()
     return time.strftime( form, tup ) 
 
 
@@ -206,12 +215,14 @@ def specs():
     version("matplotlib")
     version("numpy")
     #       ^dependency for pandas
+    version("scipy")
+    version("sympy")
     version("pandas")
     version("pandas_datareader")
     #       ^but package is "pandas-datareader" esp. for financial quotes. 
     repo, tag, bra = gitinfo()
     print(" ::  Repository:", repo, tag, bra )
-    print(" ::  Timestamp:", date(hour=True, utc=True))
+    print(" ::  Timestamp:", timestamp() )
 
 
 if pythontup() < (3, 0, 0):
