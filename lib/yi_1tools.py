@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-10
+#  Python Module for import                           Date : 2017-05-15
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,8 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-15  Add toar(), general converter to pure np.ndarray type.
+               Add pastear() to merge arrays as columns.
 2017-05-10  Add diflog() to difference between lagged log(data).
 2017-05-10  Rename kurtosis() to kurtfun().
 2017-05-05  Add Pearson kurtosis(), append it to stat().
@@ -435,7 +437,9 @@ def df2a( dataframe ):
 #  TIP:  After operating between dataframes, USE todf FOR CLARITY:
 
 def todf( data, col='Y' ):
-     '''CONVERT (list, Series, or DataFrame) TO DataFrame, NAMING single column.'''
+     '''CONVERT (list, Series, or DataFrame) TO DataFrame, NAMING single column.
+           Also from np.ndarray of shapes (N,) or (N,1).
+     '''
      #
      #  Operating among dataframes often produces a SERIES.
      #  We need CONVERSION for possible "paste" later, 
@@ -454,6 +458,16 @@ def todf( data, col='Y' ):
           target.columns = [ col ]
      #             ________ Explicitly drop NA values. Very helpful routinely!
      return target.dropna() 
+
+
+def toar( data ):
+    '''General converter to pure np.ndarray type.'''
+    #  Examples of data input types: list, Series, or single-column DataFrame,
+    #           but also np.ndarray of shapes (N,) or (N,1).
+    #  Why? Because some numerical packages ONLY work with arrays,
+    #       i.e. pandas types are not recognized.
+    #  The following will assuredly have pure shape of (N,):
+    return df2a( todf(data) )
 
 
 #  Data from different sources need standardized NAMES 
@@ -493,6 +507,14 @@ def paste( df_list ):
           combo = temp.dropna()
           #            ^so row values will be comparable.
      return combo
+
+
+def pastear( array_list ):
+     '''Merge arrays as columns (like paste for dataframes).'''
+     #  N.B. -  To concatenate arrays horizontally, use np.hstack().
+     #          To merge arrays as rows, use np.vstack().
+     arr_tup = tuple( array_list )
+     return np.column_stack( arr_tup )
 
 
 def lagdf( df, lags=1 ):
