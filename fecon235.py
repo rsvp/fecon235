@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2016-12-29
+#  Python Module for import                           Date : 2017-05-16
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,7 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-16  Include our module ys_gauss_mix.py
 2016-12-29  Modify forecast() to include optimize_holtforecast().
 2016-12-19  Import lib.ys_opt_holt to optimize Holt-Winters alpha and beta.
 2016-01-22  Include plotdf() in plot() as first candidate.
@@ -51,6 +52,7 @@ from .lib.yi_simulation import *
 from .lib.yi_stocks import *
 from .lib.yi_timeseries import *
 from .lib.ys_opt_holt import *
+from .lib.ys_gauss_mix import *
 
 
 #  GROUPS:  specify our favorite series as a dictionary
