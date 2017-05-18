@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-16
+#  Python Module for import                           Date : 2017-05-18
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_gauss_mix.py : Gaussian mixture for fecon235
@@ -7,6 +7,8 @@ _______________|  ys_gauss_mix.py : Gaussian mixture for fecon235
      see nb/gauss-mix-kurtosis.ipynb for details
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-18  Rewrite gm2_georet() to merely define geometric mean return,
+               then add georet_gm2() fit, consistent with georet() fit.
 2017-05-16  Add gm2_vols_fit(), gm2_vols(), and gm2_georet()
                which fit financial volatilities using GM(2) model.
                Fix gm2_strategy() when infeasible solution occurs.
@@ -168,18 +170,30 @@ def gm2_vols(data, b=2.5, yearly=256):
     #  is the annual mean return of 5.7%, plus dividends collected.
 
 
-def gm2_georet(data, b=2.5, yearly=256):
-    '''Compute annualized GEOMETRIC mean return from GM(2) volatility fit.'''
-    #  Our data is presumed to be prices of some financial asset.
-    #  Argument yearly expresses frequency of data, default is business daily.
-    mu, sigma1, sigma2, q, k_Pearson, sigma, b, N = gm2_vols_fit( data, b )
+def gm2_georet(mu, sigma1, sigma2, q=0.10, yearly=1):
+    '''Define GEOMETRIC mean return for GM(2) Gaussian mixture model.'''
+    #  Argument q is the probability of the second Gaussian.
+    #  Argument yearly is a scale parameter to express frequency of data.
+    #   Default yearly=1 produces a plain unscaled geometric mean return.
     var1 = sigma1 * sigma1 * yearly
     var2 = sigma2 * sigma2 * yearly
     geor1 = (mu*yearly) - (var1 / 2.0)
     geor2 = (mu*yearly) - (var2 / 2.0)
     #       Note that geor2 can be negative if var2 is large.
     geor  = ((1-q)*geor1) + (q*geor2)
-    #     ^[ ] - TODO: prove this equality.
+    #     ^TODO: [ ] - prove this equality for geometric mean return.
+    return geor
+
+
+def georet_gm2(data, yearly=256, b=2.5):
+    '''Compute annualized GEOMETRIC mean return from GM(2) volatility fit.'''
+    #                           cf. georet() fit for GM(1)
+    #  Our data is presumed to be prices of some financial asset.
+    #  Argument yearly expresses frequency of data, default is business daily.
+    mu, sigma1, sigma2, q, k_Pearson, sigma, b, N = gm2_vols_fit( data, b )
+    geor = gm2_georet( mu, sigma1, sigma2, q, yearly )
+    #    ^TODO: [ ] - conjecture: geor is invariant for reasonable choices of b.
+    #                        i.e. geor is a function only of mu, sigma, and k.
     #  ANNUALIZE appropriately in "percentage" form...
     ysr = 100 * np.sqrt(yearly)
     geor = 100 * geor
