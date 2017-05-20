@@ -1,0 +1,152 @@
+#  Python Module for import                           Date : 2017-05-19
+#  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
+''' 
+_______________|  test_gauss_mix : Test fecon235 ys_gauss_mix module.
+
+Assuming testing will occur in tests directory, to locate small data file.
+
+Doctests display at lower precision since equality test becomes fuzzy across 
+different systems if full floating point representation is used.
+
+Testing: As of fecon235 v4, we favor pytest over nosetests, so e.g. 
+    $ py.test --doctest-modules
+
+REFERENCE
+   pytest:  https://pytest.org/latest/getting-started.html
+               or PDF at http://pytest.org/latest/pytest.pdf
+
+CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-19  First version.
+'''
+
+from __future__ import absolute_import, print_function
+
+from fecon235.lib import yi_0sys as system
+from fecon235.lib import yi_fred as fred
+from fecon235.lib import yi_1tools as tools
+from fecon235.lib import ys_gauss_mix as gmix
+#
+#  N.B. -  In this tests directory without __init__.py, 
+#          we use absolute import as if outside the fecon235 package,
+#          not relative import (cf. modules within lib).
+
+
+#  #  Show the CSV file zdata-xau-13hj-c30.csv:
+#  #                    ^created in Linux environment...
+#  #  Warning: last four points may look like outliers, but they are actual.
+#  
+#       T,XAU
+#       2013-03-08,1581.75
+#       2013-03-11,1579.0
+#       2013-03-12,1594.0
+#       2013-03-13,1589.25
+#       2013-03-14,1586.0
+#       2013-03-15,1595.5
+#       2013-03-18,1603.75
+#       2013-03-19,1610.75
+#       2013-03-20,1607.5
+#       2013-03-21,1613.75
+#       2013-03-22,1607.75
+#       2013-03-25,1599.25
+#       2013-03-26,1598.0
+#       2013-03-27,1603.0
+#       2013-03-28,1598.25
+#       2013-03-29,1598.25
+#       2013-04-01,1598.25
+#       2013-04-02,1583.5
+#       2013-04-03,1574.75
+#       2013-04-04,1546.5
+#       2013-04-05,1568.0
+#       2013-04-08,1575.0
+#       2013-04-09,1577.25
+#       2013-04-10,1575.0
+#       2013-04-11,1565.0
+#       2013-04-12,1535.5
+#       2013-04-15,1395.0
+#       2013-04-16,1380.0
+#       2013-04-17,1392.0
+#       2013-04-18,1393.75
+
+
+def test_ys_gauss_mix_fecon235_Read_CSV_file():
+    '''Read CSV file then check values.'''
+    df = fred.readfile('zdata-xau-13hj-c30.csv')
+    #         readfile disregards XAU column name:
+    assert [ col for col in df.columns ] == ['Y']
+    assert df.shape == (30, 1)
+    return df
+
+
+#  Establish REFERENCE dataframe for tests below:
+xau = test_ys_gauss_mix_fecon235_Read_CSV_file()
+
+
+def test_ys_gauss_mix_fecon235_check_xau_DataFrame():
+    '''Check xau dataframe.'''
+    assert tools.tailvalue( xau ) == 1393.75
+
+
+def test_ys_gauss_mix_fecon235_check_gm2_strategy_feasible():
+    '''Test sympy solving for "a" in Proposition 2 numerically.'''
+    a_feasible = round( gmix.gm2_strategy(kurtosis=7, b=2), 4 )
+    assert a_feasible == 0.7454
+
+
+def test_ys_gauss_mix_fecon235_check_gm2_strategy_infeasible():
+    '''Destroy sympy solving for "a" in Proposition 2 numerically.'''
+    try:
+        a_feasible = round( gmix.gm2_strategy(kurtosis=13, b=2), 4 )
+        #  INTENTIONAL FAIL: That b is too low for high kurtosis.
+        #  Previous test shows feasible when kurtosis=7.
+        #  sympy actually fails correctly, and will raise its exception.
+    except:
+        a_feasible = "Intentionally_FATAL_since_INFEASIBLE"
+        #             Avoids reproducing the traceback to assert next:
+    assert a_feasible == "Intentionally_FATAL_since_INFEASIBLE"
+
+
+def test_ys_gauss_mix_fecon235_check_gm2_vols():
+    '''Check the annualized version of gm2_vols_fit() on test data.'''
+    xauvols = gmix.gm2_vols( xau[:'2013-04-12'], b=2.5, yearly=256 )
+    #                            ^else severe drop in price for small sample.
+    mu, sigma1, sigma2, q, k_Pearson, sigma, b, yearly, N = xauvols
+    assert round(mu, 4) == -30.3880       # mu annualized
+    assert round(sigma1, 4) == 11.1829    # sigma1 annualized
+    assert round(sigma2, 4) == 28.7713    # sigma2 annualized
+    assert round(q, 4) == 0.0105          # q
+    assert round(k_Pearson, 4) == 3.8787  # kurtosis
+    assert round(sigma, 4) == 11.5085     # sigma
+    assert b == 2.5                       # b
+    assert yearly == 256                  # yearly
+    assert N == 25                        # N, sample size
+
+
+def test_ys_gauss_mix_fecon235_check_gm2_georet():
+    '''Check on our definition of geometric mean return for GM(2).'''
+    geor = gmix.gm2_georet(mu=0.0752, sigma1=0.0587, sigma2=0.3855, 
+                            q=0.2321, yearly=1)
+    #  These figures come from SPX from 1997 to 2017.
+    assert round(geor, 4) == 0.0566
+
+
+def test_ys_gauss_mix_fecon235_check_georet_gm2():
+    '''Check the annualized geometric mean return of georet_gm2().'''
+    xaugeo = gmix.georet_gm2( xau[:'2013-04-12'], b=2.5, yearly=256 )
+    #                             ^else severe drop in price for small sample.
+    geor, sigma1, sigma2, q, k_Pearson, sigma, b, yearly, N = xaugeo
+    assert round(geor, 4) == -31.0502     # geor annualized
+    assert round(sigma1, 4) == 11.1829    # sigma1 annualized
+    assert round(sigma2, 4) == 28.7713    # sigma2 annualized
+    assert round(q, 4) == 0.0105          # q
+    assert round(k_Pearson, 4) == 3.8787  # kurtosis
+    assert round(sigma, 4) == 11.5085     # sigma
+    assert b == 2.5                       # b
+    assert yearly == 256                  # yearly
+    assert N == 25                        # N, sample size
+    #  This test is same as test_ys_gauss_mix_fecon235_check_gm2_vols()
+    #  except that instead of mu we compute geor.
+    #  Mathematically, geor < mu.
+
+
+if __name__ == "__main__":
+     system.endmodule()
