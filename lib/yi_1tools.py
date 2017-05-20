@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-15
+#  Python Module for import                           Date : 2017-05-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-20  Clarify kurtfun() using toar() and include raw option.
 2017-05-15  Add toar(), general converter to pure np.ndarray type.
                Add pastear() to merge arrays as columns.
 2017-05-10  Add diflog() to difference between lagged log(data).
@@ -353,23 +354,26 @@ def regress( dfy, dfx, intercept=True ):
     return result
 
 
-def kurtfun( data ):
+def kurtfun( data, raw=False ):
     '''Compute kurtosis of an array or a single column DataFrame.
-       Uses Pearson fourth central moment, where kurtosis is 3
-       if Gaussian. Fischer "excess kurtosis":= k_Pearson-3.
+       Default uses PEARSON fourth central moment, where kurtosis is 3
+       if data is Gaussian. Fischer "excess kurtosis":= k_Pearson-3.
     '''
-    if isinstance( data, pd.DataFrame ):
-        arr = df2a(data)
-    else:
-        arr = data
-    mu = np.mean(arr)
+    arr = toar(data)
+    mu    = np.mean(arr)
     sigma = np.std(arr)
-    k_Pearson = (sum((arr - mu)**4)/len(arr)) / sigma**4
-    #  Equivalent to: scipy.stats.kurtosis(arr, fisher=False, bias=True)
-    #  and preferred by Wolfram: http://mathworld.wolfram.com/Kurtosis.html
-    #  which includes good references on estimation.
-    #  For normality test, see scipy.stats.kurtosistest()
-    return k_Pearson
+    k_raw = (sum((arr - mu)**4)/len(arr))
+    #     ^is sometimes called the "ABSOLUTE fourth central moment"
+    #      which the Pearson version will then rescale.
+    if raw:
+        return k_raw
+    else:
+        k_Pearson = k_raw / sigma**4
+        #  Equivalent to: scipy.stats.kurtosis(arr, fisher=False, bias=True)
+        #  and preferred by Wolfram: http://mathworld.wolfram.com/Kurtosis.html
+        #  which includes good references on estimation.
+        #  For normality test, see scipy.stats.kurtosistest()
+        return k_Pearson
 
 
 def stat2( dfy, dfx, intercept=True ):
