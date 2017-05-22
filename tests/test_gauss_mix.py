@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-19
+#  Python Module for import                           Date : 2017-05-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  test_gauss_mix : Test fecon235 ys_gauss_mix module.
@@ -16,6 +16,8 @@ REFERENCE
                or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-21  Add tests for gemrate() and gemrat(). Note the deprecation of
+               gm2_georet() and georet_gm2() due to math proof.
 2017-05-19  First version.
 '''
 
@@ -121,31 +123,29 @@ def test_ys_gauss_mix_fecon235_check_gm2_vols():
     assert N == 25                        # N, sample size
 
 
-def test_ys_gauss_mix_fecon235_check_gm2_georet():
-    '''Check on our definition of geometric mean return for GM(2).'''
-    geor = gmix.gm2_georet(mu=0.0752, sigma1=0.0587, sigma2=0.3855, 
-                            q=0.2321, yearly=1)
-    #  These figures come from SPX from 1997 to 2017.
-    assert round(geor, 4) == 0.0566
+def test_ys_gauss_mix_fecon235_check_gemrate():
+    '''Check on geometric mean rate gemrate() based on gemreturn_Jean().'''
+    assert 0.05 - ((0.20*0.20)/2.) == 0.03
+    #           ^most well-known approx. for mu=0.05 and sigma=0.20
+    assert round(gmix.gemrate(0.05, 0.20, kurtosis=3, yearly=1),  7) == 0.0301066
+    #      Jean (1983) adds just 1 bp for Gaussian over usual approximation.
+    assert round(gmix.gemrate(0.05, 0.20, kurtosis=13, yearly=1), 7) == 0.0267223
+    #      So increase in kurtosis lowered geometric mean rate by 34 bp.
+    assert round(gmix.gemrate(0.05, 0.20, kurtosis=3, yearly=10), 7) == 0.3453084
+    #      OK, compounding works as intended.
 
 
-def test_ys_gauss_mix_fecon235_check_georet_gm2():
-    '''Check the annualized geometric mean return of georet_gm2().'''
-    xaugeo = gmix.georet_gm2( xau[:'2013-04-12'], b=2.5, yearly=256 )
-    #                             ^else severe drop in price for small sample.
-    geor, sigma1, sigma2, q, k_Pearson, sigma, b, yearly, N = xaugeo
-    assert round(geor, 4) == -31.0502     # geor annualized
-    assert round(sigma1, 4) == 11.1829    # sigma1 annualized
-    assert round(sigma2, 4) == 28.7713    # sigma2 annualized
-    assert round(q, 4) == 0.0105          # q
-    assert round(k_Pearson, 4) == 3.8787  # kurtosis
+def test_ys_gauss_mix_fecon235_check_gemrat():
+    '''Check on geometric mean rate of data, gemrat() in percentage form.'''
+    xaugem = gmix.gemrat( xau[:'2013-04-12'], yearly=256 )
+    #                         ^else severe drop in price for small sample.
+    grate, mu, sigma, k_Pearson, yearly, N  = xaugem
+    assert round(grate, 4) == -31.3826    # gemrat annualized
+    assert round(mu, 4) == -30.388        # arithmetic mean annualized
     assert round(sigma, 4) == 11.5085     # sigma
-    assert b == 2.5                       # b
+    assert round(k_Pearson, 4) == 3.8787  # kurtosis
     assert yearly == 256                  # yearly
     assert N == 25                        # N, sample size
-    #  This test is same as test_ys_gauss_mix_fecon235_check_gm2_vols()
-    #  except that instead of mu we compute geor.
-    #  Mathematically, geor < mu.
 
 
 if __name__ == "__main__":
