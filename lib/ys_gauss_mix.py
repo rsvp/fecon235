@@ -1,12 +1,28 @@
-#  Python Module for import                           Date : 2017-05-18
+#  Python Module for import                           Date : 2017-05-21
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_gauss_mix.py : Gaussian mixture for fecon235
 
 - Refactor code for structured zero-mean GM(2),
-     see nb/gauss-mix-kurtosis.ipynb for details
+     see nb/gauss-mix-kurtosis.ipynb for original details.
+
+- Refinement of geometric mean computations relies on Jean (1983)
+     which derives an exact infinite series of higher moments, wherein
+     the premature truncation in the classic paper Young (1969) is corrected.
+
+- Tests of this module at tests/test_gauss_mix.py
+
+REFERENCES:
+- William H. JEAN and Billy P. Helms, 1983, Geometric Mean Approximations,
+  J. Financial and Quantitative Analysis, 18:3:287-293.
+- William E. YOUNG and Robert H. Trent, 1969, Geometric Mean Approximations 
+  of Individual Security and Portfolio Performance,
+  J. Financial and Quantitative Analysis, 4:2:179-199.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-21  Deprecate gm2_georet() and georet_gm2() due to math proof.
+               For geometric mean computations, add gemreturn_Jean(),
+               gemrate(), and for data: georat().
 2017-05-18  Rewrite gm2_georet() to merely define geometric mean return,
                then add georet_gm2() fit, consistent with georet() fit.
 2017-05-16  Add gm2_vols_fit(), gm2_vols(), and gm2_georet()
@@ -112,9 +128,9 @@ def gm2_print(kurtosis, sigma, b=2):
 def gm2_vols_fit(data, b=2.5):
     '''Estimate GM(2) VOLATILITY parameters including mu, given b.'''
     #  Our data is presumed to be prices of some financial asset.
-    ret = tools.diflog( data, lags=1 )
+    rat = tools.diflog( data, lags=1 )
     #          ^First difference of log(data).
-    arr = tools.df2a( ret )
+    arr = tools.df2a( rat )
 
     #  Routine stat calculations on our array:
     N = len(arr)
@@ -170,35 +186,88 @@ def gm2_vols(data, b=2.5, yearly=256):
     #  is the annual mean return of 5.7%, plus dividends collected.
 
 
-def gm2_georet(mu, sigma1, sigma2, q=0.10, yearly=1):
-    '''Define GEOMETRIC mean return for GM(2) Gaussian mixture model.'''
-    #  Argument q is the probability of the second Gaussian.
-    #  Argument yearly is a scale parameter to express frequency of data.
-    #   Default yearly=1 produces a plain unscaled geometric mean return.
-    var1 = sigma1 * sigma1 * yearly
-    var2 = sigma2 * sigma2 * yearly
-    geor1 = (mu*yearly) - (var1 / 2.0)
-    geor2 = (mu*yearly) - (var2 / 2.0)
-    #       Note that geor2 can be negative if var2 is large.
-    geor  = ((1-q)*geor1) + (q*geor2)
-    #     ^TODO: [ ] - prove this equality for geometric mean return.
-    return geor
+#  #  DEPRECATED 2017-05-21: If geometric mean approximation is only a
+#  #             function of mu and sigma, then the probabilistic 
+#  #             GM(2) decomposition into sigma1 and sigma2
+#  #             does not mathematically refine the approximation!
+#  
+#  def gm2_georet(mu, sigma1, sigma2, q=0.10, yearly=1):
+#      '''Define GEOMETRIC mean return for GM(2) Gaussian mixture model.'''
+#      #  Argument q is the probability of the second Gaussian.
+#      #  Argument yearly is a scale parameter to express frequency of data.
+#      #   Default yearly=1 produces a plain unscaled geometric mean return.
+#      var1 = sigma1 * sigma1 * yearly
+#      var2 = sigma2 * sigma2 * yearly
+#      geor1 = (mu*yearly) - (var1 / 2.0)
+#      geor2 = (mu*yearly) - (var2 / 2.0)
+#      #       Note that geor2 can be negative if var2 is large.
+#      geor  = ((1-q)*geor1) + (q*geor2)
+#      #     ^TODO: [/] - prove this equality for geometric mean return.
+#      return geor
 
 
-def georet_gm2(data, yearly=256, b=2.5):
-    '''Compute annualized GEOMETRIC mean return from GM(2) volatility fit.'''
-    #                           cf. georet() fit for GM(1)
-    #  Our data is presumed to be prices of some financial asset.
-    #  Argument yearly expresses frequency of data, default is business daily.
-    mu, sigma1, sigma2, q, k_Pearson, sigma, b, N = gm2_vols_fit( data, b )
-    geor = gm2_georet( mu, sigma1, sigma2, q, yearly )
-    #    ^TODO: [ ] - conjecture: geor is invariant for reasonable choices of b.
-    #                        i.e. geor is a function only of mu, sigma, and k.
-    #  ANNUALIZE appropriately in "percentage" form...
-    ysr = 100 * np.sqrt(yearly)
-    geor = 100 * geor
-    return [ geor, sigma1*ysr, sigma2*ysr, q, 
-             k_Pearson, sigma*ysr, b, yearly, N ]
+def gemreturn_Jean( mu_return, sigma, k_Pearson=3 ):
+    '''Approximation for geometric mean RETURN via Jean (1983) infinite series.
+       Important definition: "financial return" := 1 + "rate"
+       where rate is expressed in decimal form.
+    '''
+    #  Jean (1983) derived the exact infinite series for geometric mean return
+    #  around a reference point (the arithmetic mean return worked out best).
+    #  Here we code an approximation by the first five terms of that series:
+    terms = [ np.log(mu_return), 0, 0, 0, 0 ]
+    #  By stipulation, we shall ignore the odd moments...
+    #  terms[1] = 0   # Zero by symmetry:  absolute first  central moment.
+    #  terms[3] = 0   # Zero by symmetry:  absolute third  central moment.
+    variance = sigma**2                 #  absolute second central moment.
+    k_raw = k_Pearson * (sigma**4)      #  absolute fourth central moment.
+    #       kurtosis details in kurtfun().
+    terms[2] = -( variance / (2.0 * (mu_return**2)) )
+    terms[4] = -( k_raw    / (4.0 * (mu_return**4)) )
+    #          ^increasing sigma and kurtosis will lower gemreturn <=!
+    log_greturn = sum(terms)
+    return np.exp( log_greturn )
+
+
+def gemrate( mu_rate, sigma, kurtosis=3, yearly=1 ):
+    '''Approximation for annualized geometric mean RATE by preferred method.
+       Important definition: "financial return" := 1 + "rate"
+       where rate is expressed in decimal form.
+    '''
+    mu_return = 1 + mu_rate
+    k_Pearson = kurtosis
+    #           ^MUST be expressed as Pearson kurtosis here, see kurtfun().
+    greturn = gemreturn_Jean(mu_return, sigma, k_Pearson)
+    greturn_annual = greturn**yearly
+    return greturn_annual - 1
+
+
+#  N.B. -  The gem* functions are related to the GM(2) model in so far
+#          as kurtosis is involved. The probabilistic decomposition of sigma
+#          into sigma1 and sigma2 does NOT affect geometric mean computations.
+
+
+def gemrat( data, yearly=256 ):
+    '''Compute annualized geometric mean rate as percentage for given data.
+       Output will be more accurate than the method implicit in georet()
+       since the kurtosis of differenced log data matters.
+    '''
+    rat = tools.diflog( data, lags=1 )
+    #          ^First difference of log(data).
+    arr = tools.df2a( rat )
+
+    #  Routine stat calculations on our array:
+    N = len(arr)
+    mu = np.mean(arr)
+    sigma = np.std(arr)
+    k_Pearson = (sum((arr - mu)**4)/N) / sigma**4
+    #  For kurtosis details, see our kurtfun().
+
+    ysr = np.sqrt(yearly)
+    grate = gemrate( mu_rate=mu*yearly, sigma=sigma*ysr, 
+                     kurtosis=k_Pearson, yearly=1 )
+    # Using gemrate( mu, sigma, k_Pearson, yearly=256 ) instead could
+    # result in: geometric mean > arithmetic mean, which is a contradiction.
+    return [ grate*100, mu*yearly*100, sigma*ysr*100, k_Pearson, yearly, N ]
 
 
 if __name__ == "__main__":
