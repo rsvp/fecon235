@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-20
+#  Python Module for import                           Date : 2017-05-26
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-26  Add roundit() to round floats from an iterable.
 2017-05-20  Clarify kurtfun() using toar() and include raw option.
 2017-05-15  Add toar(), general converter to pure np.ndarray type.
                Add pastear() to merge arrays as columns.
@@ -124,6 +125,16 @@ def div( numerator, denominator, floor=False ):
      else:
           #      Like python3 "/":
           return np.true_divide(numerator, denominator)
+
+
+def roundit( it, n=4, echo=True ):
+    '''Echo or return a list from iterable where floats are rounded n places.'''
+    lst = [ round(x, n) if isinstance(x, float) else x  for x in it ]
+    #                                           ^e.g. exempt int and strings.
+    if echo:
+        print( lst )
+    else:
+        return lst
 
 
 def dif( dfx, freq=1 ):
