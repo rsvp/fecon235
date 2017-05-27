@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-21
+#  Python Module for import                           Date : 2017-05-27
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_gauss_mix.py : Gaussian mixture for fecon235
@@ -20,6 +20,7 @@ REFERENCES:
   J. Financial and Quantitative Analysis, 4:2:179-199.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-05-27  Append pc argument to gemrat() for readability.
 2017-05-21  Deprecate gm2_georet() and georet_gm2() due to math proof.
                For geometric mean computations, add gemreturn_Jean(),
                gemrate(), and for data: georat().
@@ -246,10 +247,11 @@ def gemrate( mu_rate, sigma, kurtosis=3, yearly=1 ):
 #          into sigma1 and sigma2 does NOT affect geometric mean computations.
 
 
-def gemrat( data, yearly=256 ):
-    '''Compute annualized geometric mean rate as percentage for given data.
+def gemrat( data, yearly=256, pc=True ):
+    '''Compute annualized geometric mean rate for given data.
        Output will be more accurate than the method implicit in georet()
        since the kurtosis of differenced log data matters.
+       Argument pc will present appropriate output in percentage form.
     '''
     rat = tools.diflog( data, lags=1 )
     #          ^First difference of log(data).
@@ -262,12 +264,16 @@ def gemrat( data, yearly=256 ):
     k_Pearson = (sum((arr - mu)**4)/N) / sigma**4
     #  For kurtosis details, see our kurtfun().
 
-    ysr = np.sqrt(yearly)
-    grate = gemrate( mu_rate=mu*yearly, sigma=sigma*ysr, 
-                     kurtosis=k_Pearson, yearly=1 )
-    # Using gemrate( mu, sigma, k_Pearson, yearly=256 ) instead could
-    # result in: geometric mean > arithmetic mean, which is a contradiction.
-    return [ grate*100, mu*yearly*100, sigma*ysr*100, k_Pearson, yearly, N ]
+    #     Annualize...
+    muy = mu * yearly
+    sigmay = sigma * np.sqrt(yearly)
+    grate  = gemrate( muy, sigmay, k_Pearson, yearly=1 )
+    #  Using gemrate( muy, sigmay, k_Pearson, yearly=256 ) instead could
+    #  result in: geometric mean > arithmetic mean, which is a contradiction.
+    if pc:
+        return [ grate*100, muy*100, sigmay*100, k_Pearson, yearly, N ]
+    else:
+        return [ grate,     muy,     sigmay    , k_Pearson, yearly, N ]
 
 
 if __name__ == "__main__":
