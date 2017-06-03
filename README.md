@@ -117,6 +117,10 @@ In https://git.io/gdpspx we examine the close relationship between the
 real economy and the equities market, while demonstrating
 the Holt-Winters time-series model for predictions.
 
+In https://git.io/gmix we analytically and visually show how a Gaussian
+Mixture model handles "fat tail" risk of leptokurtotic financial assets
+under small-sample conditions.
+
 
 ### Useful modules ###
 
@@ -149,14 +153,22 @@ without tweaking the underlying numerical packages.
 * Guidelines: we welcome your [pull request] to improve our code. 
   Details are outlined in [Development].
 
-* For fecon235 presentations: contact us if you need help 
-  incorporating your material into an auxiliary repository.
-
 Lead developer is Adriano rsvp.github.com: [admin]. 
 Please join our chat with fellow users and developers at [Gitter].
 
 
 ### Partial contents of nb directory ###
+
+##### [gauss-mix-kurtosis.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/gauss-mix-kurtosis.ipynb) : Gaussian Mixture and Leptokurtotic Assets
+
+Gaussian Mixture GM(n) can create distributions with leptokurtosis ("fat
+tails"). Our problem is the inverse: from observable statistics, deduce the
+model parameters analytically. We demonstrate how a GM(2) model can
+synthesize Gaussian risk-equivalence for leptokurtotic financial assets.
+A numerical solution provides accurate probabilities which can be used to
+experimentally understand how kurtosis itself is distributed under
+small-sample conditions. The non-Gaussian distributions are visualized through
+quantile-quantile probability plots. Shortcut: https://git.io/gmix
 
 ##### [qdl-spx-earn-div.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-spx-earn-div.ipynb) : Separable components of total return for equities
 
@@ -333,7 +345,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-04-11
+Revision date : 2017-06-03
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
