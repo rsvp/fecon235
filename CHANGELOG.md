@@ -5,6 +5,58 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2017-06-03  (tag: v5.17.0603)
+
+lib/yi_0sys.py: Add timestamp() per RFC-3339 standard.
+
+Relationship between the real economy and the equities market,
+fred-gdp-spx.ipynb: Fix issue #2, optimize HW parameters,
+update data and narrative.
+Usage of the code for the Holt-Winters time-series model is illustrated
+in the Jupyter notebook rendered at https://git.io/gdpspx
+
+lib/yi_1tools.py: Add toar(), converter to pure array.
+Add df2a() to convert single column dataframe to np array
+of shape (n,) rather than (n,1) which can be annoying.
+Add pastear() to merge arrays as columns.
+Add diflog(), and accept numpy array as data;
+this takes the difference between lagged log(data).
+
+lib/yi_1tools.py: Add roundit() to round floats from iterable.
+Echo or return a list from iterable where floats are rounded n places.
+This is mainly to make some lengthy output readable.
+
+lib/yi_1tools.py: Add kurtfun() to compute Pearson kurtosis, and
+append said function to stat().
+
+lib/yi_simulation.py: add random functions:
+uniform randou(), and indicator maybe().
+Add Gaussian randog(), simug(), and simug_mix().
+Mathematical usage given in nb/gauss-mix-kurtosis.ipynb
+which covers Gaussian mixture GM(n) models.
+
+gauss-mix-kurtosis.ipynb: Analytic solution for GM(2)
+is complete. Use sympy to compute model parameters numerically.
+
+Fix gm2_strategy() when inadmissible solution occurs.
+A seemingly free parameter like b may not lead to a solution
+in the real domain, but a slight upward adjustment may help
+to avoid the imaginary domain, thanks to sympy.
+
+lib/yi_plot.py: Add plotqq() for Q-Q probability plot.
+Quantile-quantile plots are used to compare data
+to a theoretical distribution (default is Gaussian).
+
+lib/ys_gauss_mix.py: Refine geometric mean approximation.
+Add gemreturn_Jean(), gemrate(), and for data: georat().
+These involve kurtosis, but not the GM(2) sigma decomposition.
+
+Add tests/test_gauss_mix.py: PASSED, for module ys_gauss_mix.
+Add tests for gemrate() and gemrat().
+The former implicitly is a test of approximating Jean (1983)
+infinite series for geometric mean returns.
+
+
 ### 2017-02-21  (tag: v5.17.0221)
 
 For yi_1tools.py: Add names() for column and index names.
