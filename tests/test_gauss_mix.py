@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-21
+#  Python Module for import                           Date : 2017-06-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  test_gauss_mix : Test fecon235 ys_gauss_mix module.
@@ -16,6 +16,7 @@ REFERENCE
                or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-05  Add test for gm2gem().
 2017-05-21  Add tests for gemrate() and gemrat(). Note the deprecation of
                gm2_georet() and georet_gm2() due to math proof.
 2017-05-19  First version.
@@ -146,6 +147,23 @@ def test_ys_gauss_mix_fecon235_check_gemrat():
     assert round(k_Pearson, 4) == 3.8787  # kurtosis
     assert yearly == 256                  # yearly
     assert N == 25                        # N, sample size
+
+
+def test_ys_gauss_mix_fecon235_check_gm2gem():
+    '''Check on geometric mean rate of data and GM(2) model: print gm2gemrat().
+    >>> gmix.gm2gem( xau[:'2013-04-12'], yearly=256, b=2.5, pc=True, n=4 )
+    Geometric  mean rate: -31.3826
+    Arithmetic mean rate: -30.388
+    sigma: 11.5085
+    kurtosis (Pearson): 3.8787
+    GM(2), sigma1: 11.1829
+    GM(2), sigma2: 28.7713
+    GM(2), q:  0.0105
+    GM(2), b:  2.5
+    yearly: 256
+    N: 25
+    '''
+    pass
 
 
 if __name__ == "__main__":
