@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-27
+#  Python Module for import                           Date : 2017-06-05
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_gauss_mix.py : Gaussian mixture for fecon235
@@ -20,6 +20,8 @@ REFERENCES:
   J. Financial and Quantitative Analysis, 4:2:179-199.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-05  Add gm2gemrat() and gm2gem(). Clarify gm2_main().
+               Unify GM(2) and gemrat() with only one pass through data.
 2017-05-27  Append pc argument to gemrat() for readability.
 2017-05-21  Deprecate gm2_georet() and georet_gm2() due to math proof.
                For geometric mean computations, add gemreturn_Jean(),
@@ -92,7 +94,7 @@ def gm2_strategy(kurtosis, b=2):
     if a_solved == sym.S.EmptySet:
         #               ^when no feasible solution was found in domain.
         #                Do not accept imaginary solutions :-)
-        system.die("Argument b could not treat kurtosis; INCREASE b.")
+        system.die("Extreme kurtosis: argument b should be increased.")
         #     ^dies when kurtosis > 12 and b=2, for example.
         #           SPX returns since 1957 have kurtosis around 31.6
         #           which is very high, requiring b>3.4 for feasiblity.
@@ -106,11 +108,15 @@ def gm2_main(kurtosis, sigma, b=2):
     '''Compute specs for GM(2) given observable statistics and b.'''
     a = gm2_strategy(kurtosis, b)
     #  Probability p as given in Lemma 2.2:
-    p = (1 - (b**2)) / ((a**2) - (b**2))
+    p = float((1 - (b**2)) / ((a**2) - (b**2)))
     #   The returned parameters can then be used in simulations, 
     #   e.g. simug_mix() in lib/yi_simulation.py module,
-    #   or for synthetic assets in risk management:
-    return [[a, b], [p, a*sigma], [1-p, b*sigma]]
+    #   or for synthetic assets in risk management.
+    q = 1-p
+    sigma1 = float( a*sigma )
+    sigma2 = float( b*sigma )
+    #    Use float above to convert from np.float64, for roundit().
+    return [[a, b], [p, sigma1], [q, sigma2]]
 
 
 def gm2_print(kurtosis, sigma, b=2):
@@ -274,6 +280,57 @@ def gemrat( data, yearly=256, pc=True ):
         return [ grate*100, muy*100, sigmay*100, k_Pearson, yearly, N ]
     else:
         return [ grate,     muy,     sigmay    , k_Pearson, yearly, N ]
+
+
+
+#       __________ UNIFY GM(2) and GEOMETRIC MEAN RATE 
+#       with only one pass through data: gm2gemrat() and gm2gem().
+#
+#       If only geometric mean rate matters, use gemrat()[0] instead
+#       since there is no dependency on b which introduces fragility
+#       due to symbolic computation exercised in gm2_main().
+
+
+def gm2gemrat( data, yearly=256, b=2.5, pc=True ):
+    '''Compute annualized geometric mean rate and GM(2) parameters.
+       Argument pc will present appropriate output in percentage form.
+    '''
+    #                 k is Pearson kurtosis.
+    grate, mu, sigma, k, yearly, N   = gemrat(data, yearly, False)
+    b = 2  if b <= 1.0  else b
+    #   ^sensible correction for violating mathematical assumption.
+    try:
+        gm2out = gm2_main(k, sigma, b)
+    except:
+        try:
+            b += 0.5
+            system.warn("INCREASED b by 0.5 -- attempting resurrection ...")
+            gm2out = gm2_main(k, sigma, b)
+        except:
+            b += 0.5
+            system.warn("INCREASED b by 0.5 AGAIN -- final attempt ...")
+            gm2out = gm2_main(k, sigma, b)
+    [a, b], [p, sigma1], [q, sigma2] = gm2out
+    if pc:
+        return [grate*100, mu*100, sigma*100, k, sigma1*100, sigma2*100, 
+                q, b, yearly, N]
+    else:
+        return [grate, mu, sigma, k, sigma1, sigma2, q, b, yearly, N]
+
+
+def gm2gem( data, yearly=256, b=2.5, pc=True, n=4 ):
+    '''Print annualized specs from gm2gemrat() with n decimal places.'''
+    specs = tools.roundit( gm2gemrat(data, yearly, b, pc), n, echo=False )
+    print("Geometric  mean rate:", specs[0])
+    print("Arithmetic mean rate:", specs[1])
+    print("sigma:", specs[2])
+    print("kurtosis (Pearson):", specs[3])
+    print("GM(2), sigma1:", specs[4])
+    print("GM(2), sigma2:", specs[5])
+    print("GM(2), q: ", specs[6])
+    print("GM(2), b: ", specs[7])
+    print("yearly:", specs[8])
+    print("N:", specs[9])
 
 
 if __name__ == "__main__":
