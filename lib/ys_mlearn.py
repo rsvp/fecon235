@@ -1,30 +1,34 @@
-#  Python Module for import                           Date : 2017-06-06
+#  Python Module for import                           Date : 2017-06-07
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_mlearn.py : Machine learning tools
 
 - softmax() for cross-entropy, MLE, neural networks, Boltzmann portfolio.
+  softmax_sort() for ordering and filtering info on the probabilities.
+
 
 REFERENCES
 - David J.C. MacKay (2008), Information theory, Inference, and Learning
      Algorithms, 7th printing from Cambridge U. Press.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-07  Add softmax_sort() with filter and renormalization.
 2017-06-06  First fecon235 version.
 '''
 
 from __future__ import absolute_import, print_function, division
 
 import numpy as np
+from operator import itemgetter
 from . import yi_1tools as tools
 
 
-def softmax( it, temp=50, n=4 ):
+def softmax( it, temp=65, n=4 ):
     '''Softmax probabilities for iterable where temp sets temperature tau.
        Temperature tau is set as a fraction of second maximum so that
        scaling is not entirely arbitrary as the math may suggest.
-       Experiment with temp around 30 to 80; higher temp (100+)
-       will make it-elements more equi-probable, whereas probabilities
+       Experiment with temp around 50 to 80; higher temp (100+)
+       will make it-scores more equi-probable, whereas probabilities
        can be sharpened by decreasing temp towards 1.
        Setting temp to 0 results in generic softmax without temperature.
        Results are rounded to n decimal places.
@@ -61,7 +65,7 @@ def softmax( it, temp=50, n=4 ):
             tau = abs(second * (temp/100.0))
             #     Thus tau is just temp% portion of second maximum. <=!
         else:
-            #  No negatives means it-elements are equi-probable at any tau.
+            #  No negatives means it-scores are equi-probable at any tau.
             tau = 1.0
     #  MATHEMATICALLY, (Boltzmann) softmax is defined as follows:
     expit = np.exp( arrstable / tau )
@@ -69,8 +73,43 @@ def softmax( it, temp=50, n=4 ):
     softmax_exact = expit / sum_expit
     #                      roundit will output a list, not an array:
     softmax_approx = tools.roundit( softmax_exact, n, echo=False )
-    hardprob = max(softmax_approx)
+    hardprob = softmax_approx[idmax]
     return [ idmax, hardmax, hardprob, temp, softmax_approx ]
+
+
+    #      __________ SOFTMAX USAGE NOTES
+    #      softmax_sort() is obviously slower to compute than softmax().
+    #      They serve different purposes, for example,
+    #      softmax()[-1][i] can track a particular i-th class of it, whereas
+    #      softmax_sort()[:3] will give information on the top 3 classes.
+    #
+    #      The TEMPERATURE is a proxy for the degree of uncertainty
+    #      in the relative estimation of it-scores, but can also serve
+    #      to diffuse errors, i.e. a diversification technique with
+    #      mathematical reasoning rooted in statistical mechanics,
+    #      information theory, and maximum likelihood statistics.
+    #      To test temperature variations, softmax() will be much faster.
+
+
+def softmax_sort( it, temp=65, n=4, drop=0.00, renorm=False ):
+    '''Softmax results sorted, include index; option to drop and renormalize.
+       Probabilities less than drop are ignored.
+       Setting renorm=True will make probabilities sum to 1.
+    >>> softmax_sort([-16, -8, 0, 4, 8, 16], temp=50, drop=0.05, renorm=False)
+    [(0.829, 5, 16.0), (0.1122, 4, 8.0)]
+    >>> softmax_sort([-16, -8, 0, 4, 8, 16], temp=50, drop=0.05, renorm=True)
+    [(0.8808, 5, 16.0), (0.1192, 4, 8.0)]
+    '''
+    arr = tools.toar( it )
+    softmax_approx = softmax(arr, temp, n)[-1]
+    tups = [ (p, i, float(arr[i]))  for i, p in enumerate(softmax_approx) 
+                                        if p >= drop ]
+    #        ^so tuples are formatted as (probability, index, it-value).
+    if renorm:
+        subtotal = sum([p for p, i, v in tups])
+        tups = [(round(p/subtotal, n), i, v) for p, i, v in tups] 
+    #  Want softmax_sort()[0] to yield the maximum candidate:
+    return sorted( tups, key=itemgetter(2), reverse=True )
 
 
 if __name__ == "__main__":
