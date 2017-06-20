@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-06-17
+#  Python Module for import                           Date : 2017-06-19
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  test_matrix : Test fecon235 yi_matrix module.
@@ -14,6 +14,7 @@ REFERENCE
                or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-19  Add test for cov2cor().
 2017-06-17  First version.
 '''
 
@@ -40,6 +41,11 @@ Abad = np.array([[ 6, 2, 1 ],
 Aiv = np.array([[ -2, 8, -5 ],
                 [ 3, -11, 7 ],
                 [ 9, -34, 21 ]])
+
+#  V is a covariance array:
+V = np.array([[1875.3209,  429.8712,  462.4775 ],
+              [429.8712,  1306.9817, -262.8231 ],
+              [462.4775,  -262.8231,  755.5193 ]])
 
 
 def test_yi_matrix_fecon235_is_singular():
@@ -87,6 +93,17 @@ def test_yi_matrix_fecon235_Abad_invert():
            [ 0.02258,  0.00968,  0.00645],
            [ 0.50538, -0.02151, -0.23656]])
     '''
+    pass
+
+
+def test_yi_matrix_fecon235_cov2cor():
+    '''Compute correlation array given covariance array.
+    >>> matrix.cov2cor( V, n=6 )
+    array([[ 1.      ,  0.274578,  0.388535],
+           [ 0.274578,  1.      , -0.264488],
+           [ 0.388535, -0.264488,  1.      ]])
+    '''
+    #  R test: http://rfunction.com/archives/851
     pass
 
 

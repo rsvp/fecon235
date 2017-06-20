@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-06-17
+#  Python Module for import                           Date : 2017-06-19
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_matrix.py : Linear algebra module
@@ -28,6 +28,7 @@ REFERENCES
 - Gilbert Strang, 1980, Linear Algebra and Its Applications, 2nd ed. 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-19  Add cov2cor().
 2017-06-17  First version to numerically understand numpy inverse methods.
 '''
 
@@ -108,6 +109,20 @@ def invert( mat, rcond=RCOND ):
         system.warn("ILL-CONDITION: invert() may output pseudo-nonsense.")
         #  How did we get here? The problem is most likely collinearity.
         return invert_pseudo( mat, rcond )
+
+
+def cov2cor( cov, n=6 ):
+    '''Covariance array to correlation array, n-decimal places.
+       Outputs "Pearson product-moment CORRELATION COEFFICIENTS."
+    '''
+    #  https://en.wikipedia.org/wiki/Covariance_matrix
+    darr = np.diagonal( cov )
+    #        ^get diagonal elements of cov into a pure array.
+    #         Numpy docs says darr is not writeable, OK.
+    D = np.diag( 1.0/np.sqrt(darr) ) 
+    #     ^creates diagonal square "matrix" but not of subclass np.matrix.
+    cor = D.dot(cov).dot(D)
+    return np.round( cor, n )
 
 
 if __name__ == "__main__":
