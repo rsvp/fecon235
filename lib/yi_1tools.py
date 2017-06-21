@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-05-26
+#  Python Module for import                           Date : 2017-06-20
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_1tools.py : essential utility functions.
@@ -18,6 +18,7 @@ causing problems upon: from numpy import *
    - Plain float() is fine for our numerical work here.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-20  Fix bug in diflog().
 2017-05-26  Add roundit() to round floats from an iterable.
 2017-05-20  Clarify kurtfun() using toar() and include raw option.
 2017-05-15  Add toar(), general converter to pure np.ndarray type.
@@ -551,13 +552,13 @@ def lagdf( df, lags=1 ):
 
 def diflog( data, lags=1 ):
     '''Difference between lagged log(data).'''
-    #  If data is a DataFrame, it must be given as single-column.
+    #  If data is a DataFrame, it must be given as SINGLE-COLUMN.
     logged = np.log( todf(data) )
     lagged = lagdf( logged, lags )
-    lagged.columns = ['Y_0', 'Y_lag']
-    #                        ^rename from 'Y_n' for whatever n=lags
+    #        ^!!=> produces columns like Y_0, Y_1, Y_2, etc.
+    #              So large lags will hog memory, but cf. pcent().
     #  Even if data is an array, output will always be a DataFrame:
-    return todf( lagged['Y_0'] - lagged['Y_lag'] )
+    return todf( lagged['Y_0'] - lagged['Y_'+str(lags)] )
 
 
 def writefile( dataframe, filename='tmp-yi_1tools.csv', separator=',' ):
