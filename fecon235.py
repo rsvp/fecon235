@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-06-06
+#  Python Module for import                           Date : 2017-06-18
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
@@ -11,6 +11,8 @@ _______________|  fecon235.py : unifies yi_* modules for fecon235 project.
   frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-18  Add groupgemrat(), groupdiflog(), and covdiflog().
+               Include module ys_matrix.py.
 2017-06-06  Include our module ys_mlearn.py
 2017-05-16  Include our module ys_gauss_mix.py
 2016-12-29  Modify forecast() to include optimize_holtforecast().
@@ -46,6 +48,7 @@ from .lib import yi_0sys as system
 #    We access essential modules and catch collisions in namespace:
 from .lib.yi_1tools import *
 from .lib.yi_fred import *
+from .lib.yi_matrix import *
 from .lib.yi_plot import *
 from .lib.yi_quandl import *
 #         yi_quandl_api should NOT be imported.
@@ -202,18 +205,56 @@ def grouppc( groupdf, freq=1 ):
     return groupfun( pcent, groupdf, freq )
 
 
-def groupgeoret( groupdf, yearly=256 ):
+def groupdiflog( groupdf, lags=1 ):
+    '''Difference between lagged log(data) for columns in group dataframe.'''
+    #  See groupget() to retrieve and create group dataframe.  
+    return groupfun( diflog, groupdf, lags )
+
+
+def covdiflog( groupdf, lags=1 ):
+    '''Covariance array for differenced log(column) from group dataframe.
+       For correlation array: apply yi_matrix.cov2cor() later.
+    '''
+    #  See groupget() to retrieve and create group dataframe.  
+    rates = groupdiflog( groupdf, lags )
+    V = rates.cov()
+    #        ^Type of V is still pandas DataFrame, so convert to array.
+    #  AVOID the np.matrix subclass; stick with np.ndarrays instead:
+    return V.values
+
+
+def groupgeoret( groupdf, yearly=256, order=True ):
     '''Geometric mean returns, non-overlapping, for group dataframe.
        Argument "yearly" refers to annual frequency, e.g. 
        256 for daily trading days, 12 for monthly, 4 for quarterly.
+       ___ATTN___ Use groupgemrat() instead for greater accuracy.
     '''
     keys = list(groupdf.columns)
     #  Use list comprehension to store lists from georet():
     geo = [ georet(todf(groupdf[k]), yearly) + [k]  for k in keys ]
-    #  where each georet list gets appended with a identifying key.
-    geo.sort(reverse=True)
-    #  Group is ordered in-place with respect to decreasing georet.
+    #  where each georet list gets appended with an identifying key.
+    if order:
+        geo.sort(reverse=True)
+        #  Group is ordered in-place with respect to decreasing georet.
     return geo
+
+
+def groupgemrat( groupdf, yearly=256, order=False, n=2 ):
+    '''Geometric mean rates, non-overlapping, for group dataframe.
+       Argument "yearly" refers to annual frequency, e.g. 
+       256 for daily trading days, 12 for monthly, 4 for quarterly.
+       Output is rounded to n-decimal places.
+       Algorithm takes KURTOSIS into account for greater accuracy.
+    '''
+    keys = list(groupdf.columns)
+    #  Use list comprehension to store lists from gemrat():
+    gem = [ roundit(gemrat(todf(groupdf[k]), yearly), n, echo=False) 
+            + [k]  for k in keys ]
+    #       ^each gemrat list gets appended with an identifying key.
+    if order:
+        gem.sort(reverse=True)
+        #  Group is ordered in-place with respect to decreasing gemrat.
+    return gem
 
 
 def groupholtf( groupdf, h=12, alpha=ts.hw_alpha, beta=ts.hw_beta ):
