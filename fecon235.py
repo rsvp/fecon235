@@ -1,16 +1,18 @@
-#  Python Module for import                           Date : 2017-06-18
+#  Python Module for import                           Date : 2017-06-27
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
-_______________|  fecon235.py : unifies yi_* modules for fecon235 project.
+_______________|  fecon235.py : unifies lib modules for fecon235 project.
 
-- Designed to be invoked by an IPython/Jupyter console or notebook 
-  for convenient command access. CASUAL usage:
-        from fecon235.fecon235 import *
+- Designed to be invoked by an IPython console or Jupyter notebook
+     for convenient command access.
+     CASUAL usage:
+         from fecon235.fecon235 import *
 - User can always foo?? to access foo's origin.
 - Unifies essential lib modules in one place, thus
-  frequently used commands can be generalized with shorter names.
+     frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-27  Include module ys_prtf_boltzmann.py and group world4d.
 2017-06-18  Add groupgemrat(), groupdiflog(), and covdiflog().
                Include module ys_matrix.py.
 2017-06-06  Include our module ys_mlearn.py
@@ -55,9 +57,10 @@ from .lib.yi_quandl import *
 from .lib.yi_simulation import *
 from .lib.yi_stocks import *
 from .lib.yi_timeseries import *
-from .lib.ys_opt_holt import *
 from .lib.ys_gauss_mix import *
 from .lib.ys_mlearn import *
+from .lib.ys_opt_holt import *
+from .lib.ys_prtf_boltzmann import *
 
 
 #  GROUPS:  specify our favorite series as a dictionary
@@ -65,15 +68,20 @@ from .lib.ys_mlearn import *
 
 group4d = { 'Zero10' : d4zero10, 'SPX' : d4spx, 'XAU' : d4xau, 
             'EURUSD' : d4eurusd, 'USDJPY' : d4usdjpy }
-#         For usage details, see fred-georeturns.ipynb for details,
+#         For usage, see fred-georeturns.ipynb for details,
 #         in particular, functions like group*() in this module.
 
 cotr4w = { 'Bonds' : w4cotr_bonds, 'Equities' : w4cotr_equities, 
            'Metals' : w4cotr_metals, 'USD' : w4cotr_usd }
-#         For usage details, see qdl-COTR-positions.ipynb for details,
+#         For usage, see qdl-COTR-positions.ipynb for details,
 #         "Market position indicators using CFTC COTR"
 #         COTR := Commitment of Traders Report.
 
+world4d = { 'America' : 's4spy', 'Europe' : 's4ezu',
+            'Japan' : 's4ewj',  'Emerging' : 's4eem', 'Gold' : 's4gld' }
+#         For usage, see prtf-boltzmann-1.ipynb for details,
+#         Exchange Traded Funds (ETF) of daily frequency
+#         representing EQUITIES worldwide plus gold.
 
 
 def get( code, maxi=0 ):
