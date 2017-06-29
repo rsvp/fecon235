@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-06-05
+#  Python Module for import                           Date : 2017-06-29
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_gauss_mix.py : Gaussian mixture for fecon235
@@ -20,6 +20,7 @@ REFERENCES:
   J. Financial and Quantitative Analysis, 4:2:179-199.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-29  Fallback clause for gemrate() when log fails (2008Q4).
 2017-06-05  Add gm2gemrat() and gm2gem(). Clarify gm2_main().
                Unify GM(2) and gemrat() with only one pass through data.
 2017-05-27  Append pc argument to gemrat() for readability.
@@ -245,7 +246,13 @@ def gemrate( mu_rate, sigma, kurtosis=3, yearly=1 ):
     #           ^MUST be expressed as Pearson kurtosis here, see kurtfun().
     greturn = gemreturn_Jean(mu_return, sigma, k_Pearson)
     greturn_annual = greturn**yearly
-    return greturn_annual - 1
+    grat = greturn_annual - 1
+    if np.isnan(grat):
+        #   nan will occur when expected losses exceed 100% -- log error!!
+        #   Such estimates actually occurred during 2008Q4 -- Great Recession.
+        grat = (mu_rate - ((sigma*sigma)/2.0)) * yearly
+        #      ^Second-order approximation used in georet.
+    return grat
 
 
 #  N.B. -  The gem* functions are related to the GM(2) model in so far
