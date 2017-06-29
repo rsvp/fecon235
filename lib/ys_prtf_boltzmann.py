@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-06-28
+#  Python Module for import                           Date : 2017-06-30
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_prtf_boltzmann.py : Boltzmann portfolio
@@ -16,7 +16,7 @@ nb/prtf-boltzmann-1.ipynb for explicit details and derivation.
       |                    |
     gemrat              weights
       |                    |
-      |________score_______|
+      |________scores______|
                  |
                  |                   Boltzmann
       temp --> softmax --> probs --> pweights
@@ -31,6 +31,8 @@ REFERENCES
 - John H. Cochrane, 2005, Asset Pricing, Princeton U. Press.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-06-30  Revise boltzportfolio() as list, not print.
+               Increase default precision when using groupgemrat().
 2017-06-28  Condense functions described in Part 1 notebook.
 2017-06-26  First version.
 '''
@@ -40,6 +42,7 @@ import numpy as np
 import fecon235.fecon235
 #      ^SOLE circular import style which works for Python 2 & 3.
 from . import yi_0sys as system
+from . import yi_1tools as tools
 from . import yi_matrix as matrix
 #               ^avoiding the np matrix type, stick with arrays!
 from . import ys_mlearn as mlearn
@@ -107,12 +110,12 @@ def rentrim( weights, floor, level ):
 
 def gemratarr( dataframe, yearly=256 ):
     '''Extract geometric mean rate of each column into an array.'''
-    gems = fecon235.fecon235.groupgemrat( dataframe, yearly )
+    gems = fecon235.fecon235.groupgemrat( dataframe, yearly, order=False, n=8 )
     return np.array([item[0] for item in gems]).reshape(len(gems), 1)
 
 
 def weighsoft( weights, rates, temp, floor, level ):
-    '''Compute new weights transformed by softmax function.'''
+    '''Given weights, compute pweights as array by softmax transform.'''
     scores = weights * rates
     problist = mlearn.softmax( scores, temp )[-1]
     probs = np.array( problist ).reshape(len(problist), 1)
@@ -123,26 +126,39 @@ def weighsoft( weights, rates, temp, floor, level ):
 
 
 def boltzweigh(dataframe, yearly=256, temp=55, floor=0.01, level=0):
-    '''MAIN: Compute softmax weights of a Boltzmann portfolio.'''
+    '''Given data, compute pweights as array by softmax transform.'''
     rates = gemratarr(dataframe, yearly)
     globalw = weighcovdata(dataframe)
     weights = rentrim(globalw, floor, level)
-    return weighsoft(weights, rates, temp, floor, level)
+    pweights = weighsoft(weights, rates, temp, floor, level)
+    return pweights
 
 
-def boltzportfolio(dataframe, yearly=256, temp=55, floor=0.05, level=0):
-    '''Full DISPLAY SUMMARY of Boltzmann portfolio.'''
+def boltzportfolio(dataframe, yearly=256, temp=55, floor=0.01, level=0, n=4):
+    '''MAIN: SUMMARY of Boltzmann portfolio, rounded to n-decimal places.
+       Return list where computed values are Python floats, not array type, e.g.
+           [2.7833,
+            [[0.6423, 2.05, 'America'],
+             [0.0, -11.17, 'Emerging'],
+             [0.0, -10.47, 'Europe'],
+             [0.3577, 4.1, 'Gold'],
+             [0.0, -4.99, 'Japan']]]
+       The portfolio's geometric mean rate is included first.
+       Each sub-sublist will consist of weight, rate, and key.
+       The order of keys from the dataframe is preserved.
+    '''
     rates = gemratarr(dataframe, yearly)
     globalw = weighcovdata(dataframe)
     weights = rentrim(globalw, floor, level)
-    boltzw = weighsoft(weights, rates, temp, floor, level)
-    #      ---- above taken from boltzweigh()
+    pweights = weighsoft(weights, rates, temp, floor, level)
+    #      ---- so far should be the same as boltzweigh()
+    scores = pweights * rates
+    grat = round(float(np.sum(scores)), n)
     keys = list(dataframe.columns)
-    for i, w in enumerate(boltzw):
-        print( keys[i], round(w, 4), "est.", round(rates[i], 2), "rate" )
-    print("_________")
-    scores = boltzw * rates
-    print("PORTFOLIO geometric mean return:", round(np.sum(scores), 2), "%")
+    #  wrk, i.e. "weight, rate, key", is a list of lists:
+    wrk = [tools.roundit([float(w), float(rates[i]), keys[i]], n, echo=False)
+            for i, w in enumerate(pweights)]
+    return [ grat, wrk ]
 
 
 if __name__ == "__main__":
