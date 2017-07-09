@@ -1,10 +1,35 @@
-#  Python Module for import                           Date : 2017-06-30
+#  Python Module for import                           Date : 2017-07-08
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  ys_prtf_boltzmann.py : Boltzmann portfolio
 
 Alternative to Markowitz portfolio. Usage demonstrated in notebook, see
 nb/prtf-boltzmann-1.ipynb for explicit details and derivation.
+
+    The softmax() function is in lib/ys_mlearn.py since it applies more widely
+    in machine learning.
+
+One virtually has no control over how the assets perform and interact. Only
+the portfolio allocation over time is in our decision set. Let's recast the
+underlying assets as agents which supposedly will help increase our wealth.
+Our task will be to select the expert(s) among the agents and to allocate
+portions of our current wealth.
+
+To discriminate among the agents we need their performance metrics. Since our
+objective is to maximize future wealth, the optimal metric is the geometric
+mean rate of each agent. From our research we know how to include risks,
+including leptokurtotic events ("fat tails"), into that single metric.
+
+There is evidence that the performance of some agents are inter-correlated.
+Therefore, rather than select a single expert, we choose to diversify our bets
+among a few agents, and call that our "portfolio." To maximize the geometric
+mean rate of the portfolio, the second order condition is to minimize its
+variance. That problem is easily solved by borrowing the weights of what is
+known as the "Markowitz global minimum variance portfolio."
+
+Those weights depend on the covariance structure of the agents' performance
+which is unfortunately not stable over time. There may be some information
+which can be exploited to tilt our bets favorably.
 
 
     prices ---> cov ---> globalw
@@ -22,8 +47,24 @@ nb/prtf-boltzmann-1.ipynb for explicit details and derivation.
       temp --> softmax --> probs --> pweights
 
 
-The softmax() function is in lib/ys_mlearn.py since it applies more
-widely in machine learning.
+The Markowitz weights may suggest that we bet against the consistently poor
+performance of some agents. We shall generally regard the weights as
+advisory, taking what suits us and renormalizing.
+
+To summarize the information set so far, we cast the agents in a game, each
+with some score. When the game consists of multiple rounds, we can use tools
+from reinforcement learning to help us make the best sequential decisions.
+
+The softmax function is fed the scores to compute the probability of a
+particular agent being the expert. This function takes temperature as a
+diffusion parameter, that is, an optimal way to diversify our bets across
+possible experts. The theory here is due to Ludwig Boltzmann and his work
+on statistical mechanics and entropy. But the temperature setting can also be
+seen as a Bayesian way to express the overall uncertainty involved with
+estimating the various measures.
+
+Finally, those probabilities are combined with our renormalized weights to
+arrive at "pweights," our portfolio weights.
 
 
 REFERENCES
@@ -31,6 +72,7 @@ REFERENCES
 - John H. Cochrane, 2005, Asset Pricing, Princeton U. Press.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2017-07-08  Add narrative.
 2017-06-30  Revise boltzportfolio() as list, not print.
                Increase default precision when using groupgemrat().
 2017-06-28  Condense functions described in Part 1 notebook.
