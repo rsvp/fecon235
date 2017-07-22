@@ -5,6 +5,42 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2017-07-22  (tag: v5.17.0722)
+
+lib/ys_gauss_mix.py: Add gm2gemrat() and gm2gem().
+Unify GM(2) model and gemrat() with only one pass through data.
+Fallback clause for gemrate() adopts
+second-order approximation used in georet().
+Note: nan will occur when expected losses exceed 100% -- log error!!
+Such mean estimates actually occurred during 2008Q4, Great Recession.
+
+nb/fred-georeturns.ipynb: Replace groupgeoret() by groupgemrat().
+
+Add docs/fecon235-08-sympy.ipynb: SymPy tutorial.
+Demo sympy with LaTeX features.
+Reference its use with Gaussian mixture models.
+
+Add lib/yi_matrix.py: Linear algebra module.
+Numerically understand numpy inverse methods.
+Add cov2cor(): convert covariance to correlation coefficients.
+
+Add lib/ys_mlearn.py: new softmax().
+New module for machine learning tools.
+Function softmax() is used in cross-entropy and MLE situations,
+useful for constructing Boltzmann portfolios.
+New softmax_sort(): sort on probabilities with options
+for filter and renormalization.
+
+Add lib/ys_prtf_boltzmann.py: Boltzmann portfolio,
+alternative to Markowitz portfolio.
+Usage demonstrated in notebook nb/prtf-boltzmann-1.ipynb
+
+Add nb/prtf-boltzmann-2.ipynb:
+Investigate temperature parametization, portfolio weight dynamics.
+Add Appendix 1 regarding August 2011 global crisis
+and learning from stress conditions.
+
+
 ### 2017-06-03  (tag: v5.17.0603)
 
 lib/yi_0sys.py: Add timestamp() per RFC-3339 standard.
