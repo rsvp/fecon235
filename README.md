@@ -1,4 +1,4 @@
-## fecon235 : Computational data tools for financial economics ##
+## fecon235 : Computational tools for financial economics ##
 
 [![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -8,11 +8,6 @@ which are executable scripts capable of statistical
 computations, as well as, collection of raw data in real-time. 
 This serves to verify theoretical ideas and 
 practical methods interactively.
-
-The project derives from the seminar series held at the 
-University of California at Berkeley, jointly sponsored by the 
-Department of Economics and the Haas School of Business. 
-Selected topics are treated for replicable analysis.
 
 
 ### What is this repository for? ###
@@ -32,23 +27,23 @@ Economic Data bank which is accessed directly online using our interface.
 Other specialized data can be directly retrieved using our [Quandl] API 
 module, for example, futures prices. Data for stocks, mutual funds, and 
 ETFs is sourced from Yahoo Finance, but falls back on Google Finance. 
-All data access is designed to be completely *free* of charge.
+Data is designed to be accessible *free* of charge,
+and *interoperable* in different time frequencies.
 
 **Models:** our baseline is *Ferbus*, the 
-model used internally by the Federal Reserve Bank, 
-however at fecon235, the accuracy of out-of-sample forecasts 
-takes precedence over traditional measures of model fit. 
+model used internally by the Federal Reserve Bank.
 We also develop tools for asset pricing and portfolio optimization, 
 in addition to econometric models.
 
 
 ### How does one get started? ###
 
-* We rely primarily on Python, especially the Jupyter/IPython notebook 
-  and pandas packages (though the R kernel may be used as needed). 
-
 * Deployment: the best reference to the Python ecosystem for financial economists 
   is the Quantitative Economics site by Thomas [Sargent]. 
+
+* We rely especially on the IPython, Jupyter notebook,
+  and pandas packages (though the R kernel may be used as needed). 
+  For the fecon235 installation FAQ, please see https://git.io/econ
 
 * Dependencies: pandas 0.18 or higher is required as of our v5. 
   All modules are tested against both Python 2.7 and 3 series. 
@@ -120,32 +115,22 @@ the Holt-Winters time-series model for predictions.
 In https://git.io/gmix we analytically and visually show how a Gaussian
 Mixture model handles "fat tail" risk of leptokurtotic financial assets
 under small-sample conditions.
+Markowitz portfolios, designed in the arithmetic mean-variance framework
+for a static period, are notoriously fragile when markets change.
+In contrast, our Boltzmann portfolios are adaptive over multi-periods to
+*geometrically* maximize wealth using techniques from reinforcement learning.
+Part 1: https://git.io/boltz1 Part 2: https://git.io/boltz2
 
 
 ### Useful modules ###
 
-These are some of our Python modules in the `lib` directory:
-
-* yi_1tools : essential utility functions.
-* yi_plot : plot functions and visualizations.
-* yi_timeseries : time series functions and filters.
-* yi_simulation : building blocks for simulations.
-* yi_fred : Freely access FRED Federal Reserve data with pandas.
-* yi_quandl : Access free Quandl and government data with pandas.
-* yi_stocks : Get stock, mutual fund, and ETF quotes with pandas.
-
-For Jupyter notebooks and interactive sessions, 
+Our Python modules are in the `lib` directory, however,
+for Jupyter notebooks and interactive sessions, 
 only one module **fecon235** needs to be imported; 
-please consult https://git.io/fecon-intro for details.
+please see https://git.io/fecon-intro for details.
 The commands are very easy to customize, 
 producing sophisticated results quickly 
 without tweaking the underlying numerical packages.
-
-* ys_optimize : global "optimize" function integrates a coarse grid search,
-  then unconstrained Nelder-Mead simplex method, and finally the refined
-  L-BFGS-B method which approximates a low-rank Hessian so that we can work in
-  high (>250) dimensions. Easy to use for estimating model parameters with
-  arbitrary loss functions; see tests/test_optimize.py for quick tutorial.
 
 
 ### Development and contacts ###
@@ -155,6 +140,12 @@ without tweaking the underlying numerical packages.
 
 Lead developer is Adriano rsvp.github.com: [admin]. 
 Please join our chat with fellow users and developers at [Gitter].
+
+The project derives from the seminar series held at the 
+University of California at Berkeley, jointly sponsored by the 
+Department of Economics and the Haas School of Business. 
+We are also grateful to BIDS, Berkeley Institute for Data Science,
+for their technical support.
 
 
 ### Partial contents of nb directory ###
@@ -169,6 +160,18 @@ A numerical solution provides accurate probabilities which can be used to
 experimentally understand how kurtosis itself is distributed under
 small-sample conditions. The non-Gaussian distributions are visualized through
 quantile-quantile probability plots. Shortcut: https://git.io/gmix
+
+##### [prtf-boltzmann-1.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/prtf-boltzmann-1.ipynb) : Boltzmann portfolios
+
+We develop an alternative to the Markowitz framework
+called Boltzmann portfolios which handle uncertainty from the 
+standpoint of cross-entropy and optimal sequential decisions.
+The improved result is a faster online algorithm which is more robust.
+Markowitz portfolios are designed in the arithmetic mean-variance framework
+for a static period, and are fragile to changing market conditions.
+In contrast, Boltzmann portfolios are adaptive over multi-periods to
+geometrically maximize wealth using techniques from reinforcement learning.
+Part 1: https://git.io/boltz1 Part 2: https://git.io/boltz2
 
 ##### [qdl-spx-earn-div.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/qdl-spx-earn-div.ipynb) : Separable components of total return for equities
 
@@ -345,7 +348,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-06-03
+Revision date : 2017-07-22
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
