@@ -148,6 +148,9 @@ We are also grateful to BIDS, Berkeley Institute for Data Science,
 for their technical support.
 
 
+![fecon235-wordclouds.jpg](https://git.io/fecon235words)
+
+
 ### Partial contents of nb directory ###
 
 ##### [gauss-mix-kurtosis.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/gauss-mix-kurtosis.ipynb) : Gaussian Mixture and Leptokurtotic Assets
@@ -348,7 +351,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-07-22
+Revision date : 2017-07-25
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
