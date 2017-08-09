@@ -99,6 +99,8 @@ given in https://git.io/georet using geometric mean returns.
 
 In https://git.io/gold we make a conjecture that 
 real gold prices is a stationary time-series bound by real interest rates.
+In https://git.io/oil we examine the crude oil markets, specifically
+the Brent over WFI spread, and construct an optimal portfolio.
 In https://git.io/xbt we statistically analyze Bitcoin as a financial asset.
 
 SEC 13F filings can be easily parsed, see https://git.io/13F
@@ -312,9 +314,13 @@ relationship with GDP and the money supply in a fitted equation.
 
 ##### [fred-oil-brent-wti.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-oil-brent-wti.ipynb) : Oil: Brent vs. West Texas Intermediate (WTI)
 
-We examine the history of oil prices, and their spreads. Real prices give
-additional insight, along with some of the statistical characteristics used in
-financial economics.
+We examine the history of crude oil prices, and their spreads.
+A Boltzmann portfolio is computed for *optimal* financial positions.
+Deflated prices give additional insight, along with some of the statistical
+tools useful in financial economics.
+Although WTI is more desirable than Brent from a petrochemical perspective,
+that preference is reversed when the metrics are financial.
+Shortcut: https://git.io/oil
 
 ##### [fred-usd-RTB-xau.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-usd-RTB-xau.ipynb) : Real trade-weighted indexes for USD, gold, and SPX  
 
@@ -351,7 +357,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-07-25
+Revision date : 2017-08-08
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
