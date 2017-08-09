@@ -99,9 +99,9 @@ given in https://git.io/georet using geometric mean returns.
 
 In https://git.io/gold we make a conjecture that 
 real gold prices is a stationary time-series bound by real interest rates.
-In https://git.io/oil we examine the crude oil markets, specifically
-the Brent over WFI spread, and construct an optimal portfolio.
-In https://git.io/xbt we statistically analyze Bitcoin as a financial asset.
+In https://git.io/xbt Bitcoin is statistically analyzed as a financial asset.
+We examine the crude oil markets, specifically the Brent over WTI spread,
+and construct an optimal portfolio, in https://git.io/oil .
 
 SEC 13F filings can be easily parsed, see https://git.io/13F
 where we track asset managers Stanley Druckenmiller and John Paulson.
@@ -357,7 +357,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-08-08
+Revision date : 2017-08-09
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
