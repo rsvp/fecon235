@@ -86,6 +86,8 @@ have also retrieved the latest available data and
 recomputed the results.
 
 How is worker's wage correlated with GDP output? See https://git.io/gdpwage
+How much Federal debt must each worker assume? And how fast is the
+US government debt increasing? https://git.io/debtpop
 
 To score the Federal Reserve's performance under its dual
 mandate for inflation and unemployment, see https://git.io/fed
@@ -239,7 +241,8 @@ Shortcut: https://git.io/13F
 
 ##### [fred-debt-pop.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-debt-pop.ipynb) : Growth of Federal debt, its burden on the US population  
 
-We examine government debt in real terms, and the current debt per capita.  
+We examine US government debt in real terms, and the current Federal debt per capita. 
+Shortcut: https://git.io/debtpop
 
 ##### [fred-employ-nfp.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-employ-nfp.ipynb) : US employment data, Nonfarm Payroll
 
