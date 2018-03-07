@@ -92,7 +92,11 @@ US government debt increasing? https://git.io/debtpop
 To score the Federal Reserve's performance under its dual
 mandate for inflation and unemployment, see https://git.io/fed
 (where tangentially the Phillips curve is discredited by constructing
-heat map scatter plots). Please see https://git.io/fedfunds 
+heat map scatter plots). 
+Notebook https://git.io/infl gives an in-depth analysis of inflation,
+including a combined forecast using three orthogonal methods.
+
+Please see https://git.io/fedfunds 
 to forecast the Fed Funds rate using futures contracts on LIBOR.
 
 The notebook https://git.io/cotr discerns how various asset classes 
@@ -295,9 +299,11 @@ Shortcut: https://git.io/housing
 ##### [fred-inflation.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-inflation.ipynb) : Inflation data from FRED using pandas
 
 We examine inflation data: CPI and PCE, including the core versions, along
-with the 10-year BEI rate (break-even inflation). We also examine gold returns
-and its correlations to inflation. A combined inflation statistic *m4infl* is
-defined, and we make some forecasts. Shortcut: https://git.io/infl
+with the 10-year BEI rate (break-even inflation) from the bond market.
+A unified inflation statistic *m4infl* is introduced,
+which leads to the estimation of the geometric mean rate.
+A robust optimized Holt-Winters model is used for forecasting.
+Shortcut: https://git.io/infl
 
 ##### [fred-infl-unem-fed.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-infl-unem-fed.ipynb) : Score for the Fed's dual mandate
 
@@ -360,7 +366,7 @@ Shortcut: https://git.io/gold
 
 - - - -
 
-Revision date : 2017-08-09
+Revision date : 2018-03-07
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
