@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2015-12-21
+#  Python Module for import                           Date : 2018-03-10
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  test_fecon235 : Test and demonstrate fecon235 module.
@@ -20,7 +20,7 @@ If nose is not installed, then this will work as fallback:
 
 =>  As of fecon235 v4, we also favor pytest over nosetests, so e.g. 
 
-    $ py.test --doctest-modules
+    $ py.test --doctest-modules [optional dir/file argument]
 
 REFERENCE:
     nosetests: http://nose.readthedocs.org/en/latest/usage.html
@@ -28,6 +28,7 @@ REFERENCE:
                   or PDF at http://pytest.org/latest/pytest.pdf
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2018-03-10  Add demo for foreholt(). Test forecast() with grids=25.
 2015-12-21  python3 compatible: lib import fix.
                Mark very slow tests with "vSlow" suffix, so
                $ py.test -k 'not vSlow'  # Excludes such tests.
@@ -85,12 +86,36 @@ def demo_GET_w4cotr_metals_from_QUANDL_vSlow():
 
 def demo_FORECAST_m4xau_from_FRED_vSlow():
     '''Test forecast() in fecon which uses Holt-Winters method.
+       Values for alpha and beta are somewhat optimized by moderate grids:
+           alpha, beta, losspc, loss: [0.9167, 0.125, 2.486, 28.45]
        We use monthly gold data, and type forecast as integers 
        to avoid doctest with floats (almost equal problem).
 
     >>> xau = get( m4xau )
-    >>> xaufc = forecast( xau['2005-07-28':'2015-07-28'], h=6 )
+    >>> xaufc = forecast( xau['2005-07-28':'2015-07-28'], h=6, grids=25 )
     >>> xaufc.astype('int')
+       Forecast
+    0      1144
+    1      1135
+    2      1123
+    3      1112
+    4      1100
+    5      1089
+    6      1078
+    '''
+    pass
+
+
+
+def demo_foreholt_m4xau_from_FRED_vSlow():
+    '''Test foreholt() in fecon235 which uses Holt-Winters method.
+       Default values for alpha and beta are assumed.
+       We use monthly gold data, and type forecast as integers 
+       to avoid doctest with floats (almost equal problem).
+
+    >>> xau = get( m4xau )
+    >>> xaufh = foreholt( xau['2005-07-28':'2015-07-28'], h=6 )
+    >>> xaufh.astype('int')
        Forecast
     0      1144
     1      1161
