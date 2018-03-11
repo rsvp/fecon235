@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-01-06
+#  Python Module for import                           Date : 2018-03-11
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  yi_fred.py : Access FRED with pandas for plots, etc.
@@ -27,6 +27,7 @@ References:
 
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2018-03-11  holtfred() superceded by foreholt(), yet moved to fecon235 module.
 2017-01-06  Add USDCNY daily series, Chinese Yuan from FRB H-10.
 2016-12-21  Add Fed Funds and its "30-day" ema as d4ff and d4ff30.
 2016-11-06  New resample_main() fixes #6 deprecations, and is used to
@@ -648,19 +649,20 @@ def plotfred( data, title='tmp', maxi=87654321 ):
      return
 
 
-
-def holtfred( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
-     '''Holt-Winters forecast h-periods ahead (fredcode aware).'''
-     #  "data" can be a fredcode, or a dataframe to be detected:
-     if isinstance( data, pd.DataFrame ):
-          holtdf = ts.holt( data             , alpha, beta )
-     else:
-          fredcode = data
-          holtdf = ts.holt( getfred(fredcode), alpha, beta )
-          #              ^No interim results retained.
-     #    holtdf is expensive to compute, but also not retained.
-     #    For details, see module yi_timeseries.
-     return ts.holtforecast( holtdf, h )
+#  #  ** SUPERCEDED by foreholt(), but moved to fecon235 module
+#  #                for backwards compatibility. **
+#  def holtfred( data, h=24, alpha=ts.hw_alpha, beta=ts.hw_beta ):
+#       '''Holt-Winters forecast h-periods ahead (fredcode aware).'''
+#       #  "data" can be a fredcode, or a dataframe to be detected:
+#       if isinstance( data, pd.DataFrame ):
+#            holtdf = ts.holt( data             , alpha, beta )
+#       else:
+#            fredcode = data
+#            holtdf = ts.holt( getfred(fredcode), alpha, beta )
+#            #              ^No interim results retained.
+#       #    holtdf is expensive to compute, but also not retained.
+#       #    For details, see module yi_timeseries.
+#       return ts.holtforecast( holtdf, h )
     
 
 

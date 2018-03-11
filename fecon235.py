@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2017-06-27
+#  Python Module for import                           Date : 2018-03-11
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies lib modules for fecon235 project.
@@ -12,6 +12,8 @@ _______________|  fecon235.py : unifies lib modules for fecon235 project.
      frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2018-03-11  Add foreholt() function, generalizing yi_fred.holtfred(),
+               but retain holtfred() here for backward compatibility.
 2017-06-27  Include module ys_prtf_boltzmann.py and group world4d.
 2017-06-18  Add groupgemrat(), groupdiflog(), and covdiflog().
                Include module ys_matrix.py.
@@ -158,7 +160,7 @@ def forecast( data, h=12, grids=0, maxi=0 ):
             #           ^expecting fredcode, quandlcode, or stock slang
             #      to be retrieved as DataFrame.
         except:
-            raise ValueError("INVALID argument for fecon235 forecast()")
+            raise ValueError("fecon235.forecast(): INVALID data argument.")
     if grids > 0:
         #  Recommend grids=50 for reasonable results,
         #  but TIME-CONSUMING for search grids > 49
@@ -173,6 +175,28 @@ def forecast( data, h=12, grids=0, maxi=0 ):
         holtdf = holt( data )
         system.warn("Holt-Winters parameters have NOT been optimized.")
         return holtforecast( holtdf, h )
+
+
+def foreholt( data, h=12, alpha=hw_alpha, beta=hw_beta, maxi=0 ):
+    '''Holt-Winters forecast h-periods ahead (data slang aware).'''
+    #  "data" can be a fredcode, quandlcode, stock slang, 
+    #         OR a DataFrame which will be detected:
+    if not isinstance( data, pd.DataFrame ):
+        try:
+            data = get( data, maxi )
+        except:
+            raise ValueError("fecon235.forehalt(): INVALID data argument.")
+    #  We SKIP optimize_holtforecast() in module ys_opt_holt.
+    system.warn("Holt-Winters parameters have NOT been optimized.")
+    holtdf = holt( data, alpha, beta )
+    #   Interim results will not be retained.
+    return holtforecast( holtdf, h )
+
+
+def holtfred( data, h=24, alpha=hw_alpha, beta=hw_beta ):
+     '''Holt-Winters forecast h-periods ahead (fredcode aware).'''
+     #  Retained for backward compatibility, esp. pre-2016 notebooks.
+     return foreholt( data, h, alpha, beta )
 
 
 def groupget( ggdic=group4d, maxi=0 ):
