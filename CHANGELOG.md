@@ -5,6 +5,38 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2018-03-12  (tag: v5.18.0312)
+
+Update and fix fred-oil-brent-wti.ipynb per issue #2.
+New shortcut: https://git.io/oil for crude oil markets.
+New introductions regarding petrochemicals
+and the Boltzmann portfolio of oils.
+
+nb/fred-debt-pop.ipynb: Update preamble and data.
+Use gemrat() instead of georet().
+Append Appendix 1. New shortcut: https://git.io/debtpop
+
+fecon235.py: Add foreholt() function which
+supercedes yi_fred.holtfred(), but
+move holtfred() to fecon235 module for backward compatibility.
+Then at lib/yi_fred.py: comment out holtfred() with notification.
+We only need to maintain foreholt().
+Pre-2016 notebooks with updated import and preambles should work.
+
+Fix fred-inflation.ipynb per issue #2, and optimize forecast.
+Holt-Winters model now uses robust optimized parameters.
+Unified inflation has its own section.
+Geometric mean rate introduced.
+Drop section on correlation to gold.
+Summary combines three orthogonal forecasts.
+
+fecon235.py: Add foreinfl() to forecast Unified Inflation.
+The best documentation for this function is nb/fred-inflation.ipynb
+which shows how it was derived by interacting with data and plots.
+This single function distills the forecasting process
+derived in the notebook. Further discussed in new Appendix 2.
+
+
 ### 2017-07-22  (tag: v5.17.0722)
 
 lib/ys_gauss_mix.py: Add gm2gemrat() and gm2gem().
