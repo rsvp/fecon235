@@ -1,4 +1,4 @@
-#  Python Module for import                           Date : 2018-03-11
+#  Python Module for import                           Date : 2018-03-12
 #  vim: set fileencoding=utf-8 ff=unix tw=78 ai syn=python : per Python PEP 0263 
 ''' 
 _______________|  fecon235.py : unifies lib modules for fecon235 project.
@@ -12,6 +12,7 @@ _______________|  fecon235.py : unifies lib modules for fecon235 project.
      frequently used commands can be generalized with shorter names.
 
 CHANGE LOG  For latest version, see https://github.com/rsvp/fecon235
+2018-03-11  Add foreinfl() to forecast Unified Inflation 1-year ahead.
 2018-03-11  Add foreholt() function, generalizing yi_fred.holtfred(),
                but retain holtfred() here for backward compatibility.
 2017-06-27  Include module ys_prtf_boltzmann.py and group world4d.
@@ -186,8 +187,8 @@ def foreholt( data, h=12, alpha=hw_alpha, beta=hw_beta, maxi=0 ):
             data = get( data, maxi )
         except:
             raise ValueError("fecon235.forehalt(): INVALID data argument.")
-    #  We SKIP optimize_holtforecast() in module ys_opt_holt.
-    system.warn("Holt-Winters parameters have NOT been optimized.")
+    #  To find optimal parameter values for alpha and beta beforehand, 
+    #  use optimize_holtforecast() in module ys_opt_holt.
     holtdf = holt( data, alpha, beta )
     #   Interim results will not be retained.
     return holtforecast( holtdf, h )
@@ -336,6 +337,33 @@ def forefunds( nearby='16m', distant='17m' ):
     libor_spread = todf( libor_nearby - libor_distant )
     #     spread in forward style quote since futures uses 100-rate.
     return todf( ffer_ema + libor_spread )
+
+
+def foreinfl( n=120, alpha=1.0, beta=0.3673 ):
+    '''Forecast Unified Inflation 1-year ahead per fred-inflation.ipynb.'''
+    #  Holt-Winters parameters alpha and beta are optimized
+    #  from the 1960-2018 dataset, consisting of 697 monthly points.
+    #  Each "way" is an orthogonal method, to be averaged as way[0].
+    way = [-9, -9, -9, -9, -9]
+    inflall = get( m4infl )  # synthetic Unified Inflation, monthly.
+    infl = tail(inflall, n)
+    #                    ^Default n=120 months, i.e. last 10 years.
+    way[1] = str(infl.index[-1]).replace(" 00:00:00", "")
+    #                ^Most recent month for CPI, CPIc, PCE, PCEc data.
+    gm = gemrat( infl, yearly=12 )
+    way[2] = gm[0]  #  Geometric Mean Rate over n months.
+    hw = foreholt( infl, 12, alpha, beta )  # Holt-Winters model.
+    way[3] = (tailvalue(hw) - 1) * 100   # Convert forecasted level to rate.
+    bond10 = get(m4bond10)
+    tips10 = get(m4tips10)
+    bei = todf(bond10 - tips10)   #  10-year BEI Break-even Inflation.
+    #         ^Bond market data will be more recent than m4infl.
+    way[4] = tailvalue(bei)
+    #        Final forecast is the AVERAGE of orthogonal ways:
+    way[0] = sum(way[2:]) / len(way[2:]) 
+    #     "way" in SUMMARY is thus: [Average, "infl-date", GMR, HW, BEI]
+    #                e.g. [2.2528, '2018-01-01', 1.5793, 3.0791, 2.1000]
+    return way
 
 
 if __name__ == "__main__":
