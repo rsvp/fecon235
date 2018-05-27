@@ -1,32 +1,52 @@
-## fecon235 : Computational tools for financial economics ##
+## fecon235 :: Notebooks for financial economics
 
 [![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+/ [CHANGELOG] / [BSD License and TOS][235li]
 
-This is a free open source project for software tools 
-in financial economics. We develop code for research notebooks 
-which are executable scripts capable of statistical 
-computations, as well as, collection of raw data in real-time. 
-This serves to verify theoretical ideas and 
-practical methods interactively.
+*Migration notice: the modules and functions which power our research notebooks
+are being refactored into another repository [fecon236].
+Details in [235is9] -- stay tuned.*
+The home for our Jupyter notebooks will remain here at [fecon235]
+in the `nb` directory.
 
 
-### What is this repository for? ###
+### What is this repository for?
 
-- Economic and financial data, both historical and the most current. 
+**fecon235** provides an interface for ***financial economics*** to the Python
+ecosystem, especially packages for mathematics, statistics, science,
+engineering, and data analysis.
+Complex packages such as *numpy, pandas, statsmodels, scipy, and matplotlib*
+are seamlessly integrated at a high-level with APIs of various data hosts for:
 
-- Data munging, for example, resampling and alignment of time series.
+- Essential commands which correctly handle annoying low-level pitfalls.
 
-- Analysis using techniques from econometrics and statistical machine learning.
+- Retrieval of economic and financial data, both historical and the most current. 
+
+- Data munging, for example, resampling and alignment of time-series data
+  from hosts using mutually incompatible formats.
+
+- Analysis using techniques from econometrics, time-series analysis,
+  and statistical machine learning.
+
+- Abstraction and software optimization of mathematical operators,
+  for example, linear algebra used in portfolio analysis.
 
 - Visualization of data using graphical packages. 
 
-- Reproducible research which is collaborative and openly accessible.
+- *Reproducible research which is collaborative and openly accessible
+  at zero cost.*
+
+To practically test theoretical ideas interactively,
+our code can employed with any Python IDE interactive development
+environment, IPython console, or with a Jupyter notebook.
+The code has been tested against both python27 and python3 since 2014,
+and works across major platforms: Linux, Mac, and Windows.
 
 **Database:** the primary source is [FRED], the U.S. Federal Reserve
 Economic Data bank which is accessed directly online using our interface. 
 Other specialized data can be directly retrieved using our [Quandl] API 
 module, for example, futures prices. Data for stocks, mutual funds, and 
-ETFs is sourced from Yahoo Finance, but falls back on Google Finance. 
+ETFs is retrieved from the best available sources using `pandas_datareader`.
 Data is designed to be accessible *free* of charge,
 and *interoperable* in different time frequencies.
 
@@ -36,46 +56,38 @@ We also develop tools for asset pricing and portfolio optimization,
 in addition to econometric models.
 
 
-### How does one get started? ###
+### How does one get started?
 
-* Deployment: the best reference to the Python ecosystem for financial economists 
+* A good reference to the Python ecosystem for financial economists 
   is the Quantitative Economics site by Thomas [Sargent]. 
 
-* We rely especially on the IPython, Jupyter notebook,
-  and pandas packages (though the R kernel may be used as needed). 
-  For the fecon235 installation FAQ, please see https://git.io/econ
+* For the fecon235 installation FAQ, please see https://git.io/econ
+
+* Updates: for pre-2016 notebooks, please use import style 
+  discussed in *docs* README: https://git.io/fecon-intro 
 
 * Dependencies: pandas 0.18 or higher is required as of our v5. 
-  All modules are tested against both Python 2.7 and 3 series. 
-  User code has been rewritten for cross-platform performance 
-  (Linux, Mac, and Windows).
-
-* Configuration: we strongly recommend [Anaconda], a free Python
-  distribution which includes about 200 of the most useful Python packages 
-  for science, math, engineering, data analysis. 
+  We strongly recommend [Anaconda], a free Python
+  distribution which includes about 200 of the most useful Python packages.
   It will resolve your headaches due to dependency hell.
 
 * Docker container (optional): instantly run fully-configured programs and 
   interactive notebooks; start by: `docker pull rsvp/fecon235` # see our 
   [Docker] image for details.  
 
-* Updates: for pre-2016 notebooks, please use import style 
-  discussed in *docs* README: https://git.io/fecon-intro 
-
-Some basic commands, e.g. get() and plot() in the fecon235 top module, 
+Some basic commands, e.g. `get()` and `plot()` in the fecon235 top module, 
 will do a lot of the heavy lifting to get you started immediately. 
-The commands are designed for scripts (not necessarily within Jupyter notebooks) 
-and any Python IDE interactive development environment. 
+The commands are designed for scripts (not necessarily within Jupyter notebooks).
 
 The *docs* directory and our [wiki] should be gradually adding tutorials and FAQs. 
-The source code, in the meantime, is thoroughly self-documenting.
+The source code, in the meantime, is thoroughly annotated.
 
 
-### Examples of code ###
+### Examples of code
 
 The best way to see the code in action is to 
-run the notebooks in the `nb` directory.
-Some of them are described at the end of this page. 
+run the notebooks in the `nb` directory
+which are described further below. 
 Note that GitHub can render Jupyter notebooks directly in the browser, 
 however, they will not be executable.
 
@@ -363,10 +375,9 @@ Lastly, we show the history of gold prices in real terms which leads to our
 conjecture that real gold is a stationary time-series bound by real interest rates. 
 Shortcut: https://git.io/gold
 
+---
 
-- - - -
-
-Revision date : 2018-03-07
+[BSD License and TOS][235li] / This page, last update : 2018-05-27
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
@@ -379,3 +390,14 @@ Revision date : 2018-03-07
 [Quandl]:       https://www.quandl.com  "Quandl, financial and economic data"
 [Sargent]:      http://quant-econ.net/py "Thomas Sargent, Quantitative Economics"
 [wiki]:         https://github.com/rsvp/fecon235/wiki  "Wiki for fecon235"
+[rsvp]: https://rsvp.github.com "Adriano, lead developer"
+[MathSci]: https://github.com/MathSci "Mathematical Sciences Group"
+[235is9]: https://github.com/rsvp/fecon235/issues/9 "fecon235 issue 9"
+[fecon235]: https://github.com/rsvp/fecon235 "fecon235 repository"
+[CHANGELOG]: https://git.io/235log "fecon235 Change Log"
+[235li]: https://git.io/235li "fecon235 BSD License and TOS"
+[fecon236]: https://github.com/MathSci/fecon236 "fecon236 repository"
+[236li]: https://git.io/236li "fecon236 BSD License and TOS"
+[236is]: https://git.io/236is "fecon236 issues"
+[Travis]: https://travis-ci.org/MathSci/fecon236 "fecon236 at Travis CI"
+[PyPI]: https://pypi.org/project/fecon236 "fecon236 at PyPI"
