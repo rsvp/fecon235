@@ -3,9 +3,9 @@
 [![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 / [CHANGELOG] / [BSD License and TOS][235li]
 
-*Migration notice: the modules and functions which power our research notebooks
+*Spin-off Notice: the modules and functions which power our research notebooks
 are being refactored into another repository [fecon236].
-Details in [235is9] -- stay tuned.*
+Details in [235is9] -- target date: 2019-01-01 -- stay tuned.*
 The home for our Jupyter notebooks will remain here at [fecon235]
 in the `nb` directory.
 
@@ -58,18 +58,19 @@ in addition to econometric models.
 
 ### How does one get started?
 
-* A good reference to the Python ecosystem for financial economists 
-  is the Quantitative Economics site by Thomas [Sargent]. 
+* Good introductory lectures for economists to Python and its ecosystem:
+  Quantitative Economics by Thomas [Sargent].
 
 * For the fecon235 installation FAQ, please see https://git.io/econ
 
 * Updates: for pre-2016 notebooks, please use import style 
   discussed in *docs* README: https://git.io/fecon-intro 
 
-* Dependencies: pandas 0.18 or higher is required as of our v5. 
-  We strongly recommend [Anaconda], a free Python
-  distribution which includes about 200 of the most useful Python packages.
-  It will resolve your headaches due to dependency hell.
+* Dependencies: pandas 0.18 or higher is required as of our v5.
+  We strongly recommend [Anaconda], a free Python distribution
+  which includes about 200 of the most useful Python packages.
+  Unlike pip, it will install the properly optimized binaries for your
+  platform, and relieve your headaches from dependency resolution.
 
 * Docker container (optional): instantly run fully-configured programs and 
   interactive notebooks; start by: `docker pull rsvp/fecon235` # see our 
@@ -158,14 +159,14 @@ without tweaking the underlying numerical packages.
 * Guidelines: we welcome your [pull request] to improve our code. 
   Details are outlined in [Development].
 
-Lead developer is Adriano rsvp.github.com: [admin]. 
-Please join our chat with fellow users and developers at [Gitter].
+* Lead developer is Adriano rsvp.github.com: [admin].
+  Please join our chat with fellow users and developers at [Gitter].
 
-The project derives from the seminar series held at the 
-University of California at Berkeley, jointly sponsored by the 
-Department of Economics and the Haas School of Business. 
-We are also grateful to BIDS, Berkeley Institute for Data Science,
-for their technical support.
+This project is a derivative from the seminar series held at the
+University of California at Berkeley, jointly sponsored by the
+Department of Economics and the Haas School of Business.
+We are also grateful to [BIDS], Berkeley Institute for Data Science,
+and the [MathSci] Group for their technical support.
 
 
 ![fecon235-wordclouds.jpg](https://git.io/fecon235words)
@@ -380,18 +381,18 @@ Shortcut: https://git.io/gold
 [BSD License and TOS][235li] / This page, last update : 2018-05-27
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
-[Anaconda]:     http://continuum.io/downloads "Anaconda Python distribution"
+[Anaconda]:     https://www.anaconda.com/download "Anaconda Python distribution"
 [Development]:  https://github.com/rsvp/fecon235/blob/master/.github/CONTRIBUTING.md "Development"
 [Docker]:       https://hub.docker.com/r/rsvp/fecon235 "Docker image rsvp/fecon235"
-[FRED]:         http://research.stlouisfed.org/fred2/ "Federal Reserve Economic Data"
+[FRED]:         https://fred.stlouisfed.org "Federal Reserve Economic Data"
 [Gitter]:       https://gitter.im/rsvp/fecon235 "Gitter fecon235"
-[intro page]:   http://rsvp.github.com/pg/fecon235-intro.html "fecon235 Introduction"
 [pull request]: https://help.github.com/articles/using-pull-requests/ "Pull request"
 [Quandl]:       https://www.quandl.com  "Quandl, financial and economic data"
-[Sargent]:      http://quant-econ.net/py "Thomas Sargent, Quantitative Economics"
+[Sargent]:      https://lectures.quantecon.org/py "Thomas Sargent, Quantitative Economics"
 [wiki]:         https://github.com/rsvp/fecon235/wiki  "Wiki for fecon235"
-[rsvp]: https://rsvp.github.com "Adriano, lead developer"
+[rsvp]: https://rsvp.github.com "Adriano rsvp.github.com"
 [MathSci]: https://github.com/MathSci "Mathematical Sciences Group"
+[BIDS]: https://bids.berkeley.edu "Berkeley Institute for Data Science"
 [235is9]: https://github.com/rsvp/fecon235/issues/9 "fecon235 issue 9"
 [fecon235]: https://github.com/rsvp/fecon235 "fecon235 repository"
 [CHANGELOG]: https://git.io/235log "fecon235 Change Log"
