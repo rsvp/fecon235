@@ -5,6 +5,27 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2018-06-23  (tag: v6.18.0623)
+
+**Major version change from v5 to v6**
+signaling our integration with **fecon236**
+which was spun-off from our source code.
+
+**Henceforth, fecon235 becomes a repository solely of Jupyter notebooks.**
+The old Python source code at fecon235 will remain for archival purposes,
+while new code development shifts over to fecon236.
+Please see https://git.io/econ for details.
+
+Refresh README.md, esp. "What for" section,
+include "Migration notice" at the top
+regarding separation of tools from notebooks.
+
+Revise docs/fecon235-00-README.ipynb to introduce fecon236.
+Function names have been retained, but under fecon236
+the call routing is expected to be more explicit than casual,
+i.e. modules names are more significant.
+
+
 ### 2018-03-12  (tag: v5.18.0312)
 
 Update and fix fred-oil-brent-wti.ipynb per issue #2.
