@@ -3,8 +3,10 @@
 
 
 
-- [ ] Bug
 - [ ] Enhancement
+- [ ] Bug
+- Issue for source code, non-notebook, should be opened at
+  [fecon236](https://github.com/MathSci/fecon236/issues)
 
 
 ### Expected behavior
