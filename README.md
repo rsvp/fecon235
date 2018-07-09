@@ -362,7 +362,7 @@ Shortcut: https://git.io/gold
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     https://www.anaconda.com/download "Anaconda Python distribution"
-[Development]:  https://github.com/MathSci/fecon236/blob/master/.github/CONTRIBUTING.md "Development"
+[Development]:  https://github.com/MathSci/fecon236/blob/develop/.github/CONTRIBUTING.md "Development"
 [Docker]:       https://hub.docker.com/r/rsvp/fecon235 "Docker image rsvp/fecon235"
 [FRED]:         https://fred.stlouisfed.org "Federal Reserve Economic Data"
 [Gitter]:       https://gitter.im/rsvp/fecon235 "Gitter fecon235"
