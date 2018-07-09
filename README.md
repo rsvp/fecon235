@@ -3,10 +3,9 @@
 [![Join the chat at https://gitter.im/rsvp/fecon235](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rsvp/fecon235?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 / [CHANGELOG] / [BSD License and TOS][235li]
 
-*Spin-off Notice: the modules and functions which power our research notebooks
-are being refactored into another repository [fecon236].
-Details in [235is9] -- target date: 2019-01-01 -- stay tuned.*
-The home for our Jupyter notebooks will remain here at [fecon235]
+**Spin-off Notice:** ***the modules and functions used by our research notebooks
+have been refactored into another repository, [fecon236].***
+The home for *our Jupyter notebooks will remain here at [fecon235]*
 in the `nb` directory.
 
 
@@ -50,37 +49,29 @@ ETFs is retrieved from the best available sources using `pandas_datareader`.
 Data is designed to be accessible *free* of charge,
 and *interoperable* in different time frequencies.
 
-**Models:** our baseline is *Ferbus*, the 
-model used internally by the Federal Reserve Bank.
-We also develop tools for asset pricing and portfolio optimization, 
-in addition to econometric models.
-
 
 ### How does one get started?
 
 * Good introductory lectures for economists to Python and its ecosystem:
   Quantitative Economics by Thomas [Sargent].
 
-* For the fecon235 installation FAQ, please see https://git.io/econ
+* For the fecon235 and fecon236 installation FAQ, please
+  see https://git.io/econ which also covers external dependencies.
 
-* Updates: for pre-2016 notebooks, please use import style 
-  discussed in *docs* README: https://git.io/fecon-intro 
-
-* Dependencies: pandas 0.18 or higher is required as of our v5.
-  We strongly recommend [Anaconda], a free Python distribution
-  which includes about 200 of the most useful Python packages.
-  Unlike pip, it will install the properly optimized binaries for your
-  platform, and relieve your headaches from dependency resolution.
+* For the older pre-2016 notebooks, please use import style 
+  discussed in https://git.io/fecon-intro 
 
 * Docker container (optional): instantly run fully-configured programs and 
   interactive notebooks; start by: `docker pull rsvp/fecon235` # see our 
   [Docker] image for details.  
 
-Some basic commands, e.g. `get()` and `plot()` in the fecon235 top module, 
+Some basic commands like `get()` and `plot()`
 will do a lot of the heavy lifting to get you started immediately. 
-The commands are designed for scripts (not necessarily within Jupyter notebooks).
+The commands are very easy to customize, 
+producing sophisticated results quickly 
+without tweaking the underlying numerical packages.
 
-The *docs* directory and our [wiki] should be gradually adding tutorials and FAQs. 
+The *docs* directory should be gradually adding tutorials. 
 The source code, in the meantime, is thoroughly annotated.
 
 
@@ -143,30 +134,19 @@ In contrast, our Boltzmann portfolios are adaptive over multi-periods to
 Part 1: https://git.io/boltz1 Part 2: https://git.io/boltz2
 
 
-### Useful modules ###
-
-Our Python modules are in the `lib` directory, however,
-for Jupyter notebooks and interactive sessions, 
-only one module **fecon235** needs to be imported; 
-please see https://git.io/fecon-intro for details.
-The commands are very easy to customize, 
-producing sophisticated results quickly 
-without tweaking the underlying numerical packages.
-
-
 ### Development and contacts ###
 
 * Guidelines: we welcome your [pull request] to improve our code. 
   Details are outlined in [Development].
 
-* Lead developer is Adriano rsvp.github.com: [admin].
+* Lead developer is Adriano [rsvp.github.com][admin].
   Please join our chat with fellow users and developers at [Gitter].
 
 This project is a derivative from the seminar series held at the
 University of California at Berkeley, jointly sponsored by the
 Department of Economics and the Haas School of Business.
 We are also grateful to [BIDS], Berkeley Institute for Data Science,
-and the [MathSci] Group for their technical support.
+and the [Mathematical Sciences Group][MathSci] for their technical support.
 
 
 ![fecon235-wordclouds.jpg](https://git.io/fecon235words)
@@ -378,11 +358,11 @@ Shortcut: https://git.io/gold
 
 ---
 
-[BSD License and TOS][235li] / This page, last update : 2018-05-27
+[BSD License and TOS][235li] / This page, last update : 2018-07-09
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     https://www.anaconda.com/download "Anaconda Python distribution"
-[Development]:  https://github.com/rsvp/fecon235/blob/master/.github/CONTRIBUTING.md "Development"
+[Development]:  https://github.com/MathSci/fecon236/blob/master/.github/CONTRIBUTING.md "Development"
 [Docker]:       https://hub.docker.com/r/rsvp/fecon235 "Docker image rsvp/fecon235"
 [FRED]:         https://fred.stlouisfed.org "Federal Reserve Economic Data"
 [Gitter]:       https://gitter.im/rsvp/fecon235 "Gitter fecon235"
