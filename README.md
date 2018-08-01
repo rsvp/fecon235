@@ -133,6 +133,13 @@ In contrast, our Boltzmann portfolios are adaptive over multi-periods to
 *geometrically* maximize wealth using techniques from reinforcement learning.
 Part 1: https://git.io/boltz1 Part 2: https://git.io/boltz2
 
+Bootstrapping has two benefits: small-sample statistics
+and simulation from controlled population.
+In https://git.io/bootspx we simulate alternate histories
+for leptokurtotic SPX equity returns:
+to visualize sample price paths, and for
+estimating probabilities of events such as investment loss.
+
 
 ### Development and contacts ###
 
@@ -164,6 +171,18 @@ A numerical solution provides accurate probabilities which can be used to
 experimentally understand how kurtosis itself is distributed under
 small-sample conditions. The non-Gaussian distributions are visualized through
 quantile-quantile probability plots. Shortcut: https://git.io/gmix
+
+##### [boots-eq-spx.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/boots-eq-spx.ipynb) : Bootstrap leptokurtotic SPX equity returns
+
+Bootstrapping has two benefits: small-sample statistics
+and simulation from controlled population.
+We simulate alternate histories: to visualize sample price paths,
+and for estimating probabilities of events such as investment loss.
+Bootstrapping facilitates study of small-sample behaviour for which
+asymptotic statistical theory is unsuitable, or where closed-form
+mathematical analysis is intractable, for example, *geovolatility*
+which is the volatility of the geometric mean rate.
+Shortcut: https://git.io/bootspx
 
 ##### [prtf-boltzmann-1.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/prtf-boltzmann-1.ipynb) : Boltzmann portfolios
 
@@ -358,7 +377,7 @@ Shortcut: https://git.io/gold
 
 ---
 
-[BSD License and TOS][235li] / This page, last update : 2018-07-09
+[BSD License and TOS][235li] / This page, last update : 2018-07-31
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     https://www.anaconda.com/download "Anaconda Python distribution"
