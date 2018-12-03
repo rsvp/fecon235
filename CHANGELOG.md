@@ -5,6 +5,20 @@ within itself. This file simply gives a grand overview of such details
 and the annotations in the commits and tags.*
 
 
+### 2018-12-03  (tag: v6.18.1203)
+
+Add nb/boots_ndl_d4spx_1957-2018.csv.gz and nb/boots-eq-spx.ipynb
+for Bootstrapping, which demonstrates fecon236 sim and bootstrap
+modules, applied to leptokurtotic SPX equity returns.
+
+Add nb/fred-credit-spreads.ipynb which also serves as a
+tutorial on MAD, Median Absolute Deviation,
+in robustly rescaling non-Gaussian time-series.
+We consider mortgage and corporate credit spreads to
+construct a robust Unified Credit Profile to calibrate
+credit default risk in the context of monetary policy.
+
+
 ### 2018-06-23  (tag: v6.18.0623)
 
 **Major version change from v5 to v6**
