@@ -100,6 +100,13 @@ heat map scatter plots).
 Notebook https://git.io/infl gives an in-depth analysis of inflation,
 including a combined forecast using three orthogonal methods.
 
+Elevated default risk across bond markets is indicative of a
+weak economy. But how can a policy maker calibrate credit spreads
+to assess changes in interest rates? We consider mortgage and corporate
+credit spreads to construct a *robust* Unified Credit Profile
+(a tutorial on MAD, Median Absolute Deviation, in
+rescaling non-Gaussian time-series), see https://git.io/creditprof
+
 Please see https://git.io/fedfunds 
 to forecast the Fed Funds rate using futures contracts on LIBOR.
 
@@ -255,6 +262,14 @@ a gold ETF; see Stanley Druckenmiller's sudden accumulation,
 and John Paulson's dramatic liquidation.
 Shortcut: https://git.io/13F
 
+##### [fred-credit-spreads.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-credit-spreads.ipynb) : Robust profiles of credit spreads
+
+Serves as a tutorial on MAD, Median Absolute Deviation,
+for robustly rescaling non-Gaussian time-series.
+We consider mortgage and corporate credit spreads to construct a
+robust Unified Credit Profile to calibrate credit default risk in
+the context of monetary policy. Shortcut: https://git.io/creditprof
+
 ##### [fred-debt-pop.ipynb](https://github.com/rsvp/fecon235/blob/master/nb/fred-debt-pop.ipynb) : Growth of Federal debt, its burden on the US population  
 
 We examine US government debt in real terms, and the current Federal debt per capita. 
@@ -377,7 +392,7 @@ Shortcut: https://git.io/gold
 
 ---
 
-[BSD License and TOS][235li] / This page, last update : 2018-07-31
+[BSD License and TOS][235li] / This page, last update : 2018-12-03
 
 [admin]:        https://rsvp.github.com "Adriano rsvp.github.com"
 [Anaconda]:     https://www.anaconda.com/download "Anaconda Python distribution"
